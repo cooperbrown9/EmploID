@@ -1,5 +1,5 @@
 
-const initialState = { loggedIn : false };
+const initialState = { isOwner : true };
 
 export default function user (state = initialState, action) {
   switch(action.type) {
