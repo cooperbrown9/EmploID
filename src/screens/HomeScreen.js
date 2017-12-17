@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-
+import EmployeesScreen from './EmployeesScreen.js'; 
 class HomeScreen extends Component {
   static navigationOptions = {
     header: null
@@ -9,7 +9,7 @@ class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container} >
-        <Text>Came wit a beam</Text>
+        <EmployeesScreen/>
       </View>
     )
   }
