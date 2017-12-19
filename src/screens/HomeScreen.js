@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 
 import TabBar from '../ui-elements/tab-bar';
 import * as TabActions from '../action-types/tab-action-types';
+import EmployeeScreen from './EmployeeScreen.js';
+import RestaurantScreen from './RestaurantScreen.js';
 
 class HomeScreen extends Component {
   static navigationOptions = {
@@ -23,10 +25,13 @@ class HomeScreen extends Component {
     let g = 100;
     return (
       <View style={styles.container} >
-        <View style={styles.tabContainer} >
-          <TabBar changeTab={(index) => this._changeTab(index)}/>
-        </View>
+      {//  <View style={styles.tabContainer} >
+          // <TabBar changeTab={(index) => this._changeTab(index)}/>
 
+
+        //</View>
+        }
+        <RestaurantScreen/>
       </View>
     )
   }
