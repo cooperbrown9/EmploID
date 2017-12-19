@@ -47,7 +47,6 @@ class HomeScreen extends Component {
     let g = 100;
     return (
       <View style={styles.container} >
-
         <View style={styles.tabContainer} >
           <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this._presentFilterModal() } />
         </View>
@@ -55,8 +54,6 @@ class HomeScreen extends Component {
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
           <FilterModal dismiss={() => this._dismissFilterModal()} />
         </Modal>
-
-        <RestaurantScreen/>
 
       </View>
     )
