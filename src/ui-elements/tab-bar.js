@@ -10,9 +10,9 @@ import { ROBOTO } from '../constants/font';
 const TabBar = props => (
   <View style={styles.container} >
 
-    <View style={styles.leftIcon} >
+    <TouchableOpacity onPress={() => props.leftOnPress()} style={styles.leftIcon} >
       <Image />
-    </View>
+    </TouchableOpacity>
 
     <View style={styles.elementContainer} >
       <TouchableOpacity onPress={() => props.changeTab(0)}
@@ -28,15 +28,17 @@ const TabBar = props => (
       </TouchableOpacity>
     </View>
 
-    <View style={styles.rightIcon} >
+    <TouchableOpacity onPress={() => props.rightOnPress()} style={styles.rightIcon} >
       <Image />
-    </View>
+    </TouchableOpacity>
 
   </View>
 )
 
 TabBar.propTypes = {
-  changeTab: PropTypes.func
+  changeTab: PropTypes.func,
+  leftOnPress: PropTypes.func,
+  rightOnPress: PropTypes.func
 }
 
 const styles = StyleSheet.create({

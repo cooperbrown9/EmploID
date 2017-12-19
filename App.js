@@ -8,7 +8,8 @@ import { Provider, connect } from 'react-redux';
 import { Font } from 'expo';
 import MainReducer from './src/reducers/main-reducer';
 import AppNavigatorWithState from './src/navigation/app-navigator';
-import Setup from './setup';
+// import Setup from './setup';
+import { FONT_LOADED } from './src/action-types/setup-action-types';
 
 export default class App extends React.Component {
 
@@ -16,10 +17,17 @@ export default class App extends React.Component {
 
   // mockups: https://projects.invisionapp.com/share/QWEPTE332#/screens/266694179
 
+  state = {
+    fontReady: false
+  }
+
   async componentDidMount() {
-    // await Font.loadAsync({
-    //   'roboto-regular': require('./assets/Roboto-Regular.ttf')
-    // });
+    await Font.loadAsync({
+      'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf')
+    });
+    this.setState({ fontReady: true });
+    this.store.dispatch({ type: FONT_LOADED });
+    console.log('app ');
   }
 
   // check if owner or employee...if employee, load Profile page, otherwise
