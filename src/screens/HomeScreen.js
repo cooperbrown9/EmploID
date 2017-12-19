@@ -39,6 +39,10 @@ class HomeScreen extends Component {
     this.setState({ filterPresented: true });
   }
 
+  _dismissFilterModal = () => {
+    this.setState({ filterPresented: false });
+  }
+
   render() {
     let g = 100;
     return (
@@ -49,7 +53,7 @@ class HomeScreen extends Component {
         </View>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
-          <FilterModal />
+          <FilterModal dismiss={() => this._dismissFilterModal()} />
         </Modal>
 
         <RestaurantScreen/>
