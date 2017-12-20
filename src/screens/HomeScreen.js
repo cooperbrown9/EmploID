@@ -43,24 +43,21 @@ class HomeScreen extends Component {
     let g = 100;
     return (
       <View style={styles.container} >
-<<<<<<< HEAD
         <View style={styles.tabContainer} >
           <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this._presentFilterModal() } />
         </View>
 
+        <RestaurantScreen/>
+
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
           <FilterModal />
         </Modal>
-
-=======
       {//  <View style={styles.tabContainer} >
           // <TabBar changeTab={(index) => this._changeTab(index)}/>
 
 
         //</View>
         }
-        <RestaurantScreen/>
->>>>>>> colt-dev
       </View>
     )
   }

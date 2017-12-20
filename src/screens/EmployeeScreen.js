@@ -8,10 +8,10 @@ const EmployeeScreen = (props) => (
 
 
     <View style={styles.container}>
-      <SearchBar lightTheme placeholder='Search' style={{marginBottom: 20}}/>
+      <SearchBar lightTheme placeholder={'Search'} style={{marginBottom: 20}}/>
       <ScrollView contentContainerStyle={{marginRight: 8, marginLeft: 8}}>
 
-        <TouchableOpacity style={styles.employeeItem} onPress={}>
+        <TouchableOpacity style={styles.employeeItem} >
           <View style={{flex:1, alignItems: 'flex-end'}}>
             <Image style={styles.employeeImage} source={require('../../assets/images/ron.png')}/>
           </View>
@@ -40,7 +40,7 @@ EmployeeScreen.propTypes = {
 
 _onPressEmployee = () =>
 {
-  
+
 }
 
 
