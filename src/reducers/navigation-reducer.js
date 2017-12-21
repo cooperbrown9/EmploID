@@ -2,7 +2,7 @@ import { NavigationActions } from 'react-navigation';
 import { AppNavigator } from '../navigation/app-navigator';
 import * as NavActions from '../action-types/nav-action-types';
 
-const tempAction = AppNavigator.router.getActionForPathAndParams('Home');
+const tempAction = AppNavigator.router.getActionForPathAndParams('Profile');
 const tempState = AppNavigator.router.getStateForAction(tempAction);
 
 // to set a different home screen, get Action and State.
@@ -15,6 +15,13 @@ export default function nav(state = tempState, action) {
     case NavActions.HOME:
       newState = AppNavigator.router.getStateForAction(
         NavigationActions.navigate({ routeName: 'Home'}),
+        state
+      );
+      return newState;
+
+    case NavActions.EMPLOYEE_PROFILE:
+      newState = AppNavigator.router.getStateForAction(
+        NavigationActions.navigate({ routeName: 'Profile'}),
         state
       );
       return newState;

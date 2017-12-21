@@ -47,10 +47,17 @@ class HomeScreen extends Component {
           <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this._presentFilterModal() } />
         </View>
 
+        <RestaurantScreen/>
+
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
           <FilterModal />
         </Modal>
+      {//  <View style={styles.tabContainer} >
+          // <TabBar changeTab={(index) => this._changeTab(index)}/>
 
+
+        //</View>
+        }
       </View>
     )
   }
