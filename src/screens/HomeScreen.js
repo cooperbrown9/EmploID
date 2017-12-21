@@ -8,6 +8,7 @@ import * as TabActions from '../action-types/tab-action-types';
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
 import FilterModal from './FilterModal';
+import AddEmployeeForm from './AddEmployeeForm';
 
 class HomeScreen extends Component {
 
@@ -15,7 +16,9 @@ class HomeScreen extends Component {
     super();
 
     this.state = {
-      filterPresented: false
+      filterPresented: false,
+      addEmployeePresented: true,
+      
     }
   }
 
@@ -43,16 +46,28 @@ class HomeScreen extends Component {
     this.setState({ filterPresented: false });
   }
 
+  _presentAddEmployeeModal = () => {
+    this.setState({ addEmployeePresented: true });
+  }
+
+  _dismissAddEmployeeModal = () => {
+    this.setState({ addEmployeePresented: false });
+  }
+
   render() {
     let g = 100;
     return (
       <View style={styles.container} >
         <View style={styles.tabContainer} >
-          <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this._presentFilterModal() } />
+          <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this._presentFilterModal() } rightOnPress={() => this._presentAddEmployeeModal()} />
         </View>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
           <FilterModal dismiss={() => this._dismissFilterModal()} />
+        </Modal>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.addEmployeePresented} >
+          <AddEmployeeForm dismiss={() => this._dismissAddEmployeeModal()} />
         </Modal>
 
       </View>

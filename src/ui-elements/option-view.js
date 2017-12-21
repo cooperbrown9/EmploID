@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 
 import * as Colors from '../constants/colors';
 
@@ -22,26 +22,45 @@ OptionView.propTypes = {
   selectOption: PropTypes.func
 }
 
+OptionView.selected = function(arr, index, callback) {
+  if(arr[index].selected) {
+    arr[index].selected = false;
+  } else {
+    for(let i = 0; i < arr.length; i++) {
+      arr[i].selected = false;
+    }
+    arr[index].selected = true;
+  }
+  callback(arr);
+}
+
+const FRAME = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center'
+    justifyContent: 'center',
+
   },
   buttonOn: {
+    flexGrow: 1,
     height: 48,
     borderRadius: 24,
     marginRight: 8, marginBottom: 8,
     backgroundColor: 'black',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width: FRAME.width * (1/4) - 8
   },
   buttonOff: {
+    flexGrow: 1,
     height: 48,
     borderRadius: 24,
     marginRight: 8, marginBottom: 8,
     backgroundColor: Colors.MID_GREY,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width: FRAME.width * (1/4) - 8
   },
   textOn: {
     fontSize: 18,
