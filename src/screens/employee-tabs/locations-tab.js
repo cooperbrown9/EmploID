@@ -8,7 +8,31 @@ const LocationsTab = (props) => (
     <View style={styles.container}>
 
         <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require()}/>
+            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
+
+          <View style={styles.restaurantInfo}>
+            <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
+            <Text style={{fontSize: 15, color: 'gray'}}>123 Bikini Bottom</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.restaurantItem}>
+            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
+
+          <View style={styles.restaurantInfo}>
+            <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
+            <Text style={{fontSize: 15, color: 'gray'}}>123 Bikini Bottom</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.restaurantItem}>
+            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
+
+          <View style={styles.restaurantInfo}>
+            <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
+            <Text style={{fontSize: 15, color: 'gray'}}>123 Bikini Bottom</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.restaurantItem}>
+            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
 
           <View style={styles.restaurantInfo}>
             <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
@@ -40,6 +64,7 @@ LocationsTab.defaultPropTypes = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginRight: 8, marginLeft: 8
   },
   restaurantItem: {
       flex: 1,

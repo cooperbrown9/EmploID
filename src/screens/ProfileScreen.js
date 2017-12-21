@@ -35,18 +35,18 @@ class ProfileScreen extends Component {
             <Text style={{fontSize: 16, color: 'green', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 44, left: 24}}>509.420.6969</Text>
           </View>
           <View style={styles.screenContainer} >
-        {  // {(this.props.indexOn === 0)
-          //   ? <ProfileTab  />
-          //   : (this.props.indexOn === 1)
-          //     ? <LocationsTab />
-          //     : (this.props.indexOn === 2)
-          //       ? <DiscountsTab />
-          //     : (this.props.indexOn === 3)
-          //         ? <NotesTab />
-          //       : null
-          // }
-        }
-            <LocationsTab/>
+            <TabBar />
+         {(this.props.indexOn === 0)
+            ? <ProfileTab  />
+            : (this.props.indexOn === 1)
+              ? <LocationsTab />
+              : (this.props.indexOn === 2)
+                ? <DiscountsTab />
+              : (this.props.indexOn === 3)
+                  ? <NotesTab />
+                : null
+          }
+        
           </View>
         </ScrollView>
 
