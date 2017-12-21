@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -32,6 +33,10 @@ class FilterModal extends Component {
         { value: 'Other', selected: false, index: 5}
       ]
     }
+  }
+
+  static propTypes = {
+    dismiss: PropTypes.func
   }
 
   componentDidMount() {
@@ -68,6 +73,11 @@ class FilterModal extends Component {
     callback(arr);
   }
 
+  sortFilters() {
+    // sort filters here, then pass to this.props.dismiss()
+    this.props.dismiss();
+  }
+
   render() {
     return(
       <View style={styles.container} >
@@ -76,7 +86,7 @@ class FilterModal extends Component {
             <Text style={styles.text}>Cancel</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.rightButton} >
+          <TouchableOpacity onPress={() => this.sortFilters()} style={styles.rightButton} >
             <Text style={styles.text}>Apply</Text>
           </TouchableOpacity>
         </View>
