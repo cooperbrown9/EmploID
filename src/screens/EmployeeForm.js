@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, StyleSheet, TextInput } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
 
 import { connect } from 'react-redux';
 import OptionView from '../ui-elements/option-view';
 import * as Colors from '../constants/colors';
+import SubmitButton from '../ui-elements/submit-button';
+import RoundButton from '../ui-elements/round-button';
 
-class AddEmployeeForm extends Component {
+class EmployeeForm extends Component {
   constructor() {
     super();
 
@@ -25,6 +27,10 @@ class AddEmployeeForm extends Component {
         { value: 'Other', selected: false, index: 5}
       ]
     };
+  }
+
+  static propTypes = {
+    dismiss: PropTypes.func
   }
 
   genderSelected = (index) => {
@@ -55,8 +61,11 @@ class AddEmployeeForm extends Component {
   render() {
     return(
       <ScrollView style={styles.scrollContainer} >
-        <View style={{marginTop: 100, backgroundColor: 'cyan'}}></View>
         <View style={styles.container} >
+
+          <View style={styles.backButton} >
+            <RoundButton onPress={this.props.dismiss} />
+          </View>
 
           <Text style={styles.textHeader} >Employee Name</Text>
           <View style={styles.inputView} >
@@ -83,6 +92,21 @@ class AddEmployeeForm extends Component {
             <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
           </View>
 
+          <Text style={styles.textHeader} >Age</Text>
+          <View style={styles.inputView} >
+            {this.textInputFactory('99', (text) => this.setState({ age: text}))}
+          </View>
+
+          <View style={styles.imageContainer} >
+            <Image style={styles.image} />
+          </View>
+          <Text style={styles.imageText}>Upload Employee Image</Text>
+
+          <TouchableOpacity onPress={() => this.props.dismiss()} style={styles.submitContainer} >
+            <SubmitButton />
+          </TouchableOpacity>
+
+          <View style={{height: 64}}/>
         </View>
       </ScrollView>
     )
@@ -98,6 +122,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginLeft: 16, marginRight: 16
+  },
+  backButton: {
+    marginLeft: 16, marginTop: 32, marginBottom: 32
+  },
+  submitContainer: {
+    marginLeft: 16, marginRight: 16, marginTop: 16
+  },
+  imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  image: {
+    width: 80, height: 80,
+    borderRadius: 40,
+    backgroundColor: 'yellow'
+  },
+  imageText: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 16
   },
   optionContainer: {
     justifyContent: 'center',
@@ -123,4 +167,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default AddEmployeeForm;
+export default EmployeeForm;

@@ -8,7 +8,7 @@ import * as TabActions from '../action-types/tab-action-types';
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
 import FilterModal from './FilterModal';
-import AddEmployeeForm from './AddEmployeeForm';
+import EmployeeForm from './EmployeeForm';
 
 class HomeScreen extends Component {
 
@@ -17,8 +17,8 @@ class HomeScreen extends Component {
 
     this.state = {
       filterPresented: false,
-      addEmployeePresented: true,
-      
+      employeePresented: false,
+
     }
   }
 
@@ -47,11 +47,11 @@ class HomeScreen extends Component {
   }
 
   _presentAddEmployeeModal = () => {
-    this.setState({ addEmployeePresented: true });
+    this.setState({ employeePresented: true });
   }
 
-  _dismissAddEmployeeModal = () => {
-    this.setState({ addEmployeePresented: false });
+  _dismissEmployeeModal = () => {
+    this.setState({ employeePresented: false });
   }
 
   render() {
@@ -68,8 +68,8 @@ class HomeScreen extends Component {
           <FilterModal dismiss={() => this._dismissFilterModal()} />
         </Modal>
 
-        <Modal animationType={'slide'} transparent={false} visible={this.state.addEmployeePresented} >
-          <AddEmployeeForm dismiss={() => this._dismissAddEmployeeModal()} />
+        <Modal animationType={'slide'} transparent={false} visible={this.state.employeePresented} >
+          <EmployeeForm dismiss={() => this._dismissEmployeeModal()} />
         </Modal>
       {//  <View style={styles.tabContainer} >
           // <TabBar changeTab={(index) => this._changeTab(index)}/>
