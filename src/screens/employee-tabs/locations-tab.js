@@ -8,7 +8,7 @@ const LocationsTab = (props) => (
     <View style={styles.container}>
 
         <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
+            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
 
           <View style={styles.restaurantInfo}>
             <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
@@ -16,7 +16,7 @@ const LocationsTab = (props) => (
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
+            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
 
           <View style={styles.restaurantInfo}>
             <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
@@ -24,7 +24,7 @@ const LocationsTab = (props) => (
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
+            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
 
           <View style={styles.restaurantInfo}>
             <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
@@ -32,7 +32,7 @@ const LocationsTab = (props) => (
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
+            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
 
           <View style={styles.restaurantInfo}>
             <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
