@@ -5,10 +5,19 @@ import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { BLUE } from '../constants/colors';
 
 const SubmitButton = props => (
-  <TouchableOpacity style={styles.container} >
-    <Text style={styles.text}>Submit</Text>
+  <TouchableOpacity onPress={() => props.onPress()} style={styles.container} >
+    <Text style={styles.text}>{props.title}</Text>
   </TouchableOpacity>
 )
+
+SubmitButton.propTypes = {
+  title: PropTypes.string,
+  onPress: PropTypes.func
+}
+
+SubmitButton.defaultPropTypes = {
+  title: 'Submit'
+}
 
 const styles =  StyleSheet.create({
   container: {
@@ -21,7 +30,8 @@ const styles =  StyleSheet.create({
   text: {
     textAlign: 'center',
     fontSize: 18,
-    color: 'white'
+    color: 'white',
+    fontFamily: 'roboto-regular'
   }
 })
 

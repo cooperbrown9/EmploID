@@ -34,6 +34,14 @@ OptionView.selected = function(arr, index, callback) {
   callback(arr);
 }
 
+OptionView.selectedExclusive = function(arr, index, callback) {
+  for(let i = 0; i < arr.length; i++) {
+    arr[i].selected = false;
+  }
+  arr[index].selected = true;
+  callback(arr);
+}
+
 const FRAME = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -66,13 +74,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 24, marginRight: 24,
     color: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontFamily: 'roboto-regular'
   },
   textOff: {
     fontSize: 18,
     marginLeft: 24, marginRight: 24,
     color: Colors.DARK_GREY,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontFamily: 'roboto-regular'
   }
 });
 

@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch'
   },
   tabContainer: {
-    height: 64
+    height: 72
   }
 });
 

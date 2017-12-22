@@ -9,29 +9,29 @@ import { ROBOTO } from '../constants/font';
 
 const TabBar = props => (
   <View style={styles.container} >
-
-    <TouchableOpacity onPress={() => props.leftOnPress()} style={styles.leftIcon} >
-      <Image />
-    </TouchableOpacity>
-
-    <View style={styles.elementContainer} >
-      <TouchableOpacity onPress={() => props.changeTab(0)}
-        style={(props.index === 0) ? styles.leftButtonOn : styles.leftButtonOff}
-      >
-        <Text style={styles.text}>Employees</Text>
+    <View style={styles.subContainer} >
+      <TouchableOpacity onPress={() => props.leftOnPress()} style={styles.leftIcon} >
+        <Image style={styles.image} source={require('../../assets/icons/search.png')} />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => props.changeTab(1)}
-        style={(props.index === 1) ? styles.rightButtonOn : styles.rightButtonOff}
-      >
-        <Text style={styles.text}>Locations</Text>
+      <View style={styles.elementContainer} >
+        <TouchableOpacity onPress={() => props.changeTab(0)}
+          style={(props.index === 0) ? styles.leftButtonOn : styles.leftButtonOff}
+        >
+          <Text style={styles.text}>Employees</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => props.changeTab(1)}
+          style={(props.index === 1) ? styles.rightButtonOn : styles.rightButtonOff}
+        >
+          <Text style={styles.text}>Locations</Text>
+        </TouchableOpacity>
+      </View>
+
+      <TouchableOpacity onPress={() => props.rightOnPress()} style={styles.rightIcon} >
+        <Image style={styles.image} source={require('../../assets/icons/profile.png')} />
       </TouchableOpacity>
     </View>
-
-    <TouchableOpacity onPress={() => props.rightOnPress()} style={styles.rightIcon} >
-      <Image />
-    </TouchableOpacity>
-
   </View>
 )
 
@@ -45,6 +45,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.BLUE
+  },
+  subContainer: {
+    flex: 1,
+    marginTop: 8
+  },
+  image: {
+    width: 24, height: 24,
+    tintColor: 'white'
   },
   text: {
     fontSize: 18,
@@ -79,13 +87,11 @@ const styles = StyleSheet.create({
   },
   leftIcon: {
     position: 'absolute',
-    left: 16, top: 16, width: 32, height: 32,
-    backgroundColor: 'yellow'
+    left: 16, top: 20, width: 32, height: 32
   },
   rightIcon: {
     position: 'absolute',
-    right: 16, top: 16, width: 32, height: 32,
-    backgroundColor: 'red'
+    right: 16, top: 20, width: 32, height: 32
   },
   elementContainer: {
     flex: 1,
