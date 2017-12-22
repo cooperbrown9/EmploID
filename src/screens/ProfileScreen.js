@@ -30,12 +30,15 @@ class ProfileScreen extends Component {
             <View style={styles.optionsButton}>
               <RoundButton imagePath={require('../../assets/icons/ellipsis.png')}/>
             </View>
-            <Text style={{fontSize: 34, color: 'green', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 130, left: 24}}>Randy Savage</Text>
-            <Text style={{fontSize: 16, color: 'green', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 70, left: 24}}>Mega TOKER</Text>
-            <Text style={{fontSize: 16, color: 'green', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 44, left: 24}}>509.420.6969</Text>
+            <Text style={{fontSize: 34, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 130, left: 24}}>Randy Savage</Text>
+            <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 70, left: 24}}>Mega TOKER</Text>
+            <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 44, left: 24}}>509.420.6969</Text>
+          </View>
+          <View style={{height: 60, paddingBottom: 8}}>
+            <TabBar />
           </View>
           <View style={styles.screenContainer} >
-            <TabBar />
+
          {(this.props.indexOn === 0)
             ? <ProfileTab  />
             : (this.props.indexOn === 1)
@@ -46,7 +49,7 @@ class ProfileScreen extends Component {
                   ? <NotesTab />
                 : null
           }
-        
+
           </View>
         </ScrollView>
 

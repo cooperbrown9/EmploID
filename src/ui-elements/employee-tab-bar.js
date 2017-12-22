@@ -79,17 +79,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomColor: 'black',
-    borderBottomWidth: 2
+    borderBottomWidth: 3
   },
   buttonTextOn: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: 'black'
   },
   buttonTextOff: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: 'rgb(200, 200, 200)'
   }

@@ -60,7 +60,9 @@ const styles = StyleSheet.create({
       height: 100,
       marginTop: 4,
       marginBottom: 4,
-      backgroundColor: 'white'
+      backgroundColor: 'white',
+      overflow: 'hidden',
+      borderRadius: 4
     },
     employeeImage: {
       height: 64,
