@@ -5,6 +5,9 @@ import * as NavActions from '../action-types/nav-action-types';
 const tempAction = AppNavigator.router.getActionForPathAndParams('Profile');
 const tempState = AppNavigator.router.getStateForAction(tempAction);
 
+const loginAction = AppNavigator.router.getActionForPathAndParams('Login');
+const loginState = AppNavigator.router.getStateForAction(loginAction);
+
 // to set a different home screen, get Action and State.
 // to animate screens, use NavigationActions
 export default function nav(state = tempState, action) {
@@ -12,6 +15,14 @@ export default function nav(state = tempState, action) {
   let tempAction = {};
 
   switch(action.type) {
+
+    case NavActions.LOGIN:
+    newState = AppNavigator.router.getStateForAction(
+      NavigationActions.navigate({ routeName: 'Login'}),
+      state
+    );
+    return newState;
+
     case NavActions.HOME:
       newState = AppNavigator.router.getStateForAction(
         NavigationActions.navigate({ routeName: 'Home'}),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
@@ -18,14 +18,14 @@ export default class App extends React.Component {
   // mockups: https://projects.invisionapp.com/share/QWEPTE332#/screens/266694179
 
   state = {
-    fontReady: false
+    fontLoaded: false
   }
 
   async componentDidMount() {
     await Font.loadAsync({
       'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf')
     });
-    this.setState({ fontReady: true });
+    this.setState({ fontLoaded: true });
     this.store.dispatch({ type: FONT_LOADED });
     console.log('app ');
   }
@@ -35,9 +35,13 @@ export default class App extends React.Component {
   render() {
     return (
 
+
       <Provider store={this.store} >
-        <AppNavigatorWithState />
+        {(this.state.fontLoaded) ? <AppNavigatorWithState /> : <View><ActivityIndicator/></View> }
       </Provider>
+
+
+
     );
   }
 }

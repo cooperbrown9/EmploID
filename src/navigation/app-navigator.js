@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import { addNavigationHelpers, StackNavigator } from 'react-navigation';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import LoginScreen from '../screens/LoginScreen';
 
 export const AppNavigator = StackNavigator({
   Home: { screen: HomeScreen },
-  Profile: { screen: ProfileScreen }
+  Profile: { screen: ProfileScreen },
+  Login: { screen: LoginScreen }
 });
 
 const AppNavigatorWithState = ({ dispatch, nav }) => (
