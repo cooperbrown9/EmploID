@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Modal} from 'react-native';
 import { connect } from 'react-redux';
 import TabBar from '../ui-elements/employee-tab-bar.js';
 import RoundButton from '../ui-elements/round-button.js';
@@ -8,6 +8,7 @@ import DiscountsTab from './employee-tabs/discounts-tab.js';
 import LocationsTab from './employee-tabs/locations-tab.js';
 import NotesTab from './employee-tabs/notes-tab.js';
 import ProfileTab from './employee-tabs/profile-tab.js';
+import EmployeeForm from './EmployeeForm.js'
 
 class ProfileScreen extends Component {
   static navigationOptions = {
@@ -15,7 +16,15 @@ class ProfileScreen extends Component {
   }
 
   state = {
+    formModal: false
+  }
 
+  _dismissFormModal = () => {
+    this.setState({formModal: false});
+  }
+
+  _presentFormModal = () => {
+    this.setState({formModal: true});
   }
 
   render() {
@@ -25,10 +34,10 @@ class ProfileScreen extends Component {
           <View>
             <Image style={styles.profilePic} source={require('../../assets/images/chef1.png')}/>
             <View style={styles.backButton}>
-              <RoundButton imagePath={require('../../assets/icons/back.png')}/>
+              <RoundButton  imagePath={require('../../assets/icons/back.png')}/>
             </View>
             <View style={styles.optionsButton}>
-              <RoundButton imagePath={require('../../assets/icons/ellipsis.png')}/>
+              <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
             </View>
             <Text style={{fontSize: 34, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 130, left: 24}}>Randy Savage</Text>
             <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 70, left: 24}}>Mega TOKER</Text>
@@ -52,6 +61,9 @@ class ProfileScreen extends Component {
 
           </View>
         </ScrollView>
+        <Modal animationType={'slide'} transparent={false} visible={this.state.formModal} styles={{marginTop: 0}}>
+          <EmployeeForm edit={true} dismiss={this._dismissFormModal}/>
+        </Modal>
 
       </View>
     )
@@ -81,8 +93,7 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    indexOn: state.emp.indexOn,
-    editOpen: state.emp.editOpen
+    indexOn: state.emp.indexOn
   }
 }
 

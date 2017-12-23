@@ -2,7 +2,7 @@ import { NavigationActions } from 'react-navigation';
 import { AppNavigator } from '../navigation/app-navigator';
 import * as NavActions from '../action-types/nav-action-types';
 
-const tempAction = AppNavigator.router.getActionForPathAndParams('Profile');
+const tempAction = AppNavigator.router.getActionForPathAndParams('Home');
 const tempState = AppNavigator.router.getStateForAction(tempAction);
 
 const loginAction = AppNavigator.router.getActionForPathAndParams('Login');
@@ -36,6 +36,7 @@ export default function nav(state = tempState, action) {
         state
       );
       return newState;
+
 
     case NavActions.BACK:
       newState = AppNavigator.router.getStateForAction(

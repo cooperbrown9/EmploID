@@ -25,13 +25,31 @@ class EmployeeForm extends Component {
         { value: 'Grey', selected: false, index: 3},
         { value: 'Blonde', selected: false, index: 4},
         { value: 'Other', selected: false, index: 5}
-      ]
+      ],
+      employee: {
+        name: "Jarrel Gooler",
+        position: "Head Chef",
+        phone: "5094449999",
+        gender: 0,
+        hairColor: 3,
+        age: 69
+      }
     };
   }
 
   static propTypes = {
-    dismiss: PropTypes.func
+    dismiss: PropTypes.func,
+    edit: PropTypes.bool
   }
+  static defaultPropTypes = {
+    edit: false
+  }
+
+ componentDidMount() {
+
+     this.genderSelected(this.state.employee.gender);
+     this.hairSelected(this.state.employee.hairColor);
+ }
 
   genderSelected = (index) => {
     OptionView.selected(this.state.genderOptions, index, (arr) => {
@@ -45,7 +63,7 @@ class EmployeeForm extends Component {
     });
   }
 
-  textInputFactory(placeholder, onTextChange) {
+  textInputFactory(placeholder, onTextChange, value) {
     return (
       <TextInput
         placeholder={placeholder}
@@ -54,6 +72,7 @@ class EmployeeForm extends Component {
         style={styles.input}
         autoCorrect={false}
         onChangeText={(text) => onTextChange(text)}
+        value={(this.props.edit) ? value : null}
       />
     )
   }
@@ -69,17 +88,19 @@ class EmployeeForm extends Component {
 
           <Text style={styles.textHeader} >Employee Name</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('Name', (text) => this.setState({ name: text}))}
+            {
+              this.textInputFactory('Name', (text) => this.setState({ name: text}), this.state.employee.name)
+            }
           </View>
 
           <Text style={styles.textHeader} >Position</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('Job Title', (text) => this.setState({ position: text}))}
+            {this.textInputFactory('Job Title', (text) => this.setState({ position: text}), this.state.employee.position)}
           </View>
 
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('555.555.5555', (text) => this.setState({ phone: text}))}
+            {this.textInputFactory('555.555.5555', (text) => this.setState({ phone: text}), this.state.employee.phone)}
           </View>
 
           <Text style={styles.textHeader}>Gender</Text>
@@ -94,7 +115,7 @@ class EmployeeForm extends Component {
 
           <Text style={styles.textHeader} >Age</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('99', (text) => this.setState({ age: text}))}
+            {this.textInputFactory('99', (text) => this.setState({ age: text}), this.state.employee.age)}
           </View>
 
           <View style={styles.imageContainer} >
