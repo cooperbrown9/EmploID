@@ -3,13 +3,8 @@ import PropTypes from 'prop-types';
 import {TouchableOpacity, StyleSheet, Image, } from 'react-native';
 
 const RoundButton = (props) => (
-<<<<<<< HEAD
-    <TouchableOpacity style={styles.button}>
-      <Image style={{ tintColor: 'white', width: 24, height: 24}} source={props.imagePath}/>
-=======
     <TouchableOpacity onPress={() => props.onPress()} style={styles.button}>
       <Image style={{ tintColor: 'white', width: 32, height: 32}} source={props.imagePath}/>
->>>>>>> 755b51828c5655a5d8977a7623b660e59d5b58cd
     </TouchableOpacity>
 );
 
