@@ -4,8 +4,11 @@ const BASE = 'https://emploid.herokuapp.com/api';
 
 const LOGIN_OWNER = '/login-owner';
 
-const CREATE_EMPLOYEE = '/create-employee';
+// needs ownerID param
+const GET_OWNER = '/get-owner/';
+const VERIFY_OWNER = '/verify-session-owner';
 
+const CREATE_EMPLOYEE = '/create-employee';
 
 
 export function createEmployee(data, callback) {
@@ -14,12 +17,33 @@ export function createEmployee(data, callback) {
     .catch(e => callback(e))
 }
 
+export function loginEmployee(data, callback) {
+
+}
+
+export function lol(val) {
+  val = 10;
+}
+
+
 export function loginOwner(data, callback) {
   axios.post(BASE + LOGIN_OWNER, data)
+  .then(response => callback(null, response.data))
+  .catch(e => callback(e))
+}
+
+export function verifySessionOwner(data, dispatch) {
+  // return dispatch => {
+  //   dispatch({ type: ''})
+  // }
+
+  axios.post(BASE + VERIFY_OWNER, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
 
-export function loginEmployee(data, callback) {
-
+export function getOwner(ownerID, callback) {
+  axios.get(BASE + GET_OWNER + ownerID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
 }

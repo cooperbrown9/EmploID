@@ -10,6 +10,8 @@ import OptionView from '../ui-elements/option-view';
 import SubmitButton from '../ui-elements/submit-button';
 
 import * as Keys from '../constants/keys';
+import * as NavActions from '../action-types/nav-action-types';
+import * as AuthActions from '../action-types/auth-action-types';
 
 class LoginScreen extends Component {
 
@@ -35,7 +37,18 @@ class LoginScreen extends Component {
 
 
   componentDidMount() {
+    this.checkKeys();
+  }
 
+  async checkKeys() {
+    const a = await AsyncStorage.getItem(Keys.IS_OWNER);
+    const b = await AsyncStorage.getItem(Keys.SESSION_ID);
+
+    const c = await AsyncStorage.getItem(Keys.USER_ID);
+
+    if(a === 'true') {
+      console.log(a, b, c);
+    }
   }
 
   login = () => {
@@ -58,19 +71,19 @@ class LoginScreen extends Component {
       password: this.state.password
     }
 
-    this.loginOwner(data, (e, response) => {
+    this.loginOwner(data, async(e, response) => {
       if(e) {
-        debugger;
+
         Alert.alert(e.message);
       } else {
-        console.log(response);
-        AsyncStorage.setItem(Keys.IS_OWNER, 'true', () => {
-          AsyncStorage.setItem(Keys.SESSION_ID, response.session_id, () => {
-            AsyncStorage.setItem(Keys.USER_ID, response.user_id, () => {
-              console.log('yuuuup');
-            });
-          });
-        });
+        await AsyncStorage.setItem(Keys.IS_OWNER, 'true');
+        await AsyncStorage.setItem(Keys.SESSION_ID, response.session_id);
+        await AsyncStorage.setItem(Keys.USER_ID, response.user_id);
+        this.props.dispatch({ type: AuthActions.LOGIN_OWNER_SUCCESS, sessionID: response.session_id, userID: response.user_id });
+        // setInterval(() => {
+          this.props.dispatch({ type: NavActions.HOME });
+        // }, 500);
+
       }
     });
   }
@@ -176,4 +189,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default LoginScreen;
+var mapStateToProps = state => {
+  return {
+    ...state
+  }
+}
+
+export default connect(mapStateToProps)(LoginScreen);

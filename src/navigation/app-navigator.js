@@ -5,9 +5,11 @@ import { addNavigationHelpers, StackNavigator } from 'react-navigation';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import LoginScreen from '../screens/LoginScreen';
+import LoadScreen from '../screens/LoadScreen';
 
 export const AppNavigator = StackNavigator({
   Home: { screen: HomeScreen },
+  Load: { screen: LoadScreen },
   Profile: { screen: ProfileScreen },
   Login: { screen: LoginScreen }
 });
