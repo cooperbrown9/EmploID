@@ -57,6 +57,7 @@ export default function nav(state = loadState, action) {
       );
       return newState;
 
+
     case NavActions.BACK:
       newState = AppNavigator.router.getStateForAction(
         NavigationActions.back(),

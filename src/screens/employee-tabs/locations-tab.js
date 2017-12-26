@@ -8,7 +8,7 @@ const LocationsTab = (props) => (
     <View style={styles.container}>
 
         <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
+            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
 
           <View style={styles.restaurantInfo}>
             <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
@@ -16,7 +16,7 @@ const LocationsTab = (props) => (
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
+            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
 
           <View style={styles.restaurantInfo}>
             <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
@@ -24,7 +24,7 @@ const LocationsTab = (props) => (
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
+            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
 
           <View style={styles.restaurantInfo}>
             <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
@@ -32,7 +32,7 @@ const LocationsTab = (props) => (
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
+            <Image style={styles.restaurantImage} source={require('/Users/coltonsomes/Desktop/ReactProjects/EmploID/assets/images/rest-1.png')}/>
 
           <View style={styles.restaurantInfo}>
             <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
@@ -75,14 +75,16 @@ const styles = StyleSheet.create({
       height: 100,
       marginTop: 4,
       marginBottom: 4,
-      backgroundColor: 'white'
+      backgroundColor: 'white',
+      overflow: 'hidden',
+      borderRadius: 4
     },
     restaurantImage: {
     height: 100,
     width: null,
     flex: 1,
     resizeMode: 'cover',
-    borderRadius: 4
+
 
     },
     restaurantInfo: {

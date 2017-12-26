@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import TabBar from '../ui-elements/tab-bar';
 import * as TabActions from '../action-types/tab-action-types';
+import * as NavActions from '../action-types/nav-action-types'; 
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
 import FilterModal from './FilterModal';
@@ -47,7 +48,8 @@ class HomeScreen extends Component {
   }
 
   _presentAddEmployeeModal = () => {
-    this.setState({ employeePresented: true });
+    this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
+    //this.setState({ employeePresented: true });
   }
 
   _dismissEmployeeModal = () => {
