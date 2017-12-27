@@ -10,7 +10,6 @@ import MainReducer from './src/reducers/main-reducer';
 import AppNavigatorWithState from './src/navigation/app-navigator';
 
 import * as Keys from './src/constants/keys';
-import * as NavActions from './src/action-types/nav-action-types';
 
 import { FONT_LOADED } from './src/action-types/setup-action-types';
 import * as NavActions from './src/action-types/nav-action-types';
