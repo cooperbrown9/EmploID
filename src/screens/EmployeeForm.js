@@ -140,9 +140,9 @@ class EmployeeForm extends Component {
           </View>
           <Text style={styles.imageText}>Upload Employee Image</Text>
 
-          <TouchableOpacity style={styles.submitContainer} >
+          <View style={styles.submitContainer} >
             <SubmitButton onPress={() => this.submit()} />
-          </TouchableOpacity>
+          </View>
 
           <View style={{height: 64}}/>
         </View>
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     marginLeft: 16, marginTop: 32, marginBottom: 32
   },
   submitContainer: {
-    marginLeft: 16, marginRight: 16, marginTop: 16, backgroundColor: 'yellow'
+    marginLeft: 16, marginRight: 16, marginTop: 16
   },
   imageContainer: {
     justifyContent: 'center',

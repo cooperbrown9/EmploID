@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     marginRight: 8, marginBottom: 8,
     backgroundColor: 'black',
     justifyContent: 'center',
-    // width: FRAME.width * (1/4) - 8
+    width: FRAME.width * (1/4) - 8
   },
   buttonOff: {
     flexGrow: 1,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     marginRight: 8, marginBottom: 8,
     backgroundColor: Colors.MID_GREY,
     justifyContent: 'center',
-    // width: FRAME.width * (1/4) - 8
+    width: FRAME.width * (1/4) - 8
   },
   textOn: {
     fontSize: 18,

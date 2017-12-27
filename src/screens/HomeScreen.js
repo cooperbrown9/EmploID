@@ -81,9 +81,6 @@ class HomeScreen extends Component {
   }
 
   _submitEmployeeForm(data) {
-
-    // data.sessionID = this.props.sessionID;
-    // data.ownerID = this.props.user._id;
     data = {
       ...data,
       "sessionID": this.props.sessionID,
@@ -101,9 +98,6 @@ class HomeScreen extends Component {
   }
 
   _submitPlaceForm(data) {
-
-    // data.sessionID = this.props.sessionID;
-    // data.ownerID = this.props.user._id;
     data = {
       ...data,
       "sessionID": this.props.sessionID,
