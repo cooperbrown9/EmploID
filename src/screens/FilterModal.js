@@ -82,7 +82,7 @@ class FilterModal extends Component {
     return(
       <View style={styles.container} >
         <View style={styles.topBar} >
-          <TouchableOpacity style={styles.leftButton} >
+          <TouchableOpacity style={styles.leftButton} onPress={() => this.props.dismiss()}>
             <Text style={styles.text}>Cancel</Text>
           </TouchableOpacity>
 

@@ -15,6 +15,7 @@ import RestaurantScreen from './RestaurantScreen.js';
 
 import FilterModal from './FilterModal';
 import EmployeeForm from './EmployeeForm';
+import PlaceForm from './RestaurantForm';
 
 class HomeScreen extends Component {
 
@@ -62,11 +63,19 @@ class HomeScreen extends Component {
     this.setState({ employeeFormPresented: false });
   }
 
+  _presentAddPlaceModal = () => {
+    this.props.dispatch({ type: NavActions.RESTAURANT_PROFILE });
+    //this.setState({ employeeFormPresented: true });
+  }
+
+  _dismissPlaceModal = () => {
+    this.setState({ placeFormPresented: false });
+  }
+
   addPressed = () => {
     if(this.props.indexOn === 0) {
       this.setState({ employeeFormPresented: true });
     } else {
-      Alert.alert('Present Places Form');
       this.setState({ placeFormPresented: true });
     }
   }
@@ -82,6 +91,26 @@ class HomeScreen extends Component {
     }
     DataBuilder.buildEmployeeForm(data, (obj) => {
       API.createEmployee(obj, (err, emp) => {
+        if(err) {
+          Alert.alert(err.message);
+        } else {
+          console.log(emp);
+        }
+      });
+    });
+  }
+
+  _submitPlaceForm(data) {
+
+    // data.sessionID = this.props.sessionID;
+    // data.ownerID = this.props.user._id;
+    data = {
+      ...data,
+      "sessionID": this.props.sessionID,
+      "ownerID": this.props.user._id
+    }
+    DataBuilder.buildPlaceForm(data, (obj) => {
+      API.createPlace(obj, (err, emp) => {
         if(err) {
           Alert.alert(err.message);
         } else {
@@ -118,6 +147,10 @@ class HomeScreen extends Component {
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.employeeFormPresented} >
           <EmployeeForm submitForm={(data) => this._submitEmployeeForm(data)} dismiss={() => this._dismissEmployeeModal()} />
+        </Modal>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.placeFormPresented} >
+          <PlaceForm submitForm={(data) => this._submitPlaceForm(data)} dismiss={() => this._dismissPlaceModal()} />
         </Modal>
 
 

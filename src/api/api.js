@@ -4,6 +4,7 @@ const BASE = 'https://emploid.herokuapp.com/api';
 
 const LOGIN_OWNER = '/login-owner';
 
+
 // needs ownerID param
 const GET_OWNER = '/get-owner/';
 const VERIFY_OWNER = '/verify-session-owner';
@@ -11,6 +12,8 @@ const VERIFY_SESSION_GET_OWNER = '/verify-session-get-owner';
 
 const CREATE_EMPLOYEE = '/create-employee';
 const LOGIN_EMPLOYEE = 'login-employee';
+
+const CREATE_PLACE = '/create-place'
 
 
 // EMPLOYEE FUNCTIONS
@@ -44,6 +47,12 @@ export function verifySessionGetOwner(data, callback) {
 
 export function getOwner(ownerID, callback) {
   axios.get(BASE + GET_OWNER + ownerID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function createPlace(data, callback) {
+  axios.post(BASE + CREATE_PLACE, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

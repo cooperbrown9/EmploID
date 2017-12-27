@@ -13,3 +13,16 @@ export function buildEmployeeForm(data, callback) {
 
   callback(obj);
 }
+
+export function buildPlaceForm(data, callback) {
+  var obj = {
+    "name": data.name,
+    "address": data.address,
+    "email": data.email,
+    "phone": data.phone,
+    "sessionID": data.sessionID,
+    "ownerID": data.ownerID
+  }
+
+  callback(obj);
+}

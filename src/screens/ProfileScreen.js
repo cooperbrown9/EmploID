@@ -9,6 +9,9 @@ import LocationsTab from './employee-tabs/locations-tab.js';
 import NotesTab from './employee-tabs/notes-tab.js';
 import ProfileTab from './employee-tabs/profile-tab.js';
 import EmployeeForm from './EmployeeForm.js'
+import * as NavActions from '../action-types/nav-action-types';
+
+
 
 class ProfileScreen extends Component {
   static navigationOptions = {
@@ -27,6 +30,10 @@ class ProfileScreen extends Component {
     this.setState({formModal: true});
   }
 
+  _goBack = () => {
+    this.props.dispatch({ type: NavActions.BACK});
+  }
+
   render() {
     return (
       <View style={styles.container} >
@@ -34,7 +41,7 @@ class ProfileScreen extends Component {
           <View>
             <Image style={styles.profilePic} source={require('../../assets/images/chef1.png')}/>
             <View style={styles.backButton}>
-              <RoundButton  imagePath={require('../../assets/icons/back.png')}/>
+              <RoundButton onPress={() => this._goBack()} imagePath={require('../../assets/icons/back.png')}/>
             </View>
             <View style={styles.optionsButton}>
               <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
