@@ -21,11 +21,11 @@ class FilterModal extends Component {
       ],
       genderOptions: [
         { value: 'Male', selected: false, index: 0},
-        { value: 'Female', selected: false, index: 1},
+        { value: 'Female', selected: true, index: 1},
         { value: 'Other', selected: false, index: 2}
       ],
       hairOptions: [
-        { value: 'Brown', selected: false, index: 0},
+        { value: 'Brown', selected: true, index: 0},
         { value: 'Red', selected: false, index: 1},
         { value: 'Black', selected: false, index: 2},
         { value: 'Grey', selected: false, index: 3},
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   jobOptionContainer: {
-    marginLeft: 32, marginRight: 16, marginBottom: 16,
+    marginLeft: 32, marginRight: 32, marginBottom: 16,
     flex: 1,
   },
   titleText: {

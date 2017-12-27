@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert, Dimensions } from 'react-native';
 
 import { connect } from 'react-redux';
 
@@ -8,6 +8,7 @@ import * as TabActions from '../action-types/tab-action-types';
 import * as NavActions from '../action-types/nav-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
+import * as Colors from '../constants/colors';
 
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
@@ -90,17 +91,6 @@ class HomeScreen extends Component {
     });
   }
 
-  dataConstructor(data, callback) {
-    var obj = {
-      "name": data.name,
-      "email": data.email,
-      "position": data.position,
-      "phone": data.phone,
-      "gender": data.gender,
-      "hair": data.hairColor
-    }
-  }
-
   render() {
     let g = 100;
     return (
@@ -115,7 +105,11 @@ class HomeScreen extends Component {
         }
 
         <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
-          <Image style={{height:84,width:84}} source={require('../../assets/icons/plus.png')} />
+          <Image style={{height:64,width:64}} source={require('../../assets/icons/plus.png')} />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => this._presentFilterModal()} style={styles.filterButton} >
+          <Text style={styles.filterText}>Filter</Text>
         </TouchableOpacity>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
@@ -133,6 +127,8 @@ class HomeScreen extends Component {
   }
 }
 
+const FRAME = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -140,11 +136,22 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch'
   },
+  filterButton: {
+    position: 'absolute',
+    justifyContent: 'center', alignItems: 'center',
+    left: 16, bottom: 16, borderRadius: 32,
+    height: 64, width: FRAME.width / 2 - 32,
+    backgroundColor: Colors.MID_GREY
+  },
+  filterText: {
+    fontFamily: 'roboto-regular', fontSize: 16,
+    color: Colors.DARK_GREY
+  },
   addButton: {
     position: 'absolute',
     justifyContent: 'center', alignItems: 'center',
     right: 16, bottom: 16,
-    height: 100, width: 100,
+    height: 64, width: 64,
     backgroundColor: 'transparent'
   },
   tabContainer: {

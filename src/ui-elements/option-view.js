@@ -8,7 +8,10 @@ const OptionView = props => (
   <View style={styles.container} >
     {props.options.map(
       (option) =>
-      <TouchableOpacity onPress={() => props.selectOption(option.index)} style={(option.selected) ? styles.buttonOn : styles.buttonOff} key={option.value} >
+      <TouchableOpacity
+        onPress={() => props.selectOption(option.index)}
+        style={ ((option.selected) ? styles.buttonOn : styles.buttonOff) }
+        key={option.value} >
         <Text style={(option.selected) ? styles.textOn : styles.textOff} >
           {option.value}
         </Text>
@@ -19,7 +22,8 @@ const OptionView = props => (
 
 OptionView.propTypes = {
   options: PropTypes.array,
-  selectOption: PropTypes.func
+  selectOption: PropTypes.func,
+  isCongruent: PropTypes.bool
 }
 
 OptionView.selected = function(arr, index, callback) {
@@ -59,7 +63,7 @@ const styles = StyleSheet.create({
     marginRight: 8, marginBottom: 8,
     backgroundColor: 'black',
     justifyContent: 'center',
-    width: FRAME.width * (1/4) - 8
+    // width: FRAME.width * (1/4) - 8
   },
   buttonOff: {
     flexGrow: 1,
@@ -68,7 +72,7 @@ const styles = StyleSheet.create({
     marginRight: 8, marginBottom: 8,
     backgroundColor: Colors.MID_GREY,
     justifyContent: 'center',
-    width: FRAME.width * (1/4) - 8
+    // width: FRAME.width * (1/4) - 8
   },
   textOn: {
     fontSize: 18,
