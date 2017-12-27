@@ -6,12 +6,14 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import LoginScreen from '../screens/LoginScreen';
 import LoadScreen from '../screens/LoadScreen';
+import RestaurantProfileScreen from '../screens/RestaurantProfileScreen.js';
 
 export const AppNavigator = StackNavigator({
   Home: { screen: HomeScreen },
   Load: { screen: LoadScreen },
   Profile: { screen: ProfileScreen },
-  Login: { screen: LoginScreen }
+  Login: { screen: LoginScreen },
+  RestaurantProfile: { screen: RestaurantProfileScreen},
 });
 
 const AppNavigatorWithState = ({ dispatch, nav }) => (

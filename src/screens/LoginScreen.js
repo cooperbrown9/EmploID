@@ -37,6 +37,7 @@ class LoginScreen extends Component {
 
 
   componentDidMount() {
+    // this.props.navigation.dispatch({ type: NavActions.RESTAURANT_PROFILE});
     this.checkKeys();
   }
 
