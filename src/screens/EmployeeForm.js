@@ -30,8 +30,9 @@ class EmployeeForm extends Component {
         name: "Jarrel Gooler",
         position: "Head Chef",
         phone: "5094449999",
+        email: "bruh@yahoo.com",
         gender: 0,
-        hairColor: 3,
+        hairColor: 0,
         age: 69
       }
     };
@@ -39,27 +40,36 @@ class EmployeeForm extends Component {
 
   static propTypes = {
     dismiss: PropTypes.func,
+    submitForm: PropTypes.func,
     edit: PropTypes.bool
   }
   static defaultPropTypes = {
     edit: false
   }
 
- componentDidMount() {
+  componentDidMount() {
 
-     this.genderSelected(this.state.employee.gender);
-     this.hairSelected(this.state.employee.hairColor);
- }
+    this.genderSelected(this.state.employee.gender);
+    this.hairSelected(this.state.employee.hairColor);
+  }
+
+  submit = () => {
+    console.log(this.state.employee);
+
+    this.props.submitForm(this.state.employee);
+    this.props.dismiss();
+  }
+
 
   genderSelected = (index) => {
     OptionView.selected(this.state.genderOptions, index, (arr) => {
-      this.setState({ genderOptions: arr });
+      this.setState({ genderOptions: arr, employee: {...this.state.employee, gender: index } });
     });
   }
 
   hairSelected = (index) => {
     OptionView.selected(this.state.hairOptions, index, (arr) => {
-      this.setState({ hairOptions: arr });
+      this.setState({ hairOptions: arr, employee: {...this.state.employee, hairColor: index } });
     });
   }
 
@@ -89,18 +99,25 @@ class EmployeeForm extends Component {
           <Text style={styles.textHeader} >Employee Name</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Name', (text) => this.setState({ name: text}), this.state.employee.name)
+              this.textInputFactory('Name', (text) => this.setState({ employee: {...this.state.employee, name: text}}), this.state.employee.name)
+            }
+          </View>
+
+          <Text style={styles.textHeader} >Email</Text>
+          <View style={styles.inputView} >
+            {
+              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text}}), this.state.employee.email)
             }
           </View>
 
           <Text style={styles.textHeader} >Position</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('Job Title', (text) => this.setState({ position: text}), this.state.employee.position)}
+            {this.textInputFactory('Job Title', (text) => this.setState({ employee: {...this.state.employee, position: text}}), this.state.employee.position)}
           </View>
 
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('555.555.5555', (text) => this.setState({ phone: text}), this.state.employee.phone)}
+            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text}}), this.state.employee.phone)}
           </View>
 
           <Text style={styles.textHeader}>Gender</Text>
@@ -115,7 +132,7 @@ class EmployeeForm extends Component {
 
           <Text style={styles.textHeader} >Age</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('99', (text) => this.setState({ age: text}), this.state.employee.age)}
+            {this.textInputFactory('99', (text) => this.setState({ employee: {...this.state.employee, age: text}}), this.state.employee.age)}
           </View>
 
           <View style={styles.imageContainer} >
@@ -123,8 +140,8 @@ class EmployeeForm extends Component {
           </View>
           <Text style={styles.imageText}>Upload Employee Image</Text>
 
-          <TouchableOpacity onPress={() => this.props.dismiss()} style={styles.submitContainer} >
-            <SubmitButton />
+          <TouchableOpacity style={styles.submitContainer} >
+            <SubmitButton onPress={() => this.submit()} />
           </TouchableOpacity>
 
           <View style={{height: 64}}/>
@@ -148,7 +165,7 @@ const styles = StyleSheet.create({
     marginLeft: 16, marginTop: 32, marginBottom: 32
   },
   submitContainer: {
-    marginLeft: 16, marginRight: 16, marginTop: 16
+    marginLeft: 16, marginRight: 16, marginTop: 16, backgroundColor: 'yellow'
   },
   imageContainer: {
     justifyContent: 'center',

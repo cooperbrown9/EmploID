@@ -7,40 +7,40 @@ const LOGIN_OWNER = '/login-owner';
 // needs ownerID param
 const GET_OWNER = '/get-owner/';
 const VERIFY_OWNER = '/verify-session-owner';
+const VERIFY_SESSION_GET_OWNER = '/verify-session-get-owner';
 
 const CREATE_EMPLOYEE = '/create-employee';
+const LOGIN_EMPLOYEE = 'login-employee';
 
 
+// EMPLOYEE FUNCTIONS
 export function createEmployee(data, callback) {
   axios.post(BASE + CREATE_EMPLOYEE, data)
-    .then(response => callback(response.data))
+    .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
 
 export function loginEmployee(data, callback) {
-
+  axios.post(BASE + LOGIN_EMPLOYEE, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
 }
 
-export function lol(val) {
-  val = 10;
-}
 
 
+// OWNER FUNCTIONS
 export function loginOwner(data, callback) {
   axios.post(BASE + LOGIN_OWNER, data)
   .then(response => callback(null, response.data))
   .catch(e => callback(e))
 }
 
-export function verifySessionOwner(data, dispatch) {
-  // return dispatch => {
-  //   dispatch({ type: ''})
-  // }
-
-  axios.post(BASE + VERIFY_OWNER, data)
+export function verifySessionGetOwner(data, callback) {
+  axios.post(BASE + VERIFY_SESSION_GET_OWNER, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
+
 
 export function getOwner(ownerID, callback) {
   axios.get(BASE + GET_OWNER + ownerID)

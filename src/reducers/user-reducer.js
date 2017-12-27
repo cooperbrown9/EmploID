@@ -10,7 +10,9 @@ export default function user (state = initialState, action) {
         ...state,
         isLoggedIn: true,
         isOwner: true,
-        user: action.user
+        user: action.user,
+        sessionID: action.sessionID,
+        userID: action.userID
       }
 
     case AuthActions.LOGIN_OWNER_ERROR:

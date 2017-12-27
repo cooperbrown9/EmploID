@@ -8,7 +8,10 @@ import { Provider, connect } from 'react-redux';
 import { Font } from 'expo';
 import MainReducer from './src/reducers/main-reducer';
 import AppNavigatorWithState from './src/navigation/app-navigator';
+
 import * as Keys from './src/constants/keys';
+import * as NavActions from './src/action-types/nav-action-types';
+
 import { FONT_LOADED } from './src/action-types/setup-action-types';
 
 export default class App extends React.Component {
@@ -21,21 +24,28 @@ export default class App extends React.Component {
     fontLoaded: false
   }
 
+  // isOwner is not null, so now checks to see if stored session and userID are
+  // still valid. If they are, dispatch START_HOME
   async componentDidMount() {
+    // await this.clearKeys();
     await Font.loadAsync({
       'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf')
     });
     this.setState({ fontLoaded: true });
     // this.store.dispatch({ type: FONT_LOADED });
-    const isOwner = await AsyncStorage.getItem(Keys.IS_OWNER);
-    if(isOwner !== null) {
+    // const isOwner = await AsyncStorage.getItem(Keys.IS_OWNER);
+    //
+    // if(isOwner == null) {
+    //   this.store.dispatch({ type: NavActions.LOGIN });
+    // }
 
-    } else {
-      this.store.dispatch({ type: NavActions.LOGIN });
-    }
   }
 
-
+  async clearKeys() {
+    await AsyncStorage.removeItem(Keys.IS_OWNER);
+    await AsyncStorage.removeItem(Keys.SESSION_ID);
+    await AsyncStorage.removeItem(Keys.USER_ID);
+  }
 
   checkKeys() {
     AsyncStorage.getItem(Keys.IS_OWNER, (v1) => {

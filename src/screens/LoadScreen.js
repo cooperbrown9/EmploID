@@ -21,16 +21,60 @@ class LoadScreen extends Component {
   }
 
   async componentDidMount() {
+    // make this method easier
+    await this.checkOwnerThenLogin();
 
-    // this.checkLoginStatus();
+  }
+
+
+  async checkOwnerThenLogin() {
     const isOwner = await AsyncStorage.getItem(Keys.IS_OWNER);
 
-    // if user has logged in
+    if(isOwner == null) {
+      // debugger;
+      this.props.dispatch({ type: NavActions.LOGIN });
+    } else {
+      await this.handleLogin();
+    }
+  }
 
+  // isOwner is not null, so now checks to see if stored session and userID are
+  // still valid. If they are, dispatch START_HOME
+  handleLogin = async() => {
+    const isOwner = await AsyncStorage.getItem(Keys.IS_OWNER);
     const userID = await AsyncStorage.getItem(Keys.USER_ID);
     const sessionID = await AsyncStorage.getItem(Keys.SESSION_ID);
 
-    await this.verifySessionAsync(sessionID, userID);
+    console.log('sessionID', sessionID);
+    // user is an owner
+    if(isOwner === 'true') {
+      // user dummy session so it always goes to LOGIN
+      var data = {
+        "sessionID": sessionID,
+        "ownerID": userID
+      }
+      API.verifySessionGetOwner(data, (err, response) => {
+        if(err) {
+          debugger;
+          console.log(err);
+          this.props.dispatch({ type: 'START_LOGIN' });
+        } else {
+          console.log(response);
+          this.props.dispatch({
+            type: AuthActions.LOGIN_OWNER_SUCCESS,
+            user: response.owner,
+            sessionID: response.session_id,
+            userID: response.owner._id
+          });
+          return this.props.dispatch({ type: 'START_HOME' });
+        }
+      });
+    } else {
+      // user is an employee
+      console.log('user');
+      debugger;
+    }
+
   }
 
 

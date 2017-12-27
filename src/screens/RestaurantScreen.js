@@ -12,7 +12,7 @@ const RestaurantScreen = (props) => (
       <ScrollView contentContainerStyle={{marginRight: 8, marginLeft: 8}}>
 
         <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('../../assets/images/rest-1.png')}/>
+          <Image style={styles.restaurantImage} source={require('../../assets/images/rest-1.png')}/>
 
           <View style={styles.restaurantInfo}>
             <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
@@ -56,16 +56,15 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       backgroundColor: 'white',
       height: 100,
-      marginTop: 4,
-      marginBottom: 4,
-      backgroundColor: 'white'
+      marginTop: 4, marginBottom: 4, borderRadius: 4,
+      backgroundColor: 'white',
+      overflow: 'hidden'
     },
     restaurantImage: {
-    height: 100,
-    width: null,
+    height: 100, width: 100,
+    // width: null,
     flex: 1,
-    resizeMode: 'cover',
-    borderRadius: 4
+    resizeMode: 'cover'
 
     },
     restaurantInfo: {

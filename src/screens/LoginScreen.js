@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 
 import { BLUE, DARK_GREY, BACKGROUND_GREY, MID_GREY } from '../constants/colors';
 import { loginOwner, loginEmployee } from '../api/api';
+import * as API from '../api/api';
+
 import OptionView from '../ui-elements/option-view';
 import SubmitButton from '../ui-elements/submit-button';
 
@@ -37,7 +39,7 @@ class LoginScreen extends Component {
 
 
   componentDidMount() {
-    this.checkKeys();
+    // this.checkKeys();
   }
 
   async checkKeys() {
@@ -47,7 +49,7 @@ class LoginScreen extends Component {
     const c = await AsyncStorage.getItem(Keys.USER_ID);
 
     if(a === 'true') {
-      console.log(a, b, c);
+
     }
   }
 
@@ -58,14 +60,14 @@ class LoginScreen extends Component {
       return;
     }
     if(this.state.isOwner) {
-      this._loginOwner();
+      this.loginOwnerHelper();
     } else {
-      this._loginEmployee();
+      this.loginEmployeeHelper();
     }
 
   }
 
-  _loginOwner = () => {
+  loginOwnerHelper = () => {
     var data = {
       email: this.state.email,
       password: this.state.password
@@ -79,7 +81,7 @@ class LoginScreen extends Component {
         await AsyncStorage.setItem(Keys.IS_OWNER, 'true');
         await AsyncStorage.setItem(Keys.SESSION_ID, response.session_id);
         await AsyncStorage.setItem(Keys.USER_ID, response.user_id);
-        this.props.dispatch({ type: AuthActions.LOGIN_OWNER_SUCCESS, sessionID: response.session_id, userID: response.user_id });
+        this.props.dispatch({ type: AuthActions.LOGIN_OWNER_SUCCESS, user: response });
         // setInterval(() => {
           this.props.dispatch({ type: NavActions.HOME });
         // }, 500);
@@ -88,7 +90,7 @@ class LoginScreen extends Component {
     });
   }
 
-  _loginEmployee = () => {
+  loginEmployeeHelper = () => {
     console.log('employee');
   }
 

@@ -72,16 +72,14 @@ const styles = StyleSheet.create({
   },
   textOn: {
     fontSize: 18,
-    marginLeft: 24, marginRight: 24,
-    color: 'white',
-    textAlign: 'center',
+    marginLeft: 16, marginRight: 16,
+    color: 'white', textAlign: 'center',
     fontFamily: 'roboto-regular'
   },
   textOff: {
     fontSize: 18,
-    marginLeft: 24, marginRight: 24,
-    color: Colors.DARK_GREY,
-    textAlign: 'center',
+    marginLeft: 16, marginRight: 16,
+    color: Colors.DARK_GREY, textAlign: 'center',
     fontFamily: 'roboto-regular'
   }
 });

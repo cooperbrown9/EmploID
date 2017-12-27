@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert } from 'react-native';
 
 import { connect } from 'react-redux';
 
 import TabBar from '../ui-elements/tab-bar';
 import * as TabActions from '../action-types/tab-action-types';
-import * as NavActions from '../action-types/nav-action-types'; 
+import * as NavActions from '../action-types/nav-action-types';
+import * as API from '../api/api';
+import * as DataBuilder from '../api/data-builder';
+
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
+
 import FilterModal from './FilterModal';
 import EmployeeForm from './EmployeeForm';
 
@@ -18,7 +22,8 @@ class HomeScreen extends Component {
 
     this.state = {
       filterPresented: false,
-      employeePresented: false,
+      employeeFormPresented: false,
+      placeFormPresented: false
 
     }
   }
@@ -49,11 +54,51 @@ class HomeScreen extends Component {
 
   _presentAddEmployeeModal = () => {
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
-    //this.setState({ employeePresented: true });
+    //this.setState({ employeeFormPresented: true });
   }
 
   _dismissEmployeeModal = () => {
-    this.setState({ employeePresented: false });
+    this.setState({ employeeFormPresented: false });
+  }
+
+  addPressed = () => {
+    if(this.props.indexOn === 0) {
+      this.setState({ employeeFormPresented: true });
+    } else {
+      Alert.alert('Present Places Form');
+      this.setState({ placeFormPresented: true });
+    }
+  }
+
+  _submitEmployeeForm(data) {
+
+    // data.sessionID = this.props.sessionID;
+    // data.ownerID = this.props.user._id;
+    data = {
+      ...data,
+      "sessionID": this.props.sessionID,
+      "ownerID": this.props.user._id
+    }
+    DataBuilder.buildEmployeeForm(data, (obj) => {
+      API.createEmployee(obj, (err, emp) => {
+        if(err) {
+          Alert.alert(err.message);
+        } else {
+          console.log(emp);
+        }
+      });
+    });
+  }
+
+  dataConstructor(data, callback) {
+    var obj = {
+      "name": data.name,
+      "email": data.email,
+      "position": data.position,
+      "phone": data.phone,
+      "gender": data.gender,
+      "hair": data.hairColor
+    }
   }
 
   render() {
@@ -64,21 +109,25 @@ class HomeScreen extends Component {
           <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this._presentFilterModal() } rightOnPress={() => this._presentAddEmployeeModal()} />
         </View>
 
-        <RestaurantScreen/>
+        {(this.props.indexOn === 0)
+          ? <EmployeeScreen />
+          : <RestaurantScreen />
+        }
+
+        <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
+          <Image style={{height:84,width:84}} source={require('../../assets/icons/plus.png')} />
+        </TouchableOpacity>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
           <FilterModal dismiss={() => this._dismissFilterModal()} />
         </Modal>
 
-        <Modal animationType={'slide'} transparent={false} visible={this.state.employeePresented} >
-          <EmployeeForm dismiss={() => this._dismissEmployeeModal()} />
+        <Modal animationType={'slide'} transparent={false} visible={this.state.employeeFormPresented} >
+          <EmployeeForm submitForm={(data) => this._submitEmployeeForm(data)} dismiss={() => this._dismissEmployeeModal()} />
         </Modal>
-      {//  <View style={styles.tabContainer} >
-          // <TabBar changeTab={(index) => this._changeTab(index)}/>
 
 
-        //</View>
-        }
+
       </View>
     )
   }
@@ -91,6 +140,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch'
   },
+  addButton: {
+    position: 'absolute',
+    justifyContent: 'center', alignItems: 'center',
+    right: 16, bottom: 16,
+    height: 100, width: 100,
+    backgroundColor: 'transparent'
+  },
   tabContainer: {
     height: 72
   }
@@ -98,7 +154,9 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    ...state
+    indexOn: state.tab.index,
+    user: state.user.user,
+    sessionID: state.user.sessionID
   }
 }
 
