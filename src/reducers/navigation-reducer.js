@@ -57,6 +57,13 @@ export default function nav(state = loadState, action) {
       );
       return newState;
 
+    case NavActions.RESTAURANT_PROFILE:
+      newState = AppNavigator.router.getStateForAction(
+        NavigationActions.navigate({ routeName: 'RestaurantProfile'}),
+        state
+      );
+      return newState;
+
 
     case NavActions.BACK:
       newState = AppNavigator.router.getStateForAction(
