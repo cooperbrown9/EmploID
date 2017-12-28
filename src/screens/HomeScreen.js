@@ -60,7 +60,6 @@ class HomeScreen extends Component {
           }
         }
       })
-
     }
   }
 
@@ -83,42 +82,6 @@ class HomeScreen extends Component {
           }
         }
       })
-
-    }
-  }
-
-
-
-  initData() {
-    var data = {
-      "places": [...this.props.user.places]
-    }
-    console.log(data);
-    API.getPlacesAndEmployees(data, (err, result) => {
-      if(err) {
-        Alert.alert(err.message);
-      } else {
-        this.setState({ employees: result.employees, places: result.places });
-      }
-    })
-  }
-
-  getPlaces() {
-    var data = {
-      "ownerID": this.props.userID
-    }
-    API.getPlacesFromOwner(data, (err, places) => {
-      if(err) {
-        Alert.alert(err.message);
-      } else {
-        this.setState({ places: places });
-      }
-    });
-  }
-
-  getEmployees() {
-    var data = {
-
     }
   }
 
