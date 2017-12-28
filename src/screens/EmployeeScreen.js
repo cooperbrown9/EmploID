@@ -9,17 +9,19 @@ const EmployeeScreen = (props) => (
 
     <View style={styles.container}>
       <SearchBar lightTheme placeholder={'Search'} style={{marginBottom: 20}}/>
+
       <ScrollView contentContainerStyle={{marginRight: 8, marginLeft: 8}}>
 
-        <TouchableOpacity style={styles.employeeItem} >
-          <Image style={styles.employeeImage} source={require('../../assets/images/ron.png')}/>
+        {props.employees.map((employee) => (
+          <TouchableOpacity style={styles.employeeItem} key={employee._id} >
+            <Image style={styles.employeeImage} source={require('../../assets/images/ron.png')}/>
 
-          <View style={styles.employeeInfo}>
-            <Text style={{fontSize: 17, marginBottom: 6}}>Ron Weasley </Text>
-            <Text style={{fontSize: 15, color: 'gray'}}>Head Chef</Text>
-          </View>
-        </TouchableOpacity>
-
+            <View style={styles.employeeInfo}>
+              <Text style={{fontSize: 17, marginBottom: 6}}>{employee.name}</Text>
+              <Text style={{fontSize: 15, color: 'gray'}}>{employee.position}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
 
       </ScrollView>
 
@@ -27,6 +29,7 @@ const EmployeeScreen = (props) => (
 )
 
 EmployeeScreen.propTypes = {
+  employees: PropTypes.array
   // arrayWithShape: React.PropTypes.arrayOf(React.PropTypes.shape({
   //    name: React.PropTypes.string.isRequired,
   //    position: React.PropTypes.string.isRequired,

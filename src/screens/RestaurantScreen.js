@@ -11,14 +11,17 @@ const RestaurantScreen = (props) => (
       <SearchBar lightTheme placeholder='Search' style={{marginBottom: 20}}/>
       <ScrollView contentContainerStyle={{marginRight: 8, marginLeft: 8}}>
 
-        <TouchableOpacity style={styles.restaurantItem}>
-          <Image style={styles.restaurantImage} source={require('../../assets/images/rest-1.png')}/>
+        {props.places.map((place) => (
+          <TouchableOpacity style={styles.restaurantItem} key={place._id} >
+            <Image style={styles.restaurantImage} source={require('../../assets/images/rest-1.png')}/>
 
-          <View style={styles.restaurantInfo}>
-            <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
-            <Text style={{fontSize: 15, color: 'gray'}}>123 Bikini Bottom</Text>
-          </View>
-        </TouchableOpacity>
+            <View style={styles.restaurantInfo}>
+              <Text style={{fontSize: 17, marginBottom: 6}}>{place.name}</Text>
+              <Text style={{fontSize: 15, color: 'gray'}}>123 {place.address}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+
 
 
 
@@ -28,12 +31,7 @@ const RestaurantScreen = (props) => (
 )
 
 RestaurantScreen.propTypes = {
-  // arrayWithShape: React.PropTypes.arrayOf(React.PropTypes.shape({
-  //    name: React.PropTypes.string.isRequired,
-  //    image: React.PropTypes.string.isRequired,
-  //    address: React.PropTypes.string.isRequired
-  // })).isRequired,
-
+  places: PropTypes.array
 };
 
 RestaurantScreen.defaultPropTypes = {

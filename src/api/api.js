@@ -11,10 +11,13 @@ const VERIFY_OWNER = '/verify-session-owner';
 const VERIFY_SESSION_GET_OWNER = '/verify-session-get-owner';
 
 const CREATE_EMPLOYEE = '/create-employee';
+const GET_EMPLOYEE = '/get-employee/';
 const LOGIN_EMPLOYEE = 'login-employee';
 
-const CREATE_PLACE = '/create-place'
-
+const CREATE_PLACE = '/create-place';
+const GET_PLACE = '/get-place/';
+const GET_PLACES_FROM_OWNER = '/get-places-from-owner';
+const GET_PLACES_AND_EMPLOYEES = '/get-places-and-employees';
 
 // EMPLOYEE FUNCTIONS
 export function createEmployee(data, callback) {
@@ -25,6 +28,12 @@ export function createEmployee(data, callback) {
 
 export function loginEmployee(data, callback) {
   axios.post(BASE + LOGIN_EMPLOYEE, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getEmployee(employeeID, callback) {
+  axios.get(BASE + GET_EMPLOYEE + employeeID)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
@@ -53,6 +62,24 @@ export function getOwner(ownerID, callback) {
 
 export function createPlace(data, callback) {
   axios.post(BASE + CREATE_PLACE, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getPlace(placeID, callback) {
+  axios.get(BASE + GET_PLACE + placeID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getPlacesFromOwner(data, callback) {
+  axios.post(BASE + GET_PLACES_FROM_OWNER, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getPlacesAndEmployees(data, callback) {
+  axios.post(BASE + GET_PLACES_AND_EMPLOYEES, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

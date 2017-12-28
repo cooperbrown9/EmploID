@@ -14,10 +14,11 @@ class FilterModal extends Component {
 
     this.state = {
       jobOptions: [
-        {value: 'Head Chef', selected: true, index: 0},
-        {value: 'Shift Leader', selected: false, index: 1},
+        {value: 'Chef', selected: true, index: 0},
+        {value: 'Host', selected: false, index: 1},
         { value: 'Server', selected: false, index: 2},
-        { value: 'General Manager', selected: false, index: 3}
+        { value: 'Manager', selected: false, index: 3},
+        { value: 'Busser', selected: false, index: 4}
       ],
       genderOptions: [
         { value: 'Male', selected: false, index: 0},

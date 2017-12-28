@@ -25,8 +25,9 @@ class HomeScreen extends Component {
     this.state = {
       filterPresented: false,
       employeeFormPresented: false,
-      placeFormPresented: false
-
+      placeFormPresented: false,
+      places: [],
+      employees: []
     }
   }
 
@@ -36,10 +37,89 @@ class HomeScreen extends Component {
 
   componentDidMount() {
 
+    // this.initData();
+    this.loadEmployees();
+    this.loadPlaces();
   }
 
-  componentWillMount() {
+  loadEmployees() {
+    let employeeCount = 0;
+    let employees = [];
+    for(let i = 0; i < this.props.user.employees.length; i++) {
+      API.getEmployee(this.props.user.employees[i].employee_id, (err, emp) => {
+        if(err) {
+          Alert.alert(err.message);
+        } else {
+          employeeCount++;
+          employees.push(emp);
+          console.log(emp);
 
+          if(employeeCount === this.props.user.employees.length) {
+            console.log(employees);
+            this.setState({ employees: employees });
+          }
+        }
+      })
+
+    }
+  }
+
+  loadPlaces() {
+    let placeCount = 0;
+    let places = [];
+    for(let i = 0; i < this.props.user.places.length; i++) {
+
+      API.getPlace(this.props.user.places[i].place_id, (err, place) => {
+        if(err) {
+          Alert.alert(err.message);
+        } else {
+          placeCount++;
+          places.push(place);
+          console.log(place);
+
+          if(placeCount === this.props.user.places.length) {
+            console.log(places);
+            this.setState({ places: places });
+          }
+        }
+      })
+
+    }
+  }
+
+
+
+  initData() {
+    var data = {
+      "places": [...this.props.user.places]
+    }
+    console.log(data);
+    API.getPlacesAndEmployees(data, (err, result) => {
+      if(err) {
+        Alert.alert(err.message);
+      } else {
+        this.setState({ employees: result.employees, places: result.places });
+      }
+    })
+  }
+
+  getPlaces() {
+    var data = {
+      "ownerID": this.props.userID
+    }
+    API.getPlacesFromOwner(data, (err, places) => {
+      if(err) {
+        Alert.alert(err.message);
+      } else {
+        this.setState({ places: places });
+      }
+    });
+  }
+
+  getEmployees() {
+    var data = {
+
+    }
   }
 
   _changeTab = (index) => {
@@ -123,8 +203,8 @@ class HomeScreen extends Component {
         </View>
 
         {(this.props.indexOn === 0)
-          ? <EmployeeScreen />
-          : <RestaurantScreen />
+          ? <EmployeeScreen employees={this.state.employees} />
+        : <RestaurantScreen places={this.state.places} />
         }
 
         <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
@@ -190,7 +270,8 @@ var mapStateToProps = state => {
   return {
     indexOn: state.tab.index,
     user: state.user.user,
-    sessionID: state.user.sessionID
+    sessionID: state.user.sessionID,
+    userID: state.user.userID
   }
 }
 
