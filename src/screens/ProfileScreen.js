@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity
 import { connect } from 'react-redux';
 import TabBar from '../ui-elements/employee-tab-bar.js';
 import RoundButton from '../ui-elements/round-button.js';
+import * as API from '../api/api';
 
 import DiscountsTab from './employee-tabs/discounts-tab.js';
 import LocationsTab from './employee-tabs/locations-tab.js';
@@ -19,8 +20,27 @@ class ProfileScreen extends Component {
   }
 
   state = {
-    formModal: false
+    formModal: false,
+    places: []
   }
+
+  componentDidMount () {
+    API.getPlacesFromEmployee('5a442eb5dba15c001456f33f', (err, response) => {
+      if(err){
+        debugger;
+        console.log(err);
+
+      } else {
+        console.log(response);
+        this.setState({places: response});
+        console.log(this.state.places[0]);
+      }
+
+    });
+
+
+  }
+
 
   _dismissFormModal = () => {
     this.setState({formModal: false});
@@ -58,7 +78,7 @@ class ProfileScreen extends Component {
          {(this.props.indexOn === 0)
             ? <ProfileTab  />
             : (this.props.indexOn === 1)
-              ? <LocationsTab />
+              ? <LocationsTab arrayWithShape={this.state.places}/>
               : (this.props.indexOn === 2)
                 ? <DiscountsTab />
               : (this.props.indexOn === 3)
@@ -100,7 +120,7 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    indexOn: state.emp.indexOn
+    indexOn: state.emp.indexOn,
   }
 }
 
