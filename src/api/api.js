@@ -15,6 +15,8 @@ const LOGIN_EMPLOYEE = 'login-employee';
 
 const CREATE_PLACE = '/create-place'
 
+const GET_PLACES_FROM_EMPLOYEE = '/get-places-from-employee/'
+
 
 // EMPLOYEE FUNCTIONS
 export function createEmployee(data, callback) {
@@ -29,6 +31,11 @@ export function loginEmployee(data, callback) {
     .catch(e => callback(e))
 }
 
+export function getPlacesFromEmployee(employeeID, callback) {
+  axios.get(BASE + GET_PLACES_FROM_EMPLOYEE + employeeID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
 
 
 // OWNER FUNCTIONS

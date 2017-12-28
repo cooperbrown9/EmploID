@@ -6,49 +6,26 @@ const LocationsTab = (props) => (
 
 
     <View style={styles.container}>
+        {props.places.map(model =>
+          <TouchableOpacity style={styles.restaurantItem}>
+              <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
 
-        <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
-
-          <View style={styles.restaurantInfo}>
-            <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
-            <Text style={{fontSize: 15, color: 'gray'}}>123 Bikini Bottom</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
-
-          <View style={styles.restaurantInfo}>
-            <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
-            <Text style={{fontSize: 15, color: 'gray'}}>123 Bikini Bottom</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
-
-          <View style={styles.restaurantInfo}>
-            <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
-            <Text style={{fontSize: 15, color: 'gray'}}>123 Bikini Bottom</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.restaurantItem}>
-            <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
-
-          <View style={styles.restaurantInfo}>
-            <Text style={{fontSize: 17, marginBottom: 6}}>Krusty Krab </Text>
-            <Text style={{fontSize: 15, color: 'gray'}}>123 Bikini Bottom</Text>
-          </View>
-        </TouchableOpacity>
-
+            <View style={styles.restaurantInfo}>
+              <Text style={{fontSize: 17, marginBottom: 6}}>{model.name} </Text>
+              <Text style={{fontSize: 15, color: 'gray'}}>{model.location}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
     </View>
 )
 
 LocationsTab.propTypes = {
-  // arrayWithShape: React.PropTypes.arrayOf(React.PropTypes.shape({
-  //    name: React.PropTypes.string.isRequired,
-  //    image: React.PropTypes.string.isRequired,
-  //    address: React.PropTypes.string.isRequired
-  // })).isRequired,
+   places: PropTypes.arrayOf(PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      address: PropTypes.string.isRequired,
+      phone: PropTypes.string.isRequired,
+   })).isRequired,
 
 };
 
