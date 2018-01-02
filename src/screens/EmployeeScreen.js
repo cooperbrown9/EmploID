@@ -29,7 +29,8 @@ const EmployeeScreen = (props) => (
 )
 
 EmployeeScreen.propTypes = {
-  employees: PropTypes.array
+  employees: PropTypes.array,
+
   // arrayWithShape: React.PropTypes.arrayOf(React.PropTypes.shape({
   //    name: React.PropTypes.string.isRequired,
   //    position: React.PropTypes.string.isRequired,
@@ -40,10 +41,6 @@ EmployeeScreen.propTypes = {
 
 };
 
-_onPressEmployee = () =>
-{
-
-}
 
 
 

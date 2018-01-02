@@ -40,7 +40,7 @@ export function getEmployee(employeeID, callback) {
 }
 
 export function getPlacesFromEmployee(employeeID, callback) {
-  axios.get(BASE + GET_PLACES_FROM_EMPLOYEE + employeeID)
+  axios.get(BASE + GET_PLACES_FROM_EMPLOYEES + employeeID)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
