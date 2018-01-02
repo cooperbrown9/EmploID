@@ -37,7 +37,6 @@ class HomeScreen extends Component {
 
   componentDidMount() {
 
-    // this.initData();
     this.loadEmployees();
     this.loadPlaces();
   }
@@ -183,7 +182,7 @@ class HomeScreen extends Component {
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.employeeFormPresented} >
-          <EmployeeForm submitForm={(data) => this._submitEmployeeForm(data)} dismiss={() => this._dismissEmployeeModal()} />
+          <EmployeeForm places={this.state.places} submitForm={(data) => this._submitEmployeeForm(data)} dismiss={() => this._dismissEmployeeModal()} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.placeFormPresented} >

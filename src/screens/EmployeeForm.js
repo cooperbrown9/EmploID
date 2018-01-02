@@ -41,6 +41,7 @@ class EmployeeForm extends Component {
   static propTypes = {
     dismiss: PropTypes.func,
     submitForm: PropTypes.func,
+    places: PropTypes.array,
     edit: PropTypes.bool
   }
   static defaultPropTypes = {
@@ -48,6 +49,7 @@ class EmployeeForm extends Component {
   }
 
   componentDidMount() {
+    this.setState({ places: this.props.places });
 
     this.genderSelected(this.state.employee.gender);
     this.hairSelected(this.state.employee.hairColor);
@@ -71,6 +73,10 @@ class EmployeeForm extends Component {
     OptionView.selected(this.state.hairOptions, index, (arr) => {
       this.setState({ hairOptions: arr, employee: {...this.state.employee, hairColor: index } });
     });
+  }
+
+  placeSelected = (index) => {
+
   }
 
   textInputFactory(placeholder, onTextChange, value) {
@@ -134,6 +140,13 @@ class EmployeeForm extends Component {
           <View style={styles.inputView} >
             {this.textInputFactory('99', (text) => this.setState({ employee: {...this.state.employee, age: text}}), this.state.employee.age)}
           </View>
+
+          {(this.state.places.length > 0)
+          ? <View style={styles.optionContainer} >
+              <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
+            </View>
+          : null
+          }
 
           <View style={styles.imageContainer} >
             <Image style={styles.image} />
