@@ -31,7 +31,6 @@ class LoadScreen extends Component {
     const isOwner = await AsyncStorage.getItem(Keys.IS_OWNER);
 
     if(isOwner == null) {
-      // debugger;
       this.props.dispatch({ type: NavActions.LOGIN });
     } else {
       await this.handleLogin();

@@ -12,7 +12,7 @@ const VERIFY_SESSION_GET_OWNER = '/verify-session-get-owner';
 
 const CREATE_EMPLOYEE = '/create-employee';
 const GET_EMPLOYEE = '/get-employee/';
-const LOGIN_EMPLOYEE = 'login-employee';
+const LOGIN_EMPLOYEE = '/login-employee';
 
 const CREATE_PLACE = '/create-place';
 const GET_PLACE = '/get-place/';

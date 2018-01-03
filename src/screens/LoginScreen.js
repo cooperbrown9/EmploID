@@ -5,7 +5,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 
 import { BLUE, DARK_GREY, BACKGROUND_GREY, MID_GREY } from '../constants/colors';
-import { loginOwner, loginEmployee } from '../api/api';
+import { loginOwner, loginEmployee, getOwner, getEmployee } from '../api/api';
 import * as API from '../api/api';
 
 import OptionView from '../ui-elements/option-view';
@@ -21,6 +21,9 @@ class LoginScreen extends Component {
     super();
 
     this.loginOwner = loginOwner.bind(this);
+    this.loginEmployee = loginEmployee.bind(this);
+    this.getOwner = getOwner.bind(this);
+    this.getEmployee = getEmployee.bind(this);
 
     this.state = {
       email: '',
@@ -42,56 +45,62 @@ class LoginScreen extends Component {
     // this.checkKeys();
   }
 
-  async checkKeys() {
-    const a = await AsyncStorage.getItem(Keys.IS_OWNER);
-    const b = await AsyncStorage.getItem(Keys.SESSION_ID);
-
-    const c = await AsyncStorage.getItem(Keys.USER_ID);
-
-    if(a === 'true') {
-
-    }
-  }
-
-  login = () => {
+  login = async() => {
     if(this.state.email == null || this.state.email.length < 2 ||
       this.state.password == null || this.state.password.length < 1) {
       Alert.alert('Please check your fields!');
       return;
     }
     if(this.state.isOwner) {
-      this.loginOwnerHelper();
+      await this.loginOwnerHelper();
     } else {
-      this.loginEmployeeHelper();
+      await this.loginEmployeeHelper();
     }
 
   }
 
-  loginOwnerHelper = () => {
+  loginOwnerHelper = async() => {
     var data = {
       email: this.state.email,
       password: this.state.password
     }
 
-    this.loginOwner(data, async(e, response) => {
-      if(e) {
-
-        Alert.alert(e.message);
+    await this.loginOwner(data, async(e1, response) => {
+      if(e1) {
+        Alert.alert(e1.message);
       } else {
         await AsyncStorage.setItem(Keys.IS_OWNER, 'true');
         await AsyncStorage.setItem(Keys.SESSION_ID, response.session_id);
         await AsyncStorage.setItem(Keys.USER_ID, response.user_id);
-        this.props.dispatch({ type: AuthActions.LOGIN_OWNER_SUCCESS, user: response });
-        // setInterval(() => {
-          this.props.dispatch({ type: NavActions.HOME });
-        // }, 500);
 
+        await this.getOwner(response.user_id, (e2, response2) => {
+          this.props.dispatch({ type: AuthActions.LOGIN_OWNER_SUCCESS, user: response2, sessionID: response.session_id, userID: response.user_id });
+          this.props.dispatch({ type: NavActions.HOME });
+        });
       }
     });
   }
 
-  loginEmployeeHelper = () => {
-    console.log('employee');
+  loginEmployeeHelper = async() => {
+    var data = {
+      email: this.state.email,
+      password: this.state.password
+    }
+
+    await this.loginEmployee(data, async(e1, response) => {
+      if(e1) {
+        Alert.alert(e1.message);
+      } else {
+        await AsyncStorage.setItem(Keys.IS_OWNER, 'false');
+        await AsyncStorage.setItem(Keys.SESSION_ID, response.session_id);
+        await AsyncStorage.setItem(Keys.USER_ID, response.user_id);
+
+        await this.getEmployee(response.user_id, (e2, response2) => {
+          this.props.dispatch({ type: AuthActions.LOGIN_EMPLOYEE_SUCCESS, user: response2, sessionID: response.session_id, userID: response.user_id });
+          this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
+        })
+      }
+    })
   }
 
   _positionSelected = (index) => {

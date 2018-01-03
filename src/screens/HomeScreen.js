@@ -128,6 +128,7 @@ class HomeScreen extends Component {
       "sessionID": this.props.sessionID,
       "ownerID": this.props.user._id
     }
+    debugger;
     DataBuilder.buildEmployeeForm(data, (obj) => {
       API.createEmployee(obj, (err, emp) => {
         if(err) {

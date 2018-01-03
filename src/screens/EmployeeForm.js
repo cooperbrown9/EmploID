@@ -31,6 +31,7 @@ class EmployeeForm extends Component {
         position: "Head Chef",
         phone: "5094449999",
         email: "bruh@yahoo.com",
+        password: "abc123",
         gender: 0,
         hairColor: 0,
         age: 69
@@ -57,7 +58,7 @@ class EmployeeForm extends Component {
 
   submit = () => {
     console.log(this.state.employee);
-
+    // this.state.employee.password = 'abc123';
     this.props.submitForm(this.state.employee);
     this.props.dismiss();
   }
@@ -141,12 +142,12 @@ class EmployeeForm extends Component {
             {this.textInputFactory('99', (text) => this.setState({ employee: {...this.state.employee, age: text}}), this.state.employee.age)}
           </View>
 
-          {(this.state.places.length > 0)
+          {/*(this.state.places.length > 0)
           ? <View style={styles.optionContainer} >
               <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
             </View>
           : null
-          }
+          */}
 
           <View style={styles.imageContainer} >
             <Image style={styles.image} />

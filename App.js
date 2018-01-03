@@ -27,7 +27,7 @@ export default class App extends React.Component {
   // isOwner is not null, so now checks to see if stored session and userID are
   // still valid. If they are, dispatch START_HOME
   async componentDidMount() {
-    // await this.clearKeys();
+    await this.clearKeys();
     await Font.loadAsync({
       'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf')
     });
