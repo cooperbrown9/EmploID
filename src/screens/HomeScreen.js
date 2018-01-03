@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import TabBar from '../ui-elements/tab-bar';
 import * as TabActions from '../action-types/tab-action-types';
 import * as NavActions from '../action-types/nav-action-types';
+import * as ProfileActions from '../action-types/employee-profile-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
@@ -16,6 +17,8 @@ import RestaurantScreen from './RestaurantScreen.js';
 import FilterModal from './FilterModal';
 import EmployeeForm from './EmployeeForm';
 import PlaceForm from './RestaurantForm';
+
+
 
 class HomeScreen extends Component {
 
@@ -36,10 +39,10 @@ class HomeScreen extends Component {
   }
 
   componentDidMount() {
-
     this.loadEmployees();
     this.loadPlaces();
   }
+
 
   loadEmployees() {
     let employeeCount = 0;
@@ -73,10 +76,10 @@ class HomeScreen extends Component {
         } else {
           placeCount++;
           places.push(place);
-          console.log(place);
+          // console.log(place);
 
           if(placeCount === this.props.user.places.length) {
-            console.log(places);
+            // console.log(places);
             this.setState({ places: places });
           }
         }
@@ -97,6 +100,11 @@ class HomeScreen extends Component {
   }
 
   _presentAddEmployeeModal = () => {
+    this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
+    //this.setState({ employeeFormPresented: true });
+  }
+  _openEmployeeProfile = (id) => {
+    this.props.dispatch({ type: ProfileActions.GET_EMPLOYEE_ID, employeeID: id });
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
     //this.setState({ employeeFormPresented: true });
   }
@@ -166,7 +174,7 @@ class HomeScreen extends Component {
         </View>
 
         {(this.props.indexOn === 0)
-          ? <EmployeeScreen employees={this.state.employees} />
+          ? <EmployeeScreen employees={this.state.employees} openProfile={(id) => this._openEmployeeProfile(id)} />
         : <RestaurantScreen places={this.state.places} />
         }
 

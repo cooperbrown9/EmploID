@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { View, ScrollView, ListView, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 // import NavBar from '../ui-elements/nav-bar.js';
 import {SearchBar} from 'react-native-elements';
+import * as NavActions from '../action-types/nav-action-types';
 const EmployeeScreen = (props) => (
 
 
@@ -13,7 +14,7 @@ const EmployeeScreen = (props) => (
       <ScrollView contentContainerStyle={{marginRight: 8, marginLeft: 8}}>
 
         {props.employees.map((employee) => (
-          <TouchableOpacity style={styles.employeeItem} key={employee._id} >
+          <TouchableOpacity style={styles.employeeItem} key={employee._id} onPress={() => props.openProfile(employee._id)}>
             <Image style={styles.employeeImage} source={require('../../assets/images/ron.png')}/>
 
             <View style={styles.employeeInfo}>
@@ -28,8 +29,11 @@ const EmployeeScreen = (props) => (
     </View>
 )
 
+
+
 EmployeeScreen.propTypes = {
   employees: PropTypes.array,
+  openProfile: PropTypes.func
 
   // arrayWithShape: React.PropTypes.arrayOf(React.PropTypes.shape({
   //    name: React.PropTypes.string.isRequired,
