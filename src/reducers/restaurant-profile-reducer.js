@@ -1,39 +1,47 @@
-import * as EmpActions from '../action-types/employee-profile-action-types';
+import * as RestaurantActions from '../action-types/restaurant-profile-action-types';
 
-const ON_EMPLOYEES = 1;
-const ON_DISCOUNTS = 2;
-const ON_NOTES = 3;
+const ON_EMPLOYEES = 0;
+const ON_DISCOUNTS = 1;
+const ON_NOTES = 2;
 
 const initialState = {
   indexOn: ON_EMPLOYEES,
-  editOpen: false
+  editOpen: false,
+  restaurantID: false
 
 };
 
-export default function emp(state = initialState, action) {
+export default function restaurant(state = initialState, action) {
   switch(action.type) {
-    case EmpActions.OPEN_EMPLOYEES:
+    case RestaurantActions.OPEN_EMPLOYEES:
       return {
         ...state,
         indexOn: ON_EMPLOYEES
       }
 
-    case EmpActions.OPEN_DISCOUNTS:
+    case RestaurantActions.OPEN_DISCOUNTS:
       return {
         ...state,
         indexOn: ON_DISCOUNTS
       }
 
-    case EmpActions.OPEN_NOTES:
+    case RestaurantActions.OPEN_NOTES:
       return {
         ...state,
         indexOn: ON_NOTES
       }
 
-    case EmpActions.EDIT_PROFILE:
+    case RestaurantActions.EDIT_PROFILE:
       return {
         ...state,
         editOpen: true
+      }
+
+    case RestaurantActions.GET_RESTAURANT_ID:
+      return {
+        ...state,
+        restaurantID: action.restaurantID
+
       }
 
     default:

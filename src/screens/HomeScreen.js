@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import TabBar from '../ui-elements/tab-bar';
 import * as TabActions from '../action-types/tab-action-types';
 import * as NavActions from '../action-types/nav-action-types';
-import * as ProfileActions from '../action-types/employee-profile-action-types';
+import * as EmployeeProfileActions from '../action-types/employee-profile-action-types';
+import * as RestaurantProfileActions from '../action-types/restaurant-profile-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
@@ -104,9 +105,14 @@ class HomeScreen extends Component {
     //this.setState({ employeeFormPresented: true });
   }
   _openEmployeeProfile = (id) => {
-    this.props.dispatch({ type: ProfileActions.GET_EMPLOYEE_ID, employeeID: id });
+    this.props.dispatch({ type: EmployeeProfileActions.GET_EMPLOYEE_ID, employeeID: id });
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
     //this.setState({ employeeFormPresented: true });
+  }
+
+  _openRestaurantProfile = (id) => {
+    this.props.dispatch({ type: RestaurantProfileActions.GET_RESTAURANT_ID, employeeID: id });
+    this.props.dispatch({ type: NavActions.RESTAURANT_PROFILE });
   }
 
   _dismissEmployeeModal = () => {
@@ -175,7 +181,7 @@ class HomeScreen extends Component {
 
         {(this.props.indexOn === 0)
           ? <EmployeeScreen employees={this.state.employees} openProfile={(id) => this._openEmployeeProfile(id)} />
-        : <RestaurantScreen places={this.state.places} />
+        : <RestaurantScreen places={this.state.places} openProfile={(id) => this._openRestaurantProfile(id)}/>
         }
 
         <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >

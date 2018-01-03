@@ -8,7 +8,8 @@ import DiscountsTab from './employee-tabs/discounts-tab.js';
 import LocationsTab from './employee-tabs/locations-tab.js';
 import NotesTab from './employee-tabs/notes-tab.js';
 import ProfileTab from './employee-tabs/profile-tab.js';
-import EmployeeForm from './EmployeeForm.js'
+import EmployeeForm from './EmployeeForm.js';
+import RestaurantForm from './RestaurantForm.js';
 
 class RestaurantProfileScreen extends Component {
   static navigationOptions = {
@@ -32,9 +33,9 @@ class RestaurantProfileScreen extends Component {
       <View style={styles.container} >
         <ScrollView style={{flex:1}}>
           <View>
-            <Image style={styles.profilePic} source={require('../../assets/images/chef1.png')}/>
+            <Image style={styles.profilePic} source={require('../../assets/images/rest-1.png')}/>
             <View style={styles.backButton}>
-              <RoundButton  imagePath={require('../../assets/icons/back.png')}/>
+              <RoundButton onPress={() => this._goBack()} imagePath={require('../../assets/icons/back.png')}/>
             </View>
             <View style={styles.optionsButton}>
               <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
@@ -50,12 +51,10 @@ class RestaurantProfileScreen extends Component {
           <View style={styles.screenContainer} >
 
          {(this.props.indexOn === 0)
-            ? <ProfileTab  />
+              ? <ProfileTab />
             : (this.props.indexOn === 1)
-              ? <LocationsTab />
-              : (this.props.indexOn === 2)
                 ? <DiscountsTab />
-              : (this.props.indexOn === 3)
+              : (this.props.indexOn === 2)
                   ? <NotesTab />
                 : null
           }
@@ -63,7 +62,7 @@ class RestaurantProfileScreen extends Component {
           </View>
         </ScrollView>
         <Modal animationType={'slide'} transparent={false} visible={this.state.formModal} styles={{marginTop: 0}}>
-          <EmployeeForm edit={true} dismiss={this._dismissFormModal}/>
+          <RestaurantForm edit={true} dismiss={this._dismissFormModal}/>
         </Modal>
 
       </View>
@@ -94,7 +93,7 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    indexOn: state.emp.indexOn
+    indexOn: state.restaurant.indexOn
   }
 }
 

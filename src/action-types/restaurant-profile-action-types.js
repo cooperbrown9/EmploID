@@ -1,6 +1,8 @@
-export const OPEN_LOCATIONS = 'rest/locations';
-export const OPEN_DISCOUNTS = 'rest/discounts';
-export const OPEN_NOTES = 'rest/notes';
+export const OPEN_EMPLOYEES = 'restaurant/locations';
+export const OPEN_DISCOUNTS = 'restaurant/discounts';
+export const OPEN_NOTES = 'restaurant/notes';
 
-export const GO_BACK = 'rest/back';
-export const EDIT_PROFILE = 'rest/edit_profile';
+export const GO_BACK = 'restaurant/back';
+export const EDIT_PROFILE = 'restaurant/edit_profile';
+
+export const GET_RESTAURANT_ID = 'restaurant/get_restaurant_id';

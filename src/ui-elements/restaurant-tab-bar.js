@@ -38,7 +38,7 @@ class RestaurantTabBar extends Component {
     return(
       <View style={styles.container} >
 
-        <TouchableOpacity onPress={() => {  this.props.dispatch({type: RestActions.OPEN_PROFILE_INFO}) }} style={(this.props.indexOn === 0) ? styles.buttonOn : styles.buttonOff} >
+        <TouchableOpacity onPress={() => {  this.props.dispatch({type: RestActions.OPEN_EMPLOYEES}) }} style={(this.props.indexOn === 0) ? styles.buttonOn : styles.buttonOff} >
           <Text color={'black'} style={(this.props.indexOn === 0) ? styles.buttonTextOn : styles.buttonTextOff}>Employees</Text>
         </TouchableOpacity>
 
@@ -94,9 +94,9 @@ const styles = StyleSheet.create({
 });
 
 var mapStateToProps = state => {
-  console.log(state.rest.indexOn);
+  console.log(state.restaurant.indexOn);
   return {
-    indexOn: state.rest.indexOn
+    indexOn: state.restaurant.indexOn
 
   }
 }

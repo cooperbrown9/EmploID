@@ -44,7 +44,7 @@ class ProfileScreen extends Component {
         console.log(err);
       } else {
         console.log(response);
-        this.setState({name: response.name});
+        this.setState({name: response.name, position:response.position});
       }
     });
 
