@@ -97,7 +97,6 @@ const styles = StyleSheet.create({
 });
 
 var mapStateToProps = state => {
-  console.log(state.emp.indexOn);
   return {
     indexOn: state.emp.indexOn
 

@@ -141,11 +141,12 @@ class EmployeeForm extends Component {
             {this.textInputFactory('99', (text) => this.setState({ employee: {...this.state.employee, age: text}}), this.state.employee.age)}
           </View>
 
-          {(this.state.places.length > 0)
-          ? <View style={styles.optionContainer} >
-              <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
-            </View>
-          : null
+          {
+          //   (this.state.places.length > 0)
+          // ? <View style={styles.optionContainer} >
+          //     <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
+          //   </View>
+          // : null
           }
 
           <View style={styles.imageContainer} >

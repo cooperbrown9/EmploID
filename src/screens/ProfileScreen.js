@@ -11,6 +11,8 @@ import NotesTab from './employee-tabs/notes-tab.js';
 import ProfileTab from './employee-tabs/profile-tab.js';
 import EmployeeForm from './EmployeeForm.js'
 import * as NavActions from '../action-types/nav-action-types';
+import * as ProfileActions from '../action-types/employee-profile-action-types';
+
 
 
 
@@ -21,22 +23,32 @@ class ProfileScreen extends Component {
 
   state = {
     formModal: false,
-    places: []
+    places: [],
+    name: null
   }
 
   componentDidMount () {
-    API.getPlacesFromEmployee('5a442eb5dba15c001456f33f', (err, response) => {
+    API.getPlacesFromEmployee(this.props.employeeID, (err, response) => {
       if(err){
-        debugger;
         console.log(err);
 
       } else {
         console.log(response);
         this.setState({places: response});
-        console.log(this.state.places[0]);
       }
 
     });
+
+    API.getEmployee(this.props.employeeID, (err, response) => {
+      if(err){
+        console.log(err);
+      } else {
+        console.log(response);
+        this.setState({name: response.name});
+      }
+    });
+
+    console.log(this.props.employeeID);
 
 
   }
@@ -66,7 +78,7 @@ class ProfileScreen extends Component {
             <View style={styles.optionsButton}>
               <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
             </View>
-            <Text style={{fontSize: 34, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 130, left: 24}}>Randy Savage</Text>
+            <Text style={{fontSize: 34, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 130, left: 24}}>{this.state.name}</Text>
             <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 70, left: 24}}>Mega TOKER</Text>
             <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 44, left: 24}}>509.420.6969</Text>
           </View>
@@ -78,7 +90,7 @@ class ProfileScreen extends Component {
          {(this.props.indexOn === 0)
             ? <ProfileTab  />
             : (this.props.indexOn === 1)
-              ? <LocationsTab arrayWithShape={this.state.places}/>
+              ? <LocationsTab places={this.state.places}/>
               : (this.props.indexOn === 2)
                 ? <DiscountsTab />
               : (this.props.indexOn === 3)
@@ -121,6 +133,7 @@ const styles = StyleSheet.create({
 var mapStateToProps = state => {
   return {
     indexOn: state.emp.indexOn,
+    employeeID: state.emp.employeeID
   }
 }
 

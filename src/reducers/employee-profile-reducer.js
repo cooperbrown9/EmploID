@@ -6,6 +6,8 @@ const ON_DISCOUNTS = 2;
 const ON_NOTES = 3;
 
 const initialState = {
+  employeeID: null,
+  employee: null,
   indexOn: ON_PROFILE,
   editOpen: false
 
@@ -41,6 +43,13 @@ export default function emp(state = initialState, action) {
       return {
         ...state,
         editOpen: true
+      }
+
+    case EmpActions.GET_EMPLOYEE_ID:
+      return {
+        ...state,
+        employeeID: action.employeeID
+
       }
 
     default:
