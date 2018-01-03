@@ -70,8 +70,21 @@ class LoadScreen extends Component {
       });
     } else {
       // user is an employee
+      API.getEmployee(userID, (e, response) => {
+        if(e) {
+          debugger;
+          Alert.alert(e.message);
+        } else {
+          console.log(response);
+          this.props.dispatch({
+            type: AuthActions.LOGIN_EMPLOYEE_SUCCESS,
+            user: response,
+            userID: response._id
+          });
+          return this.props.dispatch({ type: 'START_PROFILE' });
+        }
+      });
       console.log('user');
-      debugger;
     }
 
   }

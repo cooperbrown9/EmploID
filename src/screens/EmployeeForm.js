@@ -43,7 +43,8 @@ class EmployeeForm extends Component {
     dismiss: PropTypes.func,
     submitForm: PropTypes.func,
     places: PropTypes.array,
-    edit: PropTypes.bool
+    edit: PropTypes.bool,
+    isOwner: PropTypes.bool
   }
   static defaultPropTypes = {
     edit: false
@@ -80,16 +81,17 @@ class EmployeeForm extends Component {
 
   }
 
-  textInputFactory(placeholder, onTextChange, value) {
+  textInputFactory(placeholder, onTextChange, value, capitalize = true) {
     return (
       <TextInput
         placeholder={placeholder}
         placeholderTextColor={Colors.DARK_GREY}
         selectionColor={Colors.BLUE}
         style={styles.input}
-        autoCorrect={false}
+        autoCorrect={false} autoCapitalize={(capitalize ? 'words' : 'none')}
         onChangeText={(text) => onTextChange(text)}
         value={(this.props.edit) ? value : null}
+        editable={this.props.isOwner}
       />
     )
   }
@@ -113,7 +115,7 @@ class EmployeeForm extends Component {
           <Text style={styles.textHeader} >Email</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text}}), this.state.employee.email)
+              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text}}), this.state.employee.email, false)
             }
           </View>
 
@@ -219,4 +221,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default EmployeeForm;
+var mapStateToProps = state => {
+  return {
+    isOwner: state.user.isOwner
+  }
+}
+
+export default connect(mapStateToProps)(EmployeeForm);

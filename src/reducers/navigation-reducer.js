@@ -32,9 +32,9 @@ export default function nav(state = loadState, action) {
     // this is for employee logins
     case 'START_PROFILE':
       // do START_HOME but for Profile
-      return {
-
-      }
+      const tempProfile = AppNavigator.router.getActionForPathAndParams('Profile');
+      const tempProfileState = AppNavigator.router.getStateForAction(tempProfile);
+      return tempProfileState;
 
     case NavActions.LOGIN:
     newState = AppNavigator.router.getStateForAction(

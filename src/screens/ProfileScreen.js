@@ -28,6 +28,44 @@ class ProfileScreen extends Component {
   }
 
   componentDidMount () {
+    // API.getPlacesFromEmployee(this.props.employeeID, (err, response) => {
+    //   if(err){
+    //     console.log(err);
+    //
+    //   } else {
+    //     console.log(response);
+    //     this.setState({places: response});
+    //   }
+    //
+    // });
+
+    this.getEmployeePlaces();
+    this.getEmployee();
+
+    // API.getEmployee(this.props.employeeID, (err, response) => {
+    //   if(err){
+    //     console.log(err);
+    //   } else {
+    //     console.log(response);
+    //     this.setState({name: response.name});
+    //   }
+    // });
+
+    console.log(this.props.employeeID);
+  }
+
+  getEmployee() {
+    API.getEmployee(this.props.employeeID, (err, response) => {
+      if(err){
+        console.log(err);
+      } else {
+        console.log(response);
+        this.setState({name: response.name});
+      }
+    });
+  }
+
+  getEmployeePlaces() {
     API.getPlacesFromEmployee(this.props.employeeID, (err, response) => {
       if(err){
         console.log(err);
@@ -38,19 +76,6 @@ class ProfileScreen extends Component {
       }
 
     });
-
-    API.getEmployee(this.props.employeeID, (err, response) => {
-      if(err){
-        console.log(err);
-      } else {
-        console.log(response);
-        this.setState({name: response.name});
-      }
-    });
-
-    console.log(this.props.employeeID);
-
-
   }
 
 
@@ -72,12 +97,16 @@ class ProfileScreen extends Component {
         <ScrollView style={{flex:1}}>
           <View>
             <Image style={styles.profilePic} source={require('../../assets/images/chef1.png')}/>
+
+
             <View style={styles.backButton}>
-              <RoundButton onPress={() => this._goBack()} imagePath={require('../../assets/icons/back.png')}/>
-            </View>
-            <View style={styles.optionsButton}>
-              <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
-            </View>
+                <RoundButton onPress={() => this._goBack()} imagePath={require('../../assets/icons/back.png')}/>
+              </View>
+              <View style={styles.optionsButton}>
+                <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
+              </View>
+            
+
             <Text style={{fontSize: 34, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 130, left: 24}}>{this.state.name}</Text>
             <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 70, left: 24}}>Mega TOKER</Text>
             <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 44, left: 24}}>509.420.6969</Text>
@@ -126,14 +155,13 @@ const styles = StyleSheet.create({
   tabContainer: {
     height: 64
   },
-
-
 });
 
 var mapStateToProps = state => {
   return {
     indexOn: state.emp.indexOn,
-    employeeID: state.emp.employeeID
+    employeeID: state.emp.employeeID,
+    isOwner: state.user.isOwner
   }
 }
 
