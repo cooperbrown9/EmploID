@@ -37,10 +37,10 @@ export default function restaurant(state = initialState, action) {
         editOpen: true
       }
 
-    case RestaurantActions.GET_RESTAURANT_ID:
+    case RestaurantActions.SET_RESTAURANT_ID:
       return {
         ...state,
-        restaurantID: action.restaurantID
+        locationID: action.locationID
 
       }
 

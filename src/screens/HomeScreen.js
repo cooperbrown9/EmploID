@@ -111,7 +111,7 @@ class HomeScreen extends Component {
   }
 
   _openRestaurantProfile = (id) => {
-    this.props.dispatch({ type: RestaurantProfileActions.GET_RESTAURANT_ID, employeeID: id });
+    this.props.dispatch({ type: RestaurantProfileActions.SET_RESTAURANT_ID, locationID: id });
     this.props.dispatch({ type: NavActions.RESTAURANT_PROFILE });
   }
 
