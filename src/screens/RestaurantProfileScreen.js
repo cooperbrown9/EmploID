@@ -6,7 +6,7 @@ import RoundButton from '../ui-elements/round-button.js';
 import * as API from '../api/api';
 
 import DiscountsTab from './employee-tabs/discounts-tab.js';
-import LocationsTab from './employee-tabs/locations-tab.js';
+import EmployeesTab from './location-tabs/employees-tab.js';
 import NotesTab from './employee-tabs/notes-tab.js';
 import ProfileTab from './employee-tabs/profile-tab.js';
 import EmployeeForm from './EmployeeForm.js';
@@ -22,21 +22,56 @@ class RestaurantProfileScreen extends Component {
 
   state = {
     formModal: false,
-    name: null,
-    phoneNumber: null,
-    email: null,
-    address: null
+    location: {},
+    employeeIDs: null,
+    employees: []
   }
 
   componentDidMount() {
     API.getPlace(this.props.locationID, (err, response) => {
       if(err){
+        debugger;
         console.log(err);
       } else {
+        debugger;
         console.log(response);
-        this.setState({name: response.name, phoneNumber: response.phone, email: response.email, address: response.address });
+        this.setState({location: response});
       }
     });
+
+    API.getEmployeesFromPlace(this.props.locationID, (err, response) => {
+      if(err){
+        debugger;
+        console.log(err);
+
+      } else {
+        console.log(response);
+        this.state.employeeIDs = response;
+        this._getEmployeeHelper();
+
+      }
+    });
+
+
+
+
+  }
+
+  _getEmployeeHelper = () => {
+    for(let i = 0; i < this.state.employeeIDs.length; i++){
+      API.getEmployee(this.state.employeeIDs[i].employee_id, (err, response) => {
+        if(err){
+          debugger;
+          console.log(err);
+
+        } else {
+          console.log(response);
+          this.state.employees.push(response);
+          console.log(this.state.employees);
+
+        }
+      });
+    }
   }
 
   _dismissFormModal = () => {
@@ -63,10 +98,10 @@ class RestaurantProfileScreen extends Component {
             <View style={styles.optionsButton}>
               <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
             </View>
-            <Text style={{fontSize: 34, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 180, left: 24}}>{this.state.name}</Text>
-            <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 100, left: 24}}>{this.state.phoneNumber}</Text>
-            <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 74, left: 24}}>{this.state.address}</Text>
-            <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 44, left: 24}}>{this.state.email}</Text>
+            <Text style={{fontSize: 34, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 180, left: 24}}>{this.state.location.name}</Text>
+            <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 100, left: 24}}>{this.state.location.phoneNumber}</Text>
+            <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 74, left: 24}}>{this.state.location.address}</Text>
+            <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 44, left: 24}}>{this.state.location.email}</Text>
           </View>
           <View style={{height: 60, paddingBottom: 8}}>
             <TabBar />
@@ -74,7 +109,7 @@ class RestaurantProfileScreen extends Component {
           <View style={styles.screenContainer} >
 
          {(this.props.indexOn === 0)
-              ? <ProfileTab />
+              ? <EmployeesTab employees={this.state.employees}/>
             : (this.props.indexOn === 1)
                 ? <DiscountsTab />
               : (this.props.indexOn === 2)

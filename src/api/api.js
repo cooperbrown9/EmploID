@@ -18,7 +18,10 @@ const CREATE_PLACE = '/create-place';
 const GET_PLACE = '/get-place/';
 const GET_PLACES_FROM_OWNER = '/get-places-from-owner';
 const GET_PLACES_AND_EMPLOYEES = '/get-places-and-employees';
-const GET_PLACES_FROM_EMPLOYEE = '/get-places-from-employee';
+const GET_PLACES_FROM_EMPLOYEE = '/get-places-from-employee/';
+const GET_EMPLOYEES_FROM_PLACE = '/get-employees-from-place/';
+
+
 
 // EMPLOYEE FUNCTIONS
 export function createEmployee(data, callback) {
@@ -69,6 +72,12 @@ export function getOwner(ownerID, callback) {
 
 export function createPlace(data, callback) {
   axios.post(BASE + CREATE_PLACE, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getEmployeesFromPlace(placeID, callback) {
+  axios.get(BASE + GET_EMPLOYEES_FROM_PLACE + placeID)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
