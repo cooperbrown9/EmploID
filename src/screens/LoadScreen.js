@@ -81,7 +81,7 @@ class LoadScreen extends Component {
             user: response,
             userID: response._id
           });
-          return this.props.dispatch({ type: 'START_PROFILE' });
+          this.props.dispatch({ type: 'START_PROFILE' });
         }
       });
       console.log('user');

@@ -105,7 +105,7 @@ class ProfileScreen extends Component {
               <View style={styles.optionsButton}>
                 <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
               </View>
-            
+
 
             <Text style={{fontSize: 34, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 130, left: 24}}>{this.state.name}</Text>
             <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold',  backgroundColor: 'transparent', position: 'absolute', top: Dimensions.get('window').height*(4/5) - 70, left: 24}}>Mega TOKER</Text>
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
 var mapStateToProps = state => {
   return {
     indexOn: state.emp.indexOn,
-    employeeID: state.emp.employeeID,
+    employeeID: state.user.userID,
     isOwner: state.user.isOwner
   }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
+import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
 
 import { connect } from 'react-redux';
 import OptionView from '../ui-elements/option-view';
@@ -28,13 +28,14 @@ class EmployeeForm extends Component {
       ],
       employee: {
         name: "Jarrel Gooler",
+        password: "abc123",
         position: "Head Chef",
         phone: "5094449999",
         email: "bruh@yahoo.com",
-        password: "abc123",
         gender: 0,
         hairColor: 0,
-        age: 69
+        birthday: new Date(1997, 8, 3),
+        hireDate: new Date()
       }
     };
   }
@@ -81,22 +82,35 @@ class EmployeeForm extends Component {
 
   }
 
-  textInputFactory(placeholder, onTextChange, value, capitalize = true) {
+  textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default', canEdit) {
     return (
       <TextInput
-        placeholder={placeholder}
-        placeholderTextColor={Colors.DARK_GREY}
-        selectionColor={Colors.BLUE}
-        style={styles.input}
+        placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
+        selectionColor={Colors.BLUE} style={styles.input}
         autoCorrect={false} autoCapitalize={(capitalize ? 'words' : 'none')}
         onChangeText={(text) => onTextChange(text)}
         value={(this.props.edit) ? value : null}
-        editable={this.props.isOwner}
+        editable={canEdit} keyboardType={keyboard}
+      />
+    )
+  }
+
+  bdayTextInputFactory(placeholder, onTextChange, value) {
+    return (
+      <TextInput
+        placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
+        selectionColor={Colors.BLUE} style={styles.birthdayInput}
+        autoCorrect={false} autoCapitalize={'none'}
+        onChangeText={(text) => onTextChange(text)}
+        value={(this.props.edit) ? value : null}
+        editable={!this.props.isOwner} keyboardType={'numeric'}
       />
     )
   }
 
   render() {
+
+    console.log(this.state);
     return(
       <ScrollView style={styles.scrollContainer} >
         <View style={styles.container} >
@@ -108,25 +122,45 @@ class EmployeeForm extends Component {
           <Text style={styles.textHeader} >Employee Name</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Name', (text) => this.setState({ employee: {...this.state.employee, name: text}}), this.state.employee.name)
+              this.textInputFactory('Name', (text) => this.setState({ employee: {...this.state.employee, name: text}}), this.state.employee.name, true)
             }
           </View>
 
           <Text style={styles.textHeader} >Email</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text}}), this.state.employee.email, false)
+              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text}}), this.state.employee.email, false, 'email-address', true)
             }
           </View>
 
           <Text style={styles.textHeader} >Position</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('Job Title', (text) => this.setState({ employee: {...this.state.employee, position: text}}), this.state.employee.position)}
+            {this.textInputFactory('Job Title', (text) => this.setState({ employee: {...this.state.employee, position: text}}), this.state.employee.position, this.props.isOwner)}
           </View>
+
+
 
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text}}), this.state.employee.phone)}
+            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text}}), this.state.employee.phone, true)}
+          </View>
+
+          <Text style={styles.textHeader} >Birthday</Text>
+          <View style={styles.dateView} >
+            <DatePickerIOS
+              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, birthday: date }}) }}
+              date={this.state.employee.birthday}
+              mode={'date'} maximumDate={new Date()}
+            />
+          </View>
+
+          <Text style={styles.textHeader} >Hire Date</Text>
+          <View style={styles.dateView} >
+            <DatePickerIOS
+              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, hireDate: date }}) }}
+              date={this.state.employee.hireDate}
+              mode={'date'} maximumDate={new Date()}
+            />
           </View>
 
           <Text style={styles.textHeader}>Gender</Text>
@@ -141,7 +175,7 @@ class EmployeeForm extends Component {
 
           <Text style={styles.textHeader} >Age</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('99', (text) => this.setState({ employee: {...this.state.employee, age: text}}), this.state.employee.age)}
+            {this.textInputFactory('99', (text) => this.setState({ employee: {...this.state.employee, age: text}}), this.state.employee.age, this.props.isOwner)}
           </View>
 
           {/*(this.state.places.length > 0)
@@ -214,6 +248,24 @@ const styles = StyleSheet.create({
     height: 56,
     backgroundColor: 'white',
     justifyContent: 'center'
+  },
+  dateView: {
+    marginLeft: 16, marginRight: 16, marginBottom: 16,
+    flex: 1, borderRadius: 8,
+    backgroundColor: 'white'
+  },
+  birthdayView: {
+    flex: 1, flexDirection: 'row', justifyContent: 'space-between',
+    borderRadius: 8,
+    marginBottom: 32, marginRight: 16, marginLeft: 16,
+    height: 56,
+    backgroundColor: 'white',
+    justifyContent: 'center'
+  },
+  birthdayInput: {
+    marginLeft: 16, marginRight: 16,
+    fontSize: 18,
+    color: 'black'
   },
   textHeader: {
     fontSize: 16, marginLeft: 16, marginBottom: 12,

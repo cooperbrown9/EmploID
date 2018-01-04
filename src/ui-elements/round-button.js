@@ -9,7 +9,7 @@ const RoundButton = (props) => (
 );
 
 RoundButton.propTypes = {
-  imagePath: PropTypes.string,
+  imagePath: PropTypes.number,
   onPress: PropTypes.func
 }
 

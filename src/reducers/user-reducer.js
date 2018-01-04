@@ -27,7 +27,8 @@ export default function user (state = initialState, action) {
         ...state,
         isLoggedIn: true,
         isOwner: false,
-        user: action.user
+        user: action.user,
+        userID: action.userID
       }
 
     case AuthActions.LOGIN_EMPLOYEE_ERROR:
