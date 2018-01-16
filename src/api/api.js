@@ -90,3 +90,26 @@ export function getPlacesAndEmployees(data, callback) {
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
+
+
+export function loadEmployees(employees, callback) {
+  let employeeCount = 0;
+  let _employees = [];
+  for(let i = 0; i < employees.length; i++) {
+    API.getEmployee(employees[i].employee_id, (err, emp) => {
+      if(err) {
+        Alert.alert(err.message);
+      } else {
+        employeeCount++;
+        _employees.push(emp);
+        console.log(emp);
+
+        if(employeeCount === employees.length) {
+          console.log(_employees);
+          callback(null, _employees);
+          // this.setState({ employees: _employees });
+        }
+      }
+    })
+  }
+}

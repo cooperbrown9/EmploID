@@ -39,12 +39,19 @@ class HomeScreen extends Component {
   }
 
   componentDidMount() {
-    this.loadEmployees();
-    this.loadPlaces();
+    this.loadData();
+  }
+
+  loadData() {
+    if(this.props.user.isOwner) {
+      this.loadPlacesOfOwner();
+    } else {
+      this.loadPlacesOfEmployee();
+    }
   }
 
 
-  loadEmployees() {
+  loadEmployeesOfOwner() {
     let employeeCount = 0;
     let employees = [];
     for(let i = 0; i < this.props.user.employees.length; i++) {
@@ -65,7 +72,31 @@ class HomeScreen extends Component {
     }
   }
 
-  loadPlaces() {
+
+  // for each restaurant an employee works at, it grabs their ProfileActions
+  // also grabs for each restaurant they work at
+  loadEmployeesOfEmployee() {
+    let employeeCount = 0;
+    let employees = [];
+    for(let i = 0; i < this.props.user.employees.length; i++) {
+      API.getEmployee(this.props.user.employees[i].employee_id, (err, emp) => {
+        if(err) {
+          Alert.alert(err.message);
+        } else {
+          employeeCount++;
+          employees.push(emp);
+          console.log(emp);
+
+          if(employeeCount === this.props.user.employees.length) {
+            console.log(employees);
+            this.setState({ employees: employees });
+          }
+        }
+      })
+    }
+  }
+
+  loadPlacesOfOwner() {
     let placeCount = 0;
     let places = [];
     for(let i = 0; i < this.props.user.places.length; i++) {
@@ -81,6 +112,30 @@ class HomeScreen extends Component {
           if(placeCount === this.props.user.places.length) {
             // console.log(places);
             this.setState({ places: places });
+            this.loadEmployeesOfOwner();
+          }
+        }
+      })
+    }
+  }
+
+  loadPlacesOfEmployee() {
+    let placeCount = 0;
+    let places = [];
+    for(let i = 0; i < this.props.user.places.length; i++) {
+
+      API.getPlace(this.props.user.places[i].place_id, (err, place) => {
+        if(err) {
+          Alert.alert(err.message);
+        } else {
+          placeCount++;
+          places.push(place);
+          // console.log(place);
+
+          if(placeCount === this.props.user.places.length) {
+            // console.log(places);
+            this.setState({ places: places });
+            this.loadEmployeesOfEmployee();
           }
         }
       })

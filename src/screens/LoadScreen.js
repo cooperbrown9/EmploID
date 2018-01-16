@@ -57,6 +57,7 @@ class LoadScreen extends Component {
           debugger;
           console.log(err);
           this.props.dispatch({ type: 'START_LOGIN' });
+          // this.props.dispatch({ type: AuthActions.LOGIN_OWNER_ERROR });
         } else {
           console.log(response);
           this.props.dispatch({
