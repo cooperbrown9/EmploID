@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
+import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, StyleSheet, Modal, TextInput, Image } from 'react-native';
 
 import { connect } from 'react-redux';
+
+import EmployeeFormAddLocation from './EmployeeFormAddLocation';
 import OptionView from '../ui-elements/option-view';
 import * as Colors from '../constants/colors';
 import SubmitButton from '../ui-elements/submit-button';
@@ -13,6 +15,7 @@ class EmployeeForm extends Component {
     super();
 
     this.state = {
+      addLocationsPresented: false,
       genderOptions: [
         { value: 'Male', selected: false, index: 0},
         { value: 'Female', selected: false, index: 1},
@@ -78,10 +81,6 @@ class EmployeeForm extends Component {
     });
   }
 
-  placeSelected = (index) => {
-
-  }
-
   textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default', canEdit) {
     return (
       <TextInput
@@ -114,6 +113,10 @@ class EmployeeForm extends Component {
     return(
       <ScrollView style={styles.scrollContainer} >
         <View style={styles.container} >
+
+          <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
+            <EmployeeFormAddLocation dismissModal={() => this.setState({ addLocationsPresented: false }) } />
+          </Modal>
 
           <View style={styles.backButton} >
             <RoundButton onPress={this.props.dismiss} />
@@ -190,8 +193,12 @@ class EmployeeForm extends Component {
           </View>
           <Text style={styles.imageText}>Upload Employee Image</Text>
 
+
           <View style={styles.submitContainer} >
-            <SubmitButton onPress={() => this.submit()} />
+            <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addLocationsPresented: true }) } />
+          </View>
+          <View style={styles.submitContainer} >
+            <SubmitButton title={'ADD EMPLOYEE'} onPress={() => this.submit()} />
           </View>
 
           <View style={{height: 64}}/>
