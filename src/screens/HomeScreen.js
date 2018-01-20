@@ -191,6 +191,7 @@ class HomeScreen extends Component {
       "sessionID": this.props.sessionID,
       "ownerID": this.props.user._id
     }
+    let jsonData = JSON.stringify(data);
     debugger;
     DataBuilder.buildEmployeeForm(data, (obj) => {
       API.createEmployee(obj, (err, emp) => {
@@ -198,6 +199,7 @@ class HomeScreen extends Component {
           Alert.alert(err.message);
         } else {
           console.log(emp);
+          Alert.alert('Success!')
         }
       });
     });

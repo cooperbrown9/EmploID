@@ -55,17 +55,15 @@ class EmployeeFormAddLocation extends Component {
   selectPlace = (place) => {
     this.state.places[place.index].selected = !this.state.places[place.index].selected;
     this.setState({ places: this.state.places });
-    return;
   }
 
   submit() {
     let selectedPlaces = [];
     for(let i = 0; i < this.state.places.length; i++) {
       if(this.state.places[i].selected) {
-        selectedPlaces.push(this.state.places[i]._id);
+        selectedPlaces.push({ "place_id": this.state.places[i]._id });
       }
     }
-    debugger;
     this.props.addLocations(selectedPlaces);
     this.props.dismissModal();
   }

@@ -22,6 +22,7 @@ const GET_PLACES_FROM_EMPLOYEE = '/get-places-from-employee';
 
 // EMPLOYEE FUNCTIONS
 export function createEmployee(data, callback) {
+  debugger;
   axios.post(BASE + CREATE_EMPLOYEE, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
