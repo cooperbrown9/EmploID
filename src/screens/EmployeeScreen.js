@@ -13,7 +13,7 @@ const EmployeeScreen = (props) => (
 
       <ScrollView contentContainerStyle={{marginRight: 8, marginLeft: 8}}>
 
-        {props.employees.map((employee) => (
+        {(props.employees.length > 0) ? props.employees.map((employee) => (
           <TouchableOpacity style={styles.employeeItem} key={employee._id} onPress={() => props.openProfile(employee._id)}>
             <Image style={styles.employeeImage} source={require('../../assets/images/ron.png')}/>
 
@@ -22,7 +22,7 @@ const EmployeeScreen = (props) => (
               <Text style={{fontSize: 15, color: 'gray'}}>{employee.position}</Text>
             </View>
           </TouchableOpacity>
-        ))}
+        )) : null}
 
       </ScrollView>
 
@@ -32,7 +32,6 @@ const EmployeeScreen = (props) => (
 
 
 EmployeeScreen.propTypes = {
-  employees: PropTypes.array,
   openProfile: PropTypes.func
 
   // arrayWithShape: React.PropTypes.arrayOf(React.PropTypes.shape({
@@ -84,4 +83,11 @@ const styles = StyleSheet.create({
 
 });
 
-export default EmployeeScreen;
+var mapStateToProps = state => {
+  debugger;
+  return {
+    employees: state.user.myEmployees
+  }
+}
+
+export default connect(mapStateToProps)(EmployeeScreen);

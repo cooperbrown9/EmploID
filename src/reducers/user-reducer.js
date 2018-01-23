@@ -1,6 +1,10 @@
 import * as AuthActions from '../action-types/auth-action-types';
 
-const initialState = { isLoggedIn: false, isOwner : true, sessionID: null, userID: null };
+const initialState = {
+  isLoggedIn: false, isOwner : true,
+  sessionID: null, userID: null,
+  myEmployees: [], myLocations: []
+};
 
 export default function user (state = initialState, action) {
   switch(action.type) {
@@ -36,6 +40,18 @@ export default function user (state = initialState, action) {
         ...state,
         isLoggedIn: false,
         isOwner: false
+      }
+
+    case AuthActions.SET_EMPLOYEES:
+      return {
+        ...state,
+        myEmployees: action.employees
+      }
+
+    case AuthActions.SET_LOCATIONS:
+      return {
+        ...state,
+        myLocations: action.locations
       }
 
     default:

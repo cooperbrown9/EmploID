@@ -77,4 +77,10 @@ const styles = StyleSheet.create({
 
 });
 
-export default RestaurantScreen;
+var mapStateToProps = state => {
+  return {
+    places: state.user.myLocations
+  }
+}
+
+export default connect(mapStateToProps)(RestaurantScreen);

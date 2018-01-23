@@ -55,8 +55,6 @@ class EmployeeForm extends Component {
   }
 
   componentDidMount() {
-    this.setState({ places: this.props.places });
-
     this.genderSelected(this.state.employee.gender);
     this.hairSelected(this.state.employee.hairColor);
   }
@@ -116,6 +114,7 @@ class EmployeeForm extends Component {
 
           <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
             <EmployeeFormAddLocation
+              
               dismissModal={() => this.setState({ addLocationsPresented: false }) }
               addLocations={(places) => this.setState({ employee: { ...this.state.employee, places: places }}) }
             />
@@ -183,13 +182,6 @@ class EmployeeForm extends Component {
           <View style={styles.inputView} >
             {this.textInputFactory('99', (text) => this.setState({ employee: {...this.state.employee, age: text}}), this.state.employee.age, this.props.isOwner)}
           </View>
-
-          {/*(this.state.places.length > 0)
-          ? <View style={styles.optionContainer} >
-              <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
-            </View>
-          : null
-          */}
 
           <View style={styles.imageContainer} >
             <Image style={styles.image} />
@@ -284,7 +276,8 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    isOwner: state.user.isOwner
+    isOwner: state.user.isOwner,
+    places: state.user.myLocations
   }
 }
 

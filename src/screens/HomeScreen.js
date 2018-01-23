@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import TabBar from '../ui-elements/tab-bar';
 import * as TabActions from '../action-types/tab-action-types';
 import * as NavActions from '../action-types/nav-action-types';
+import * as AuthActions from '../action-types/auth-action-types';
 import * as ProfileActions from '../action-types/employee-profile-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
@@ -65,7 +66,10 @@ class HomeScreen extends Component {
 
           if(employeeCount === this.props.user.employees.length) {
             console.log(employees);
-            this.setState({ employees: employees });
+            // FIX THIS STATE BULLSHIT
+            // this.setState({ employees: employees });
+            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
+
           }
         }
       })
@@ -89,7 +93,9 @@ class HomeScreen extends Component {
 
           if(employeeCount === this.props.user.employees.length) {
             console.log(employees);
-            this.setState({ employees: employees });
+            // FIX THIS STATE BULLSHIT
+            // this.setState({ employees: employees });
+            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
           }
         }
       })
@@ -111,7 +117,9 @@ class HomeScreen extends Component {
 
           if(placeCount === this.props.user.places.length) {
             // console.log(places);
-            this.setState({ places: places });
+            // FIX THIS STATE BULLSHIT
+            // this.setState({ places: places });
+            this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
             this.loadEmployeesOfOwner();
           }
         }
@@ -134,7 +142,9 @@ class HomeScreen extends Component {
 
           if(placeCount === this.props.user.places.length) {
             // console.log(places);
-            this.setState({ places: places });
+            // FIX THIS STATE BULLSHIT
+            // this.setState({ places: places });
+            this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
             this.loadEmployeesOfEmployee();
           }
         }
@@ -231,8 +241,8 @@ class HomeScreen extends Component {
         </View>
 
         {(this.props.indexOn === 0)
-          ? <EmployeeScreen employees={this.state.employees} openProfile={(id) => this._openEmployeeProfile(id)} />
-        : <RestaurantScreen places={this.state.places} />
+          ? <EmployeeScreen openProfile={(id) => this._openEmployeeProfile(id)} />
+        : <RestaurantScreen />
         }
 
         <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
