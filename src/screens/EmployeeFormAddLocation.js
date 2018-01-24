@@ -36,12 +36,12 @@ class EmployeeFormAddLocation extends Component {
     let placesCount = 0;
     for(let i = 0; i < localPlaces.length; i++) {
       localPlaces[i].selected = false;
+      localPlaces[i].index = i;
       placesCount++;
       if(placesCount === localPlaces.length) {
-        this.setState({ localPlaces: localPlaces });
+        this.setState({ places: localPlaces });
       }
     }
-
   }
 
   loadLocations = () => {
@@ -90,7 +90,7 @@ class EmployeeFormAddLocation extends Component {
           </View>
 
           <View style={styles.buttonContainer} >
-            {(this.props) ? this.props.places.map((place) => (
+            {(this.state) ? this.state.places.map((place) => (
               <TouchableOpacity
                 onPress={() => this.selectPlace(place) }
                 style={ ((place.selected) ? styles.buttonOn : styles.buttonOff) }
@@ -164,7 +164,7 @@ var mapStateToProps = state => {
   return {
     user: state.user.user,
     sessionID: state.user.sessionID,
-    // places: state.user.myLocations
+    places: state.user.myLocations
   }
 }
 

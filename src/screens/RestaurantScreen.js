@@ -48,33 +48,30 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   restaurantItem: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'space-around',
-      flexDirection: 'row',
-      backgroundColor: 'white',
-      height: 100,
-      marginTop: 4, marginBottom: 4, borderRadius: 4,
-      backgroundColor: 'white',
-      overflow: 'hidden'
-    },
-    restaurantImage: {
-    height: 100, width: 100,
-    // width: null,
     flex: 1,
-    resizeMode: 'cover'
-
-    },
-    restaurantInfo: {
-      flex:3,
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      backgroundColor: 'transparent',
-      marginLeft: 20
-
-    }
-
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    height: 100,
+    marginTop: 4, marginBottom: 4, borderRadius: 4,
+    backgroundColor: 'white',
+    overflow: 'hidden'
+  },
+  restaurantImage: {
+  height: 100, width: 100,
+  // width: null,
+  flex: 1,
+  resizeMode: 'cover'
+  },
+  restaurantInfo: {
+    flex:3,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    backgroundColor: 'transparent',
+    marginLeft: 20
+  }
 });
 
 var mapStateToProps = state => {

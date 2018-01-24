@@ -13,7 +13,7 @@ const initialState = {
 
 };
 
-export default function emp(state = initialState, action) {
+export default function employeeTab(state = initialState, action) {
   switch(action.type) {
     case EmpActions.OPEN_PROFILE_INFO:
       return {

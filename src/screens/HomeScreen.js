@@ -8,6 +8,7 @@ import * as TabActions from '../action-types/tab-action-types';
 import * as NavActions from '../action-types/nav-action-types';
 import * as AuthActions from '../action-types/auth-action-types';
 import * as ProfileActions from '../action-types/employee-profile-action-types';
+import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
@@ -168,8 +169,8 @@ class HomeScreen extends Component {
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
     //this.setState({ employeeFormPresented: true });
   }
-  _openEmployeeProfile = (id) => {
-    this.props.dispatch({ type: ProfileActions.GET_EMPLOYEE_ID, employeeID: id });
+  _openEmployeeProfile = (employee) => {
+    this.props.dispatch({ type: EmployeeDetailActions.SET_EMPLOYEE, employee: employee });
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
     //this.setState({ employeeFormPresented: true });
   }
@@ -241,7 +242,7 @@ class HomeScreen extends Component {
         </View>
 
         {(this.props.indexOn === 0)
-          ? <EmployeeScreen openProfile={(id) => this._openEmployeeProfile(id)} />
+          ? <EmployeeScreen openProfile={(employee) => this._openEmployeeProfile(employee)} />
         : <RestaurantScreen />
         }
 

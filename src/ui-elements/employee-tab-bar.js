@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    indexOn: state.emp.indexOn
+    indexOn: state.employeeTab.indexOn
 
   }
 }

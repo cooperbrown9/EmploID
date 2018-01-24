@@ -10,7 +10,7 @@ import * as Colors from '../constants/colors';
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 
-class EmployeeForm extends Component {
+class EmployeeFormEditOwner extends Component {
   constructor() {
     super();
 
@@ -28,18 +28,7 @@ class EmployeeForm extends Component {
         { value: 'Grey', selected: false, index: 3},
         { value: 'Blonde', selected: false, index: 4},
         { value: 'Other', selected: false, index: 5}
-      ],
-      employee: {
-        name: "Jarrel Gooler",
-        password: "abc123",
-        position: "Head Chef",
-        phone: "5094449999",
-        email: "bruh@yahoo.com",
-        gender: 0,
-        hairColor: 0,
-        birthday: new Date(1997, 8, 3),
-        hireDate: new Date()
-      }
+      ]
     };
   }
 
@@ -54,14 +43,20 @@ class EmployeeForm extends Component {
     edit: false
   }
 
+  componentWillMount() {
+    this.setState({ employee: this.props.employee });
+  }
+
   componentDidMount() {
+    this.setState({ employee: this.props.employee });
     this.genderSelected(this.state.employee.gender);
-    this.hairSelected(this.state.employee.hairColor);
+    this.hairSelected(this.state.employee.hair);
   }
 
   submit = () => {
     console.log(this.state.employee);
     // this.state.employee.password = 'abc123';
+    return;
     this.props.submitForm(this.state.employee);
     this.props.dismiss();
   }
@@ -75,18 +70,17 @@ class EmployeeForm extends Component {
 
   hairSelected = (index) => {
     OptionView.selected(this.state.hairOptions, index, (arr) => {
-      this.setState({ hairOptions: arr, employee: {...this.state.employee, hairColor: index } });
+      this.setState({ hairOptions: arr, employee: {...this.state.employee, hair: index } });
     });
   }
 
   textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default', canEdit) {
     return (
       <TextInput
-        placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
         selectionColor={Colors.BLUE} style={styles.input}
         autoCorrect={false} autoCapitalize={(capitalize ? 'words' : 'none')}
         onChangeText={(text) => onTextChange(text)}
-        value={(this.props.edit) ? value : null}
+        value={value}
         editable={canEdit} keyboardType={keyboard}
       />
     )
@@ -100,7 +94,7 @@ class EmployeeForm extends Component {
         autoCorrect={false} autoCapitalize={'none'}
         onChangeText={(text) => onTextChange(text)}
         value={(this.props.edit) ? value : null}
-        editable={!this.props.isOwner} keyboardType={'numeric'}
+        keyboardType={'numeric'}
       />
     )
   }
@@ -108,6 +102,11 @@ class EmployeeForm extends Component {
   render() {
 
     console.log(this.state);
+    if(!this.state.employee) {
+      return(
+        <View></View>
+      )
+    }
     return(
       <ScrollView style={styles.scrollContainer} >
         <View style={styles.container} >
@@ -153,7 +152,7 @@ class EmployeeForm extends Component {
           <View style={styles.dateView} >
             <DatePickerIOS
               onDateChange={(date) => { this.setState({ employee: {...this.state.employee, birthday: date }}) }}
-              date={this.state.employee.birthday}
+              date={new Date(1997,8,3)}
               mode={'date'} maximumDate={new Date()}
             />
           </View>
@@ -162,7 +161,7 @@ class EmployeeForm extends Component {
           <View style={styles.dateView} >
             <DatePickerIOS
               onDateChange={(date) => { this.setState({ employee: {...this.state.employee, hireDate: date }}) }}
-              date={this.state.employee.hireDate}
+              date={new Date()}
               mode={'date'} maximumDate={new Date()}
             />
           </View>
@@ -276,8 +275,9 @@ const styles = StyleSheet.create({
 var mapStateToProps = state => {
   return {
     isOwner: state.user.isOwner,
-    places: state.user.myLocations
+    places: state.user.myLocations,
+    employee: state.employeeDetail.employee
   }
 }
 
-export default connect(mapStateToProps)(EmployeeForm);
+export default connect(mapStateToProps)(EmployeeFormEditOwner);
