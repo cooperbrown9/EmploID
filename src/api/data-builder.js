@@ -27,3 +27,19 @@ export function buildPlaceForm(data, callback) {
 
   callback(obj);
 }
+
+export function buildUpdateEmployeeForm(data, callback) {
+  var obj = {
+    "name": data.name,
+    "email": data.email,
+    "places": data.places,
+    "position": data.position,
+    "phone": data.phone,
+    "gender": data.gender,
+    "hair": data.hairColor,
+    "birthday": data.birthday,
+    "hire_Date": data.hireDate
+  }
+
+  callback(obj);
+}

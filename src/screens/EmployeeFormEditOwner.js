@@ -6,7 +6,11 @@ import { connect } from 'react-redux';
 
 import EmployeeFormAddLocation from './EmployeeFormAddLocation';
 import OptionView from '../ui-elements/option-view';
+
 import * as Colors from '../constants/colors';
+import * as API from '../api/api';
+import * as DataBuilder from '../api/data-builder';
+
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 
@@ -37,12 +41,15 @@ class EmployeeFormEditOwner extends Component {
     submitForm: PropTypes.func,
     places: PropTypes.array,
     edit: PropTypes.bool,
-    isOwner: PropTypes.bool
+    isOwner: PropTypes.bool,
+    updateEmployee: PropTypes.func
   }
   static defaultPropTypes = {
     edit: false
   }
 
+  // MAKE ALL FIELDS EDITABLE AND WORK
+  // UPDATE REDUX AFTER EMPLOYEE IS UPDATED
   componentWillMount() {
     this.setState({ employee: this.props.employee });
   }
@@ -54,11 +61,23 @@ class EmployeeFormEditOwner extends Component {
   }
 
   submit = () => {
-    console.log(this.state.employee);
+    // this.props.updateEmployee(this.state.employee);
+    // DataBuilder.buildUpdateEmployeeForm(this.state.employee, (employee) => {
+      API.updateEmployee(this.state.employee, (err, data) => {
+        if(err) {
+          console.log(err);
+          debugger;
+        } else {
+          console.log(data);
+          this.props.dismiss();
+        }
+      });
+    // });
+    // console.log(this.state.employee);
     // this.state.employee.password = 'abc123';
     return;
-    this.props.submitForm(this.state.employee);
-    this.props.dismiss();
+    // this.props.submitForm(this.state.employee);
+    // this.props.dismiss();
   }
 
 

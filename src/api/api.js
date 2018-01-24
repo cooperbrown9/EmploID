@@ -20,6 +20,8 @@ const GET_PLACES_FROM_OWNER = '/get-places-from-owner';
 const GET_PLACES_AND_EMPLOYEES = '/get-places-and-employees';
 const GET_PLACES_FROM_EMPLOYEE = '/get-places-from-employee';
 
+const UPDATE_EMPLOYEE = '/update-employee';
+
 // EMPLOYEE FUNCTIONS
 export function createEmployee(data, callback) {
   debugger;
@@ -37,6 +39,12 @@ export function loginEmployee(data, callback) {
 
 export function getEmployee(employeeID, callback) {
   axios.get(BASE + GET_EMPLOYEE + employeeID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function updateEmployee(employee, callback) {
+  axios.post(BASE + UPDATE_EMPLOYEE, employee)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
