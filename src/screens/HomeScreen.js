@@ -45,13 +45,55 @@ class HomeScreen extends Component {
   }
 
   loadData() {
-    if(this.props.user.isOwner) {
-      this.loadPlacesOfOwner();
-    } else {
-      this.loadPlacesOfEmployee();
+    // if(this.props.isOwner) {
+      // this.loadPlacesOfOwner();
+    // } else {
+      // this.loadPlacesOfEmployee();
+    // }
+    this.loadPlaces();
+  }
+
+  loadPlaces() {
+    let placeCount = 0;
+    let places = [];
+    for(let i = 0; i < this.props.user.places.length; i++) {
+
+      API.getPlace(this.props.user.places[i].place_id, (err, place) => {
+        if(err) {
+          Alert.alert(err.message);
+        } else {
+          placeCount++;
+          places.push(place);
+
+          if(placeCount === this.props.user.places.length) {
+            this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
+            this.loadEmployees();
+          }
+        }
+      })
     }
   }
 
+  loadEmployees() {
+    let employeeCount = 0;
+    let employees = [];
+    for(let i = 0; i < this.props.user.employees.length; i++) {
+      API.getEmployee(this.props.user.employees[i].employee_id, (err, emp) => {
+        if(err) {
+          Alert.alert(err.message);
+        } else {
+          employeeCount++;
+          if(emp._id) {
+            employees.push(emp);
+          }
+
+          if(employeeCount === this.props.user.employees.length) {
+            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
+          }
+        }
+      });
+    }
+  }
 
   loadEmployeesOfOwner() {
     let employeeCount = 0;
@@ -62,18 +104,17 @@ class HomeScreen extends Component {
           Alert.alert(err.message);
         } else {
           employeeCount++;
-          employees.push(emp);
+          if(emp._id) {
+            employees.push(emp);
+          }
           console.log(emp);
 
           if(employeeCount === this.props.user.employees.length) {
             console.log(employees);
-            // FIX THIS STATE BULLSHIT
-            // this.setState({ employees: employees });
             this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
-
           }
         }
-      })
+      });
     }
   }
 
@@ -89,7 +130,10 @@ class HomeScreen extends Component {
           Alert.alert(err.message);
         } else {
           employeeCount++;
-          employees.push(emp);
+          //
+          if(emp._id) {
+            employees.push(emp);
+          }
           console.log(emp);
 
           if(employeeCount === this.props.user.employees.length) {
@@ -202,15 +246,19 @@ class HomeScreen extends Component {
       "sessionID": this.props.sessionID,
       "ownerID": this.props.user._id
     }
-    let jsonData = JSON.stringify(data);
-    debugger;
+    // let jsonData = JSON.stringify(data);
     DataBuilder.buildEmployeeForm(data, (obj) => {
       API.createEmployee(obj, (err, emp) => {
         if(err) {
           Alert.alert(err.message);
         } else {
           console.log(emp);
-          Alert.alert('Success!')
+          Alert.alert('Success!');
+
+          // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
+          this.refreshOwner(data, () => {
+            this.loadEmployeesOfOwner();
+          });
         }
       });
     });
@@ -228,8 +276,29 @@ class HomeScreen extends Component {
           Alert.alert(err.message);
         } else {
           console.log(emp);
+          this.refreshOwner(data, () => {
+            this.loadPlacesOfOwner();
+          });
         }
       });
+    });
+  }
+
+  // USE THIS AFTER YOU CREATE AN EMPLOYEE OR LOCATION
+  refreshOwner = (data, callback) => {
+    API.verifySessionGetOwner(data, async (err, response) => {
+      if(err) {
+        this.props.dispatch({ type: 'START_LOGIN' });
+      } else {
+        this.props.dispatch({
+          type: AuthActions.LOGIN_OWNER_SUCCESS,
+          user: response.owner,
+          sessionID: response.session_id,
+          userID: response.owner._id
+        });
+        // AFTER OWNER IS UPDATED ON REDUX, REFRESH EMPLOYEES OR LOCATIONS
+        callback();
+      }
     });
   }
 
@@ -309,6 +378,7 @@ var mapStateToProps = state => {
   return {
     indexOn: state.tab.index,
     user: state.user.user,
+    isOwner: state.user.isOwner,
     sessionID: state.user.sessionID,
     userID: state.user.userID
   }

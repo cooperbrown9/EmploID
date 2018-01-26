@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { View, ScrollView, ListView, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 // import NavBar from '../ui-elements/nav-bar.js';
 import {SearchBar} from 'react-native-elements';
-import * as NavActions from '../action-types/nav-action-types';
+import * as NavActions from '../../action-types/nav-action-types';
 const EmployeeScreenVisitor = (props) => (
 
 

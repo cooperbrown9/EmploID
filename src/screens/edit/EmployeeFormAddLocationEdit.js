@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 
-import * as API from '../api/api';
-import * as Colors from '../constants/colors';
+import * as API from '../../api/api';
+import * as Colors from '../../constants/colors';
 
-import SubmitButton from '../ui-elements/submit-button';
-import RoundButton from '../ui-elements/round-button';
+import SubmitButton from '../../ui-elements/submit-button';
+import RoundButton from '../../ui-elements/round-button';
 
-class EmployeeFormAddLocation extends Component {
+class EmployeeFormAddLocationEdit extends Component {
 
   constructor() {
     super();
@@ -29,45 +29,44 @@ class EmployeeFormAddLocation extends Component {
     places: PropTypes.array
   }
 
-  componentWillMount() {
-    // this.loadLocations();
-
+  async componentWillMount() {
     let localPlaces = this.props.places;
-    let placesCount = 0;
-    for(let i = 0; i < localPlaces.length; i++) {
-      localPlaces[i].selected = false;
-      localPlaces[i].index = i;
-      placesCount++;
-      if(placesCount === localPlaces.length) {
-        this.setState({ places: localPlaces });
-      }
-    }
-  }
-
-  loadLocations = () => {
-    // DEPRECATED
-    var data = {
-      "sessionID": this.props.sessionID,
-      "ownerID": this.props.user._id
-    }
-
-    API.getPlacesFromOwner(data, (e, response) => {
-      if(e) {
-        console.log(e);
-        debugger;
-      } else {
-        for(let i = 0; i < response.length; i++) {
-          response[i].selected = false;
-          response[i].index = i;
-          this.setState({ places: response });
+    let places = [];
+    let promises = localPlaces.map((place, index) => {
+      for(let i = 0; i < this.props.employeePlaces.length; i++) {
+        place.index = index;
+        place.selected = false;
+        if(place._id == this.props.employeePlaces[i].place_id) {
+          place.selected = true;
+          places.push(place);
+          if(index === this.props.employeePlaces.length - 1) {
+            this.setState({ places: places });
+          }
         }
       }
-    })
+    });
   }
 
   selectPlace = (place) => {
     this.state.places[place.index].selected = !this.state.places[place.index].selected;
     this.setState({ places: this.state.places });
+  }
+
+  updatePlaces = () => {
+    var data = {
+      "_id": this.props.employee._id,
+      "places": this.state.selectedPlaces
+    }
+    debugger;
+    API.updateEmployeePlaces(data, (err, response) => {
+      if(err) {
+        console.log(err);
+        debugger;
+      } else {
+        console.log(response);
+        this.props.dismissModal();
+      }
+    })
   }
 
   submit() {
@@ -77,8 +76,9 @@ class EmployeeFormAddLocation extends Component {
         selectedPlaces.push({ "place_id": this.state.places[i]._id });
       }
     }
+    // this.updatePlaces();
     this.props.addLocations(selectedPlaces);
-    this.props.dismissModal();
+    // this.props.dismissModal();
   }
 
   render() {
@@ -126,7 +126,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   buttonContainer: {
-    flex: 1
+    flex: 1,
+    marginBottom: 64
   },
   buttonOn: {
     height: 64,
@@ -163,8 +164,9 @@ var mapStateToProps = state => {
   return {
     user: state.user.user,
     sessionID: state.user.sessionID,
-    places: state.user.myLocations
+    places: state.user.myLocations,
+    employeePlaces: state.employeeDetail.employee.places
   }
 }
 
-export default connect(mapStateToProps)(EmployeeFormAddLocation);
+export default connect(mapStateToProps)(EmployeeFormAddLocationEdit);

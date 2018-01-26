@@ -23,7 +23,7 @@ const styles =  StyleSheet.create({
   container: {
     flex: 1,
     height: 48,
-    borderRadius: 8,
+    borderRadius: 16,
     backgroundColor: BLUE,
     justifyContent: 'center'
   },

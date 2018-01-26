@@ -21,10 +21,10 @@ const GET_PLACES_AND_EMPLOYEES = '/get-places-and-employees';
 const GET_PLACES_FROM_EMPLOYEE = '/get-places-from-employee';
 
 const UPDATE_EMPLOYEE = '/update-employee';
+const UPDATE_EMPLOYEE_PLACES = '/update-employee-places';
 
 // EMPLOYEE FUNCTIONS
 export function createEmployee(data, callback) {
-  debugger;
   axios.post(BASE + CREATE_EMPLOYEE, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
@@ -46,6 +46,12 @@ export function getEmployee(employeeID, callback) {
 export function updateEmployee(employee, callback) {
   axios.post(BASE + UPDATE_EMPLOYEE, employee)
     .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function updateEmployeePlaces(employee, callback) {
+  axios.post(BASE + UPDATE_EMPLOYEE_PLACES, employee)
+    .then(response => callback(null, response))
     .catch(e => callback(e))
 }
 

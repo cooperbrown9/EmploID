@@ -72,7 +72,7 @@ class LoginScreen extends Component {
         await AsyncStorage.setItem(Keys.IS_OWNER, 'true');
         await AsyncStorage.setItem(Keys.SESSION_ID, response.session_id);
         await AsyncStorage.setItem(Keys.USER_ID, response.user_id);
-
+        debugger;
         await this.getOwner(response.user_id, (e2, response2) => {
           console.log('user, session ' + response.user_id + ' ' + response.session_id);
           this.props.dispatch({ type: AuthActions.LOGIN_OWNER_SUCCESS, user: response2, sessionID: response.session_id, userID: response.user_id });

@@ -29,7 +29,6 @@ class LoadScreen extends Component {
 
   async checkOwnerThenLogin() {
     const isOwner = await AsyncStorage.getItem(Keys.IS_OWNER);
-
     if(isOwner == null) {
       this.props.dispatch({ type: NavActions.LOGIN });
     } else {
@@ -43,7 +42,6 @@ class LoadScreen extends Component {
     const isOwner = await AsyncStorage.getItem(Keys.IS_OWNER);
     const userID = await AsyncStorage.getItem(Keys.USER_ID);
     const sessionID = await AsyncStorage.getItem(Keys.SESSION_ID);
-
     console.log('sessionID', sessionID);
     // user is an owner
     if(isOwner === 'true') {
@@ -52,9 +50,13 @@ class LoadScreen extends Component {
         "sessionID": sessionID,
         "ownerID": userID
       }
-      API.verifySessionGetOwner(data, (err, response) => {
+
+      API.verifySessionGetOwner(data, async (err, response) => {
         if(err) {
           console.log(err);
+          await AsyncStorage.removeItem(Keys.IS_OWNER);
+          await AsyncStorage.removeItem(Keys.USER_ID);
+          await AsyncStorage.removeItem(Keys.SESSION_ID);
           this.props.dispatch({ type: 'START_LOGIN' });
           // this.props.dispatch({ type: AuthActions.LOGIN_OWNER_ERROR });
         } else {

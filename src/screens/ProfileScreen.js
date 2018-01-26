@@ -10,7 +10,7 @@ import DiscountsTab from './employee-tabs/discounts-tab.js';
 import LocationsTab from './employee-tabs/locations-tab.js';
 import NotesTab from './employee-tabs/notes-tab.js';
 import ProfileTab from './employee-tabs/profile-tab.js';
-import EmployeeFormEditOwner from './EmployeeFormEditOwner.js'
+import EmployeeFormEditOwner from './edit/EmployeeFormEditOwner';
 
 import * as NavActions from '../action-types/nav-action-types';
 import * as ProfileActions from '../action-types/employee-profile-action-types';

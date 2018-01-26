@@ -1,6 +1,6 @@
 
 import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
-const initialState = { employee: null, places: [] }
+const initialState = { employee: null, locations: [], discounts: [], notes: [] }
 
 export default function employeeDetail(state = initialState, action) {
   switch(action.type) {
@@ -20,6 +20,12 @@ export default function employeeDetail(state = initialState, action) {
         return {
           ...state,
           coworkers: action.coworkers
+        }
+
+      case EmployeeDetailActions.SET_DISCOUNTS:
+        return {
+          ...state,
+          discounts: action.discounts
         }
 
 

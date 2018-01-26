@@ -7,35 +7,35 @@ const DiscountsTab = (props) => (
 
     <View style={styles.container}>
 
-        <Text>Discounts Tabular</Text>
+      {props.discounts.map(model =>
+        <TouchableOpacity style={styles.discountItem}>
+          <View style={styles.discountInfo}>
+            <Text style={{fontSize: 17, marginBottom: 6, fontFamily: 'roboto-regular'}}>{model.name} </Text>
+            <Text style={{fontSize: 15, color: 'gray', fontFamily: 'roboto-regular'}}>{model.address}</Text>
+        </View>
+        </TouchableOpacity>
+      )}
 
     </View>
 )
 
 DiscountsTab.propTypes = {
-  // arrayWithShape: React.PropTypes.arrayOf(React.PropTypes.shape({
-  //    name: React.PropTypes.string.isRequired,
-  //    image: React.PropTypes.string.isRequired,
-  //    address: React.PropTypes.string.isRequired
-  // })).isRequired,
-
+  discounts: PropTypes.array
 };
 
 DiscountsTab.defaultPropTypes = {
-
+  discounts: [
+    { name: 'BOGO 50%', location: 'Poquitos' },
+    { name: 'Get 10% off Any Item', location: 'Rhein Haus' }
+  ]
 };
-
-
-
-
-
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginRight: 8, marginLeft: 8
   },
-  restaurantItem: {
+  discountItem: {
       flex: 1,
       alignItems: 'center',
       justifyContent: 'space-around',
@@ -45,25 +45,15 @@ const styles = StyleSheet.create({
       marginTop: 4,
       marginBottom: 4,
       backgroundColor: 'white'
-    },
-    restaurantImage: {
-    height: 100,
-    width: null,
-    flex: 1,
-    resizeMode: 'cover',
-    borderRadius: 4
-
-    },
-    restaurantInfo: {
-      flex:3,
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      backgroundColor: 'transparent',
-      marginLeft: 20
-
-    }
-
+  },
+  discountInfo: {
+    flex:3,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    backgroundColor: 'transparent',
+    marginLeft: 20
+  }
 });
 
 export default DiscountsTab;

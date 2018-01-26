@@ -37,8 +37,8 @@ class EmployeeForm extends Component {
         email: "bruh@yahoo.com",
         gender: 0,
         hairColor: 0,
-        birthday: new Date(1997, 8, 3),
-        hireDate: new Date()
+        birthday: new Date(1997, 8, 3).toDateString(),
+        hireDate: new Date().toDateString()
       }
     };
   }
@@ -152,8 +152,8 @@ class EmployeeForm extends Component {
           <Text style={styles.textHeader} >Birthday</Text>
           <View style={styles.dateView} >
             <DatePickerIOS
-              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, birthday: date }}) }}
-              date={this.state.employee.birthday}
+              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, birthday: date.toDateString() }}) }}
+              date={new Date(this.state.employee.birthday)}
               mode={'date'} maximumDate={new Date()}
             />
           </View>
@@ -161,8 +161,8 @@ class EmployeeForm extends Component {
           <Text style={styles.textHeader} >Hire Date</Text>
           <View style={styles.dateView} >
             <DatePickerIOS
-              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, hireDate: date }}) }}
-              date={this.state.employee.hireDate}
+              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, hireDate: date.toDateString() }}) }}
+              date={new Date(this.state.employee.hireDate)}
               mode={'date'} maximumDate={new Date()}
             />
           </View>

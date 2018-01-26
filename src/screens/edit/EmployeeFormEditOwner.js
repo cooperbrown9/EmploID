@@ -4,15 +4,16 @@ import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, StyleSheet, Mo
 
 import { connect } from 'react-redux';
 
-import EmployeeFormAddLocation from './EmployeeFormAddLocation';
-import OptionView from '../ui-elements/option-view';
+import EmployeeFormAddLocationEdit from './EmployeeFormAddLocationEdit';
+import OptionView from '../../ui-elements/option-view';
 
-import * as Colors from '../constants/colors';
-import * as API from '../api/api';
-import * as DataBuilder from '../api/data-builder';
+import * as Colors from '../../constants/colors';
+import * as API from '../../api/api';
+import * as DataBuilder from '../../api/data-builder';
+import * as EmployeeDetailActions from '../../action-types/employee-detail-action-types';
 
-import SubmitButton from '../ui-elements/submit-button';
-import RoundButton from '../ui-elements/round-button';
+import SubmitButton from '../../ui-elements/submit-button';
+import RoundButton from '../../ui-elements/round-button';
 
 class EmployeeFormEditOwner extends Component {
   constructor() {
@@ -60,26 +61,34 @@ class EmployeeFormEditOwner extends Component {
     this.hairSelected(this.state.employee.hair);
   }
 
+  // updates employee, then puts new employee on redux
   submit = () => {
-    // this.props.updateEmployee(this.state.employee);
-    // DataBuilder.buildUpdateEmployeeForm(this.state.employee, (employee) => {
-      API.updateEmployee(this.state.employee, (err, data) => {
-        if(err) {
-          console.log(err);
-          debugger;
-        } else {
-          console.log(data);
-          this.props.dismiss();
-        }
-      });
-    // });
-    // console.log(this.state.employee);
-    // this.state.employee.password = 'abc123';
+    debugger;
+    // ADD PLACES TO THE API CALL
+    API.updateEmployee(this.state.employee, (err, data) => {
+      if(err) {
+        console.log(err);
+        debugger;
+      } else {
+        console.log(data);
+        this.getUpdatedEmployee();
+      }
+    });
     return;
-    // this.props.submitForm(this.state.employee);
-    // this.props.dismiss();
   }
 
+  getUpdatedEmployee = () => {
+    API.getEmployee(this.state.employee._id, (err, emp) => {
+      if(err) {
+        console.log(err);
+        debugger;
+      } else {
+        console.log(emp);
+        this.props.dispatch({ type: EmployeeDetailActions.SET_EMPLOYEE, employee: emp });
+        this.props.dismiss();
+      }
+    });
+  }
 
   genderSelected = (index) => {
     OptionView.selected(this.state.genderOptions, index, (arr) => {
@@ -112,7 +121,7 @@ class EmployeeFormEditOwner extends Component {
         selectionColor={Colors.BLUE} style={styles.birthdayInput}
         autoCorrect={false} autoCapitalize={'none'}
         onChangeText={(text) => onTextChange(text)}
-        value={(this.props.edit) ? value : null}
+        value={value}
         keyboardType={'numeric'}
       />
     )
@@ -131,7 +140,7 @@ class EmployeeFormEditOwner extends Component {
         <View style={styles.container} >
 
           <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
-            <EmployeeFormAddLocation
+            <EmployeeFormAddLocationEdit
               dismissModal={() => this.setState({ addLocationsPresented: false }) }
               addLocations={(places) => this.setState({ employee: { ...this.state.employee, places: places }}) }
             />
@@ -170,8 +179,8 @@ class EmployeeFormEditOwner extends Component {
           <Text style={styles.textHeader} >Birthday</Text>
           <View style={styles.dateView} >
             <DatePickerIOS
-              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, birthday: date }}) }}
-              date={new Date(1997,8,3)}
+              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, birthday: date.toDateString() }}) }}
+              date={new Date(this.state.employee.birthday)}
               mode={'date'} maximumDate={new Date()}
             />
           </View>
@@ -179,8 +188,8 @@ class EmployeeFormEditOwner extends Component {
           <Text style={styles.textHeader} >Hire Date</Text>
           <View style={styles.dateView} >
             <DatePickerIOS
-              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, hireDate: date }}) }}
-              date={new Date()}
+              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, hire_date: date.toDateString() }}) }}
+              date={new Date(this.state.employee.hire_date)}
               mode={'date'} maximumDate={new Date()}
             />
           </View>
@@ -207,10 +216,10 @@ class EmployeeFormEditOwner extends Component {
 
 
           <View style={styles.submitContainer} >
-            <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addLocationsPresented: true }) } />
+            <SubmitButton title={'EDIT RESTAURANTS'} onPress={() => this.setState({ addLocationsPresented: true }) } />
           </View>
           <View style={styles.submitContainer} >
-            <SubmitButton title={'ADD EMPLOYEE'} onPress={() => this.submit()} />
+            <SubmitButton title={'UPDATE EMPLOYEE'} onPress={() => this.submit()} />
           </View>
 
           <View style={{height: 64}}/>

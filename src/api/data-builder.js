@@ -8,6 +8,8 @@ export function buildEmployeeForm(data, callback) {
     "phone": data.phone,
     "gender": data.gender,
     "hair": data.hairColor,
+    "birthday": data.birthday,
+    "hireDate": data.hireDate,
     "sessionID": data.sessionID,
     "ownerID": data.ownerID
   }
@@ -38,7 +40,7 @@ export function buildUpdateEmployeeForm(data, callback) {
     "gender": data.gender,
     "hair": data.hairColor,
     "birthday": data.birthday,
-    "hire_Date": data.hireDate
+    "hireDate": data.hireDate
   }
 
   callback(obj);
