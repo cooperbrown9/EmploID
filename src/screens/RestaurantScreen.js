@@ -12,18 +12,15 @@ const RestaurantScreen = (props) => (
       <ScrollView contentContainerStyle={{marginRight: 8, marginLeft: 8}}>
 
         {props.places.map((place) => (
-          <TouchableOpacity style={styles.restaurantItem} key={place._id} >
+          <TouchableOpacity style={styles.restaurantItem} key={place._id} onPress={() => props.openProfile(place)} >
             <Image style={styles.restaurantImage} source={require('../../assets/images/rest-1.png')}/>
 
             <View style={styles.restaurantInfo}>
               <Text style={{fontSize: 17, marginBottom: 6}}>{place.name}</Text>
-              <Text style={{fontSize: 15, color: 'gray'}}>123 {place.address}</Text>
+              <Text style={{fontSize: 15, color: 'gray'}}>{place.address}</Text>
             </View>
           </TouchableOpacity>
         ))}
-
-
-
 
       </ScrollView>
 
@@ -31,7 +28,8 @@ const RestaurantScreen = (props) => (
 )
 
 RestaurantScreen.propTypes = {
-  places: PropTypes.array
+  places: PropTypes.array,
+  openProfile: PropTypes.func
 };
 
 RestaurantScreen.defaultPropTypes = {

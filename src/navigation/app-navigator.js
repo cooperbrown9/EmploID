@@ -13,7 +13,7 @@ export const AppNavigator = StackNavigator({
   Load: { screen: LoadScreen },
   Profile: { screen: ProfileScreen },
   Login: { screen: LoginScreen },
-  RestaurantProfile: { screen: RestaurantProfileScreen},
+  LocationProfile: { screen: RestaurantProfileScreen},
 });
 
 const AppNavigatorWithState = ({ dispatch, nav }) => (

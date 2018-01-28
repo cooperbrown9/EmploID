@@ -27,12 +27,7 @@ class EmployeeTabBar extends Component {
     )
   }
 
-
-
   render() {
-
-
-
 
     return(
       <View style={styles.container} >
@@ -84,13 +79,13 @@ const styles = StyleSheet.create({
   buttonTextOn: {
     textAlign: 'center',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontFamily: 'roboto-regular',
     color: 'black'
   },
   buttonTextOff: {
     textAlign: 'center',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontFamily: 'roboto-regular',
     color: 'rgb(200, 200, 200)'
   }
 

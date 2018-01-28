@@ -31,7 +31,7 @@ const styles =  StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     color: 'white',
-    fontFamily: 'roboto-regular'
+    fontFamily: 'roboto-bold'
   }
 })
 

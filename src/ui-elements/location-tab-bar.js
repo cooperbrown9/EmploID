@@ -4,9 +4,9 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-nati
 
 import { connect } from 'react-redux';
 
-import * as RestActions from '../action-types/restaurant-profile-action-types.js';
+import * as LocationProfileActions from '../action-types/location-profile-action-types.js';
 
-class RestaurantTabBar extends Component {
+class LocationTabBar extends Component {
 
   constructor(props) {
     super(props);
@@ -15,8 +15,6 @@ class RestaurantTabBar extends Component {
   static propTypes = {
     indexOn: PropTypes.number
   }
-
-
 
   componentDidMount() {
 
@@ -28,25 +26,20 @@ class RestaurantTabBar extends Component {
     )
   }
 
-
-
   render() {
-
-
-
 
     return(
       <View style={styles.container} >
 
-        <TouchableOpacity onPress={() => {  this.props.dispatch({type: RestActions.OPEN_PROFILE_INFO}) }} style={(this.props.indexOn === 0) ? styles.buttonOn : styles.buttonOff} >
+        <TouchableOpacity onPress={() => { this.props.dispatch({type: LocationProfileActions.OPEN_EMPLOYEES}) }} style={(this.props.indexOn === 0) ? styles.buttonOn : styles.buttonOff} >
           <Text color={'black'} style={(this.props.indexOn === 0) ? styles.buttonTextOn : styles.buttonTextOff}>Employees</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => { this.props.dispatch({type: RestActions.OPEN_DISCOUNTS}) }} style={(this.props.indexOn === 1) ? styles.buttonOn : styles.buttonOff} >
+        <TouchableOpacity onPress={() => { this.props.dispatch({type: LocationProfileActions.OPEN_DISCOUNTS}) }} style={(this.props.indexOn === 1) ? styles.buttonOn : styles.buttonOff} >
           <Text color={'black'} style={(this.props.indexOn === 1) ? styles.buttonTextOn : styles.buttonTextOff}>Discounts</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => { this.props.dispatch({type: RestActions.OPEN_NOTES}) }} style={(this.props.indexOn === 2) ? styles.buttonOn : styles.buttonOff} >
+        <TouchableOpacity onPress={() => { this.props.dispatch({type: LocationProfileActions.OPEN_NOTES}) }} style={(this.props.indexOn === 2) ? styles.buttonOn : styles.buttonOff} >
           <Text color={'black'} style={(this.props.indexOn === 2) ? styles.buttonTextOn : styles.buttonTextOff}>Notes</Text>
         </TouchableOpacity>
 
@@ -80,25 +73,23 @@ const styles = StyleSheet.create({
   },
   buttonTextOn: {
     textAlign: 'center',
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: 'roboto-regular',
     color: 'black'
   },
   buttonTextOff: {
     textAlign: 'center',
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: 'roboto-regular',
     color: 'rgb(200, 200, 200)'
   }
 
 });
 
 var mapStateToProps = state => {
-  console.log(state.rest.indexOn);
   return {
-    indexOn: state.rest.indexOn
-
+    indexOn: state.locationTab.indexOn
   }
 }
 
-export default connect(mapStateToProps)(RestaurantTabBar);
+export default connect(mapStateToProps)(LocationTabBar);

@@ -20,8 +20,12 @@ const GET_PLACES_FROM_OWNER = '/get-places-from-owner';
 const GET_PLACES_AND_EMPLOYEES = '/get-places-and-employees';
 const GET_PLACES_FROM_EMPLOYEE = '/get-places-from-employee';
 
+const GET_DISCOUNT = '/get-discount/';
+const UPDATE_LOCATION = '/update-place';
+
 const UPDATE_EMPLOYEE = '/update-employee';
 const UPDATE_EMPLOYEE_PLACES = '/update-employee-places';
+
 
 // EMPLOYEE FUNCTIONS
 export function createEmployee(data, callback) {
@@ -94,6 +98,12 @@ export function getPlace(placeID, callback) {
     .catch(e => callback(e))
 }
 
+export function updateLocation(data, callback) {
+  axios.post(BASE + UPDATE_LOCATION, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
 export function getPlacesFromOwner(data, callback) {
   axios.post(BASE + GET_PLACES_FROM_OWNER, data)
     .then(response => callback(null, response.data))
@@ -105,6 +115,14 @@ export function getPlacesAndEmployees(data, callback) {
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
+
+export function getDiscount(discountID, callback) {
+  axios.get(BASE + GET_DISCOUNT + discountID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+
 
 
 export function loadEmployees(employees, callback) {

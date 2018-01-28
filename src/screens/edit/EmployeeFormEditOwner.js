@@ -63,8 +63,6 @@ class EmployeeFormEditOwner extends Component {
 
   // updates employee, then puts new employee on redux
   submit = () => {
-    debugger;
-    // ADD PLACES TO THE API CALL
     API.updateEmployee(this.state.employee, (err, data) => {
       if(err) {
         console.log(err);

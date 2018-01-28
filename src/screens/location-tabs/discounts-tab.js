@@ -8,10 +8,10 @@ const DiscountsTab = (props) => (
     <View style={styles.container}>
 
       {props.discounts.map(model =>
-        <TouchableOpacity style={styles.discountItem} key={mode._id} >
+        <TouchableOpacity style={styles.discountItem} >
           <View style={styles.discountInfo}>
             <Text style={{fontSize: 17, marginBottom: 6, fontFamily: 'roboto-regular'}}>{model.name} </Text>
-            <Text style={{fontSize: 15, color: 'gray', fontFamily: 'roboto-regular'}}>{model.address}</Text>
+            <Text style={{fontSize: 15, color: 'gray', fontFamily: 'roboto-regular'}}>{model.offer}</Text>
         </View>
         </TouchableOpacity>
       )}
@@ -56,4 +56,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default DiscountsTab;
+var mapStateToProps = state => {
+  return {
+    discounts: state.locationDetail.discounts
+  }
+}
+
+export default connect(mapStateToProps)(DiscountsTab);

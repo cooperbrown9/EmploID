@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Modal} from 'react-native';
 import { connect } from 'react-redux';
-import TabBar from '../ui-elements/employee-tab-bar.js';
+import EmployeeTabBar from '../ui-elements/employee-tab-bar.js';
 import RoundButton from '../ui-elements/round-button.js';
 
 import * as API from '../api/api';
@@ -121,7 +121,7 @@ class ProfileScreen extends Component {
           </View>
 
           <View style={{height: 64, paddingBottom: 8}}>
-            <TabBar />
+            <EmployeeTabBar />
           </View>
 
           <View style={styles.screenContainer} >

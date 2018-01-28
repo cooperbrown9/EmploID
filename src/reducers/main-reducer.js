@@ -7,11 +7,15 @@ import setup from './setup-reducer';
 import employeeTab from './employee-tab-reducer';
 import employeeDetail from './employee-detail-reducer';
 import rest from './restaurant-profile-reducer';
+import locationDetail from './location-detail-reducer';
+import locationTab from './location-tab-reducer';
 export default MainReducer = combineReducers({
   nav,
   tab,
   user,
   setup,
   employeeTab,
-  employeeDetail
+  employeeDetail,
+  locationDetail,
+  locationTab
 });

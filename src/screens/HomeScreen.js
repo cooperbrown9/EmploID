@@ -9,6 +9,7 @@ import * as NavActions from '../action-types/nav-action-types';
 import * as AuthActions from '../action-types/auth-action-types';
 import * as ProfileActions from '../action-types/employee-profile-action-types';
 import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
+import * as LocDetailActions from '../action-types/location-detail-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
@@ -219,6 +220,11 @@ class HomeScreen extends Component {
     //this.setState({ employeeFormPresented: true });
   }
 
+  _openLocationProfile = (place) => {
+    this.props.dispatch({ type: LocDetailActions.SET_LOCATION, location: place });
+    this.props.dispatch({ type: NavActions.LOCATION_PROFILE });
+  }
+
   _dismissEmployeeModal = () => {
     this.setState({ employeeFormPresented: false });
   }
@@ -257,7 +263,8 @@ class HomeScreen extends Component {
 
           // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
           this.refreshOwner(data, () => {
-            this.loadEmployeesOfOwner();
+            this.loadEmployees();
+            this.loadPlaces();
           });
         }
       });
@@ -277,7 +284,8 @@ class HomeScreen extends Component {
         } else {
           console.log(emp);
           this.refreshOwner(data, () => {
-            this.loadPlacesOfOwner();
+            this.loadPlaces();
+            this.loadEmployees();
           });
         }
       });
@@ -303,16 +311,15 @@ class HomeScreen extends Component {
   }
 
   render() {
-    let g = 100;
     return (
       <View style={styles.container} >
         <View style={styles.tabContainer} >
-          <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this._presentFilterModal() } rightOnPress={() => this._presentAddEmployeeModal()} />
+          <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => console.log('left button') } rightOnPress={() => console.log('right button')} />
         </View>
 
         {(this.props.indexOn === 0)
           ? <EmployeeScreen openProfile={(employee) => this._openEmployeeProfile(employee)} />
-        : <RestaurantScreen />
+        : <RestaurantScreen openProfile={(place) => this._openLocationProfile(place)} />
         }
 
         <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >

@@ -8,12 +8,12 @@ const LocationsTab = (props) => (
 
     <View style={styles.container}>
         {props.locations.map(model =>
-          <TouchableOpacity style={styles.restaurantItem}>
+          <TouchableOpacity style={styles.restaurantItem} key={model._id} >
               <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
 
             <View style={styles.restaurantInfo}>
-              <Text style={{fontSize: 17, marginBottom: 6}}>{model.name} </Text>
-              <Text style={{fontSize: 15, color: 'gray'}}>{model.address}</Text>
+              <Text style={{fontSize: 20, marginBottom: 12, fontFamily: 'roboto-bold'}}>{model.name} </Text>
+              <Text style={{fontSize: 16, color: 'gray', fontFamily: 'roboto-regular'}}>{model.address}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -22,13 +22,6 @@ const LocationsTab = (props) => (
 
 LocationsTab.propTypes = {
   locations: PropTypes.array,
-   places: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string,
-      email: PropTypes.string,
-      address: PropTypes.string,
-      phone: PropTypes.string,
-   })),
-
 };
 
 LocationsTab.defaultPropTypes = {

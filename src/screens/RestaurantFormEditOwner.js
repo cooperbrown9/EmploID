@@ -8,7 +8,7 @@ import * as Colors from '../constants/colors';
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 
-class RestaurantForm extends Component {
+class RestaurantFormEditOwner extends Component {
   constructor() {
     super();
 
@@ -20,42 +20,35 @@ class RestaurantForm extends Component {
         phone: "555-555-5555"
       }
     };
-
-
   }
 
   static propTypes = {
     dismiss: PropTypes.func,
-    submitForm: PropTypes.func,
-    edit: PropTypes.bool
+    updateLocation: PropTypes.func
   }
 
-  static defaultProps = {
-    edit: false
+  componentDidMount() {
+    this.setState({ place: this.props.location });
   }
 
   submit = () => {
     console.log(this.state.place);
 
-    this.props.submitForm(this.state.place);
+    this.props.updateLocation(this.state.place);
     this.props.dismiss();
   }
 
   textInputFactory(placeholder, onTextChange, value) {
     return (
       <TextInput
-        placeholder={placeholder}
-        placeholderTextColor={Colors.DARK_GREY}
         selectionColor={Colors.BLUE}
         style={styles.input}
         autoCorrect={false}
         onChangeText={(text) => onTextChange(text)}
-        value={(this.props.edit) ? value : null}
+        value={value}
       />
     )
   }
-
-
 
   render() {
     return(
@@ -96,7 +89,7 @@ class RestaurantForm extends Component {
           <Text style={styles.imageText}>Upload Restaurant Image</Text>
 
           <TouchableOpacity style={styles.submitContainer} >
-            <SubmitButton title={'CREATE LOCATION'} onPress={() => this.submit()} />
+            <SubmitButton title={'UPDATE LOCATION'} onPress={() => this.submit()} />
           </TouchableOpacity>
 
           <View style={{height: 64}}/>
@@ -119,7 +112,7 @@ const styles = StyleSheet.create({
     marginLeft: 16, marginTop: 32, marginBottom: 32
   },
   submitContainer: {
-    marginLeft: 16, marginRight: 16, marginTop: 16, backgroundColor: 'yellow'
+    marginLeft: 16, marginRight: 16, marginTop: 16
   },
   imageContainer: {
     justifyContent: 'center',
@@ -159,4 +152,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default RestaurantForm;
+var mapStateToProps = state => {
+  return {
+    location: state.locationDetail.location
+  }
+}
+
+export default connect(mapStateToProps)(RestaurantFormEditOwner);
