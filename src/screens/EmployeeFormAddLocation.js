@@ -54,7 +54,6 @@ class EmployeeFormAddLocation extends Component {
     API.getPlacesFromOwner(data, (e, response) => {
       if(e) {
         console.log(e);
-        debugger;
       } else {
         for(let i = 0; i < response.length; i++) {
           response[i].selected = false;

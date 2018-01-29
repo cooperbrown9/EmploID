@@ -38,10 +38,8 @@ class CreateDiscountForm extends Component {
     API.createDiscount(data, (err, response) => {
       if(err) {
         console.log(err);
-        debugger;
       } else {
         console.log(response);
-        debugger;
         this.props.dismiss();
       }
     });

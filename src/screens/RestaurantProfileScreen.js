@@ -61,7 +61,6 @@ class RestaurantProfileScreen extends Component {
       API.getDiscount(discounts[i]._id, (err, discount) => {
         if(err) {
           console.log(err);
-          debugger;
         } else {
           disCount++;
           cleanDiscounts.push(discount);
@@ -78,7 +77,6 @@ class RestaurantProfileScreen extends Component {
     API.updateLocation(place, (err, loc) => {
       if(err) {
         console.log(err);
-        debugger;
       } else {
         console.log(loc);
         this.getUpdatedLocation();
@@ -93,7 +91,6 @@ class RestaurantProfileScreen extends Component {
     API.getPlace(this.props.location._id, (err, loc) => {
       if(err) {
         console.log(err);
-        debugger;
       } else {
         console.log(loc);
         this.props.dispatch({ type: LocationDetailActions.SET_LOCATION, location: loc });
