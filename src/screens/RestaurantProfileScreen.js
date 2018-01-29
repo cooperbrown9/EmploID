@@ -8,7 +8,8 @@ import RoundButton from '../ui-elements/round-button.js';
 import EmployeesTab from './location-tabs/employees-tab.js';
 import DiscountsTab from './location-tabs/discounts-tab.js';
 import NotesTab from './location-tabs/notes-tab.js';
-import RestaurantFormEditOwner from './RestaurantFormEditOwner.js'
+import RestaurantFormEditOwner from './RestaurantFormEditOwner.js';
+import CreateDiscountForm from './CreateDiscountForm';
 
 import * as API from '../api/api';
 import * as LocationDetailActions from '../action-types/location-detail-action-types';
@@ -20,7 +21,8 @@ class RestaurantProfileScreen extends Component {
   }
 
   state = {
-    formModal: false
+    formModal: false,
+    discountModalPresented: false
   }
 
   componentDidMount() {
@@ -109,6 +111,14 @@ class RestaurantProfileScreen extends Component {
     this.setState({ formModal: true });
   }
 
+  _presentDiscountForm = () => {
+    this.setState({ discountModalPresented: true });
+  }
+
+  _dismissDiscountForm = () => {
+    this.setState({ discountModalPresented: false });
+  }
+
   _goBack = () => {
     this.props.dispatch({ type: NavActions.BACK });
   }
@@ -143,16 +153,22 @@ class RestaurantProfileScreen extends Component {
        {(this.props.indexOn === 0)
           ? <EmployeesTab />
           : (this.props.indexOn === 1)
-            ? <DiscountsTab />
+            ? <DiscountsTab presentForm={() => this._presentDiscountForm()}/>
             : (this.props.indexOn === 2)
               ? <NotesTab />
             : null
         }
 
         </View>
-        <Modal animationType={'slide'} transparent={false} visible={this.state.formModal} styles={{marginTop: 0}}>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.formModal} >
           <RestaurantFormEditOwner updateLocation={(place) => this._updateLocation(place)} dismiss={this._dismissFormModal}/>
         </Modal>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} >
+          <CreateDiscountForm dismiss={() => this._dismissDiscountForm()} />
+        </Modal>
+
       </ScrollView>
     )
   }

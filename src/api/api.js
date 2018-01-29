@@ -21,6 +21,8 @@ const GET_PLACES_AND_EMPLOYEES = '/get-places-and-employees';
 const GET_PLACES_FROM_EMPLOYEE = '/get-places-from-employee';
 
 const GET_DISCOUNT = '/get-discount/';
+const CREATE_DISCOUNT = '/create-discount';
+
 const UPDATE_LOCATION = '/update-place';
 
 const UPDATE_EMPLOYEE = '/update-employee';
@@ -122,7 +124,11 @@ export function getDiscount(discountID, callback) {
     .catch(e => callback(e))
 }
 
-
+export function createDiscount(data, callback) {
+  axios.post(BASE + CREATE_DISCOUNT, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
 
 
 export function loadEmployees(employees, callback) {

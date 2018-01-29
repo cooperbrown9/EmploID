@@ -2,13 +2,22 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView, ListView, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
+
+import RoundButton from '../../ui-elements/round-button';
+
 const DiscountsTab = (props) => (
 
 
     <View style={styles.container}>
+      {(props.isOwner)
+      ? <View style={styles.addDiscount} >
+          <RoundButton onPress={() => props.presentForm()} imagePath={require('../../../assets/icons/plus.png')} />
+        </View>
+      : null
+      }
 
       {props.discounts.map(model =>
-        <TouchableOpacity style={styles.discountItem} >
+        <TouchableOpacity style={styles.discountItem} key={model.name} >
           <View style={styles.discountInfo}>
             <Text style={{fontSize: 17, marginBottom: 6, fontFamily: 'roboto-regular'}}>{model.name} </Text>
             <Text style={{fontSize: 15, color: 'gray', fontFamily: 'roboto-regular'}}>{model.offer}</Text>
@@ -20,7 +29,8 @@ const DiscountsTab = (props) => (
 )
 
 DiscountsTab.propTypes = {
-  discounts: PropTypes.array
+  discounts: PropTypes.array,
+  presentForm: PropTypes.func
 };
 
 DiscountsTab.defaultPropTypes = {
@@ -34,6 +44,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginRight: 8, marginLeft: 8
+  },
+  addDiscount: {
+    position: 'absolute',
+    right: 16, top: 8,
+    zIndex: 1000
   },
   discountItem: {
       flex: 1,
@@ -58,7 +73,8 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    discounts: state.locationDetail.discounts
+    discounts: state.locationDetail.discounts,
+    isOwner: state.user.isOwner
   }
 }
 

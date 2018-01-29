@@ -131,14 +131,14 @@ const styles = StyleSheet.create({
   buttonOn: {
     height: 64,
     borderRadius: 24,
-    marginRight: 32, marginLeft: 32,
+    marginRight: 32, marginLeft: 32, marginBottom: 32,
     backgroundColor: 'black',
     justifyContent: 'center'
   },
   buttonOff: {
     height: 64,
     borderRadius: 24,
-    marginRight: 32, marginLeft: 32,
+    marginRight: 32, marginLeft: 32, marginBottom: 32,
     backgroundColor: Colors.MID_GREY,
     justifyContent: 'center'
   },
