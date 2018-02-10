@@ -161,8 +161,7 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    ...state,
-    fontLoaded: state.setup.fontLoaded
+    ...state
   }
 }
 
