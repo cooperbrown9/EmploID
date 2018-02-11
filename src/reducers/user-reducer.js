@@ -14,7 +14,7 @@ export default function user (state = initialState, action) {
         ...state
       }
 
-    case AuthAction.LOGIN_ERROR:
+    case AuthActions.LOGIN_ERROR:
       return {
         ...state
       }

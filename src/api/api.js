@@ -6,6 +6,7 @@ const GET_USER = '/get-user/';
 const GET_PLACES = '/get-places/';
 const CREATE_USER = '/create-user';
 const VERIFY_SESSION_GET_USER = '/verify-session-get-user';
+const LOGIN_USER = '/login';
 
 export function getUser(userID, callback) {
   axios.get(BASE + GET_USER + userID)
@@ -21,6 +22,12 @@ export function getPlaces(userID, callback) {
 
 export function createUser(data, callback) {
   axios.post(BASE + CREATE_USER, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function login(data, callback) {
+  axios.post(BASE + LOGIN_USER, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

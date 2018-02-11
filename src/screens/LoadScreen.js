@@ -22,8 +22,8 @@ class LoadScreen extends Component {
 
   async componentDidMount() {
     // make this method easier
-    await this.checkOwnerThenLogin();
-
+    // await this.checkOwnerThenLogin();
+    await this.login();
   }
 
   async login() {
@@ -35,13 +35,23 @@ class LoadScreen extends Component {
       "sessionID": sessionID
     }
 
-    API.verifySession(data, (err, result) => {
+    API.verifySession(data, async(err, response) => {
       if(err) {
         console.log(err);
         debugger;
+        await AsyncStorage.removeItem(Keys.USER_ID);
+        await AsyncStorage.removeItem(Keys.SESSION_ID);
+        this.props.dispatch({ type: 'START_LOGIN' });
       } else {
-        console.log(result);
+        console.log(response);
         debugger;
+        this.props.dispatch({
+          type: AuthActions.LOGIN_OWNER_SUCCESS,
+          user: response.user,
+          sessionID: response.session_id,
+          userID: response.user._id
+        });
+        return this.props.dispatch({ type: 'START_HOME' });
       }
     })
   }
@@ -53,13 +63,6 @@ class LoadScreen extends Component {
       this.props.dispatch({ type: NavActions.LOGIN });
     } else {
       await this.handleLogin();
-      this.props.dispatch({
-        type: AuthActions.LOGIN_SUCCESS,
-        user: response.user,
-        sessionID: response.session_id,
-        userID: response.user._id
-      });
-      return this.props.dispatch({ type: 'START_HOME' });
     }
   }
 

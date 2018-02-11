@@ -46,6 +46,30 @@ class LoginScreen extends Component {
   }
 
   login = async() => {
+    let data = {
+      "email": this.state.email,
+      "password": this.state.password
+    }
+
+    await API.login(data, async(err, response) => {
+      if(err) {
+        console.log(err);
+        debugger;
+      } else {
+        console.log(response);
+        await AsyncStorage.setItem(Keys.USER_ID, response.user._id);
+        await AsyncStorage.setItem(Keys.SESSION_ID, response.session_id);
+        this.props.dispatch({
+          type: AuthActions.LOGIN_SUCCESS,
+          user: response.user,
+          sessionID: response.session_id,
+          userID: response.user._id
+        })
+      }
+    })
+  }
+
+  _login = async() => {
     if(this.state.email == null || this.state.email.length < 2 ||
       this.state.password == null || this.state.password.length < 1) {
       Alert.alert('Please check your fields!');
