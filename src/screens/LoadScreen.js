@@ -26,6 +26,26 @@ class LoadScreen extends Component {
 
   }
 
+  async login() {
+    const userID = await AsyncStorage.getItem(Keys.USER_ID);
+    const sessionID = await AsyncStorage.getItem(Keys.SESSION_ID);
+
+    var data = {
+      "userID": userID,
+      "sessionID": sessionID
+    }
+
+    API.verifySession(data, (err, result) => {
+      if(err) {
+        console.log(err);
+        debugger;
+      } else {
+        console.log(result);
+        debugger;
+      }
+    })
+  }
+
 
   async checkOwnerThenLogin() {
     const isOwner = await AsyncStorage.getItem(Keys.IS_OWNER);
@@ -33,6 +53,13 @@ class LoadScreen extends Component {
       this.props.dispatch({ type: NavActions.LOGIN });
     } else {
       await this.handleLogin();
+      this.props.dispatch({
+        type: AuthActions.LOGIN_SUCCESS,
+        user: response.user,
+        sessionID: response.session_id,
+        userID: response.user._id
+      });
+      return this.props.dispatch({ type: 'START_HOME' });
     }
   }
 

@@ -9,6 +9,16 @@ const initialState = {
 export default function user (state = initialState, action) {
   switch(action.type) {
 
+    case AuthActions.LOGIN_SUCCESS:
+      return {
+        ...state
+      }
+
+    case AuthAction.LOGIN_ERROR:
+      return {
+        ...state
+      }
+
     case AuthActions.LOGIN_OWNER_SUCCESS:
       return {
         ...state,

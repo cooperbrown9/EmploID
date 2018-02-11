@@ -2,6 +2,43 @@ import axios from 'axios';
 
 const BASE = 'https://emploid.herokuapp.com/api';
 
+const GET_USER = '/get-user/';
+const GET_PLACES = '/get-places/';
+const CREATE_USER = '/create-user';
+const VERIFY_SESSION_GET_USER = '/verify-session-get-user';
+
+export function getUser(userID, callback) {
+  axios.get(BASE + GET_USER + userID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getPlaces(userID, callback) {
+  axios.get(BASE + GET_PLACES + userID)
+    .then(resonse => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function createUser(data, callback) {
+  axios.post(BASE + CREATE_USER, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function verifySession(data, callback) {
+  axios.post(BASE + VERIFY_SESSION_GET_USER, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+
+
+
+
+
+
+
+// -------------------- OLD API --------------------
 const LOGIN_OWNER = '/login-owner';
 
 
