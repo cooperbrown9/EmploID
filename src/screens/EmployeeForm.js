@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, StyleSheet, Modal, TextInput, Image } from 'react-native';
+import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, ActivityIndicator, StyleSheet, Modal, TextInput, Image } from 'react-native';
 
 import { connect } from 'react-redux';
 
 import EmployeeFormAddLocation from './EmployeeFormAddLocation';
 import OptionView from '../ui-elements/option-view';
+
 import * as Colors from '../constants/colors';
+import * as LoadingActions from '../action-types/loading-action-types';
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
+import LoadingOverlay from '../ui-elements/loading-overlay';
 
 class EmployeeForm extends Component {
   constructor() {
@@ -30,11 +33,13 @@ class EmployeeForm extends Component {
         { value: 'Other', selected: false, index: 5}
       ],
       employee: {
-        name: "Jarrel Gooler",
+        firstName: "Dat",
+        lastName: "Boi",
         password: "abc123",
         position: "Head Chef",
         phone: "5094449999",
         email: "bruh@yahoo.com",
+        role: 0,
         gender: 0,
         hairColor: 0,
         birthday: new Date(1997, 8, 3).toDateString(),
@@ -61,9 +66,9 @@ class EmployeeForm extends Component {
 
   submit = () => {
     console.log(this.state.employee);
+    this.props.dispatch({ type: LoadingActions.START_LOADING });
     // this.state.employee.password = 'abc123';
     this.props.submitForm(this.state.employee);
-    this.props.dismiss();
   }
 
 
@@ -123,10 +128,17 @@ class EmployeeForm extends Component {
             <RoundButton onPress={this.props.dismiss} />
           </View>
 
-          <Text style={styles.textHeader} >Employee Name</Text>
+          <Text style={styles.textHeader} >First Name</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Name', (text) => this.setState({ employee: {...this.state.employee, name: text}}), this.state.employee.name, true)
+              this.textInputFactory('First Name', (text) => this.setState({ employee: {...this.state.employee, firstName: text}}), this.state.employee.firstName, true)
+            }
+          </View>
+
+          <Text style={styles.textHeader} >Last Name</Text>
+          <View style={styles.inputView} >
+            {
+              this.textInputFactory('Last Name', (text) => this.setState({ employee: {...this.state.employee, lastName: text}}), this.state.employee.lastName, true)
             }
           </View>
 
@@ -177,11 +189,6 @@ class EmployeeForm extends Component {
             <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
           </View>
 
-          <Text style={styles.textHeader} >Age</Text>
-          <View style={styles.inputView} >
-            {this.textInputFactory('99', (text) => this.setState({ employee: {...this.state.employee, age: text}}), this.state.employee.age, this.props.isOwner)}
-          </View>
-
           <View style={styles.imageContainer} >
             <Image style={styles.image} />
           </View>
@@ -197,6 +204,10 @@ class EmployeeForm extends Component {
 
           <View style={{height: 64}}/>
         </View>
+        {(this.props.isLoading)
+          ? <LoadingOverlay />
+          : null
+        }
       </ScrollView>
     )
   }
@@ -276,7 +287,8 @@ const styles = StyleSheet.create({
 var mapStateToProps = state => {
   return {
     isOwner: state.user.isOwner,
-    places: state.user.myLocations
+    places: state.user.myLocations,
+    isLoading: state.loading.isLoading
   }
 }
 

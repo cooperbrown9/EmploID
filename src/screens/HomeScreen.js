@@ -13,6 +13,7 @@ import * as LocDetailActions from '../action-types/location-detail-action-types'
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
+import * as LoadingActions from '../action-types/loading-action-types';
 
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
@@ -186,12 +187,19 @@ class HomeScreen extends Component {
     }
     // let jsonData = JSON.stringify(data);
     DataBuilder.buildEmployeeForm(data, (obj) => {
-      API.createEmployee(obj, (err, emp) => {
+      debugger;
+      API.createUser(obj, (err, emp) => {
         if(err) {
           Alert.alert(err.message);
         } else {
           console.log(emp);
-          Alert.alert('Success!');
+          this.props.dispatch({ type: LoadingActions.STOP_LOADING }, () => {
+            Alert.alert('Success!');
+            this.setState({ employeeFormPresented: false });
+
+          });
+          debugger;
+
 
           // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
           this.refreshOwner(data, () => {
