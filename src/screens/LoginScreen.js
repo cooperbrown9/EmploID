@@ -63,7 +63,8 @@ class LoginScreen extends Component {
           type: AuthActions.LOGIN_SUCCESS,
           user: response.user,
           sessionID: response.session_id,
-          userID: response.user._id
+          userID: response.user._id,
+          role: response.user.role
         })
       }
     })

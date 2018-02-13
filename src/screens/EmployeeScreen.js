@@ -18,7 +18,7 @@ const EmployeeScreen = (props) => (
             <Image style={styles.employeeImage} source={require('../../assets/images/ron.png')}/>
 
             <View style={styles.employeeInfo}>
-              <Text style={{fontSize: 17, marginBottom: 6}}>{employee.name}</Text>
+              <Text style={{fontSize: 17, marginBottom: 6}}>{employee.first_name} {employee.last_name}</Text>
               <Text style={{fontSize: 15, color: 'gray'}}>{employee.position}</Text>
             </View>
           </TouchableOpacity>

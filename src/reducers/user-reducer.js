@@ -3,7 +3,8 @@ import * as AuthActions from '../action-types/auth-action-types';
 const initialState = {
   isLoggedIn: false, isOwner : true,
   sessionID: null, userID: null,
-  myEmployees: [], myLocations: []
+  myEmployees: [], myLocations: [],
+  role: null
 };
 
 export default function user (state = initialState, action) {
@@ -11,7 +12,11 @@ export default function user (state = initialState, action) {
 
     case AuthActions.LOGIN_SUCCESS:
       return {
-        ...state
+        ...state,
+        user: action.user,
+        sessionID: action.sessionID,
+        userID: action.userID,
+        role: action.role
       }
 
     case AuthActions.LOGIN_ERROR:

@@ -46,11 +46,6 @@ class HomeScreen extends Component {
   }
 
   loadData() {
-    // if(this.props.isOwner) {
-      // this.loadPlacesOfOwner();
-    // } else {
-      // this.loadPlacesOfEmployee();
-    // }
     this.loadPlaces();
   }
 
@@ -68,14 +63,53 @@ class HomeScreen extends Component {
 
           if(placeCount === this.props.user.places.length) {
             this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
-            this.loadEmployees();
+
+            // if owner
+            if(this.props.user.role === 3) {
+              console.log('yuh');
+
+            }
+
+            this.loadEmployees(places);
           }
         }
       })
     }
   }
 
-  loadEmployees() {
+  loadEmployees(locations) {
+    let employees = [];
+
+    for(let i = 0; i < locations.length; i++) {
+      employees.push(...locations[i].employees);
+    }
+
+    for(let i = 0; i < employees.length - 1; i++) {
+      for(let j = 1; j < employees.length; j++) {
+        if(employees[i]._id === employees[j]._id) {
+          employees.pop(j);
+        }
+      }
+    }
+
+    let employeeCount = 0;
+    for(let i = 0; i < employees.length; i++) {
+      API.getUser(employees[i].employee_id, (err, response) => {
+        if(err) {
+          Alert.alert(err.message);
+        } else {
+          console.log(response);
+          employees[i] = response;
+          employeeCount++;
+          if(employeeCount === employees.length) {
+            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
+          }
+        }
+      })
+    }
+  }
+
+  _loadEmployees() {
     let employeeCount = 0;
     let employees = [];
     for(let i = 0; i < this.props.user.employees.length; i++) {
@@ -93,108 +127,6 @@ class HomeScreen extends Component {
           }
         }
       });
-    }
-  }
-
-  loadEmployeesOfOwner() {
-    let employeeCount = 0;
-    let employees = [];
-    for(let i = 0; i < this.props.user.employees.length; i++) {
-      API.getEmployee(this.props.user.employees[i].employee_id, (err, emp) => {
-        if(err) {
-          Alert.alert(err.message);
-        } else {
-          employeeCount++;
-          if(emp._id) {
-            employees.push(emp);
-          }
-          console.log(emp);
-
-          if(employeeCount === this.props.user.employees.length) {
-            console.log(employees);
-            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
-          }
-        }
-      });
-    }
-  }
-
-
-  // for each restaurant an employee works at, it grabs their ProfileActions
-  // also grabs for each restaurant they work at
-  loadEmployeesOfEmployee() {
-    let employeeCount = 0;
-    let employees = [];
-    for(let i = 0; i < this.props.user.employees.length; i++) {
-      API.getEmployee(this.props.user.employees[i].employee_id, (err, emp) => {
-        if(err) {
-          Alert.alert(err.message);
-        } else {
-          employeeCount++;
-          //
-          if(emp._id) {
-            employees.push(emp);
-          }
-          console.log(emp);
-
-          if(employeeCount === this.props.user.employees.length) {
-            console.log(employees);
-            // FIX THIS STATE BULLSHIT
-            // this.setState({ employees: employees });
-            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
-          }
-        }
-      })
-    }
-  }
-
-  loadPlacesOfOwner() {
-    let placeCount = 0;
-    let places = [];
-    for(let i = 0; i < this.props.user.places.length; i++) {
-
-      API.getPlace(this.props.user.places[i].place_id, (err, place) => {
-        if(err) {
-          Alert.alert(err.message);
-        } else {
-          placeCount++;
-          places.push(place);
-          // console.log(place);
-
-          if(placeCount === this.props.user.places.length) {
-            // console.log(places);
-            // FIX THIS STATE BULLSHIT
-            // this.setState({ places: places });
-            this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
-            this.loadEmployeesOfOwner();
-          }
-        }
-      })
-    }
-  }
-
-  loadPlacesOfEmployee() {
-    let placeCount = 0;
-    let places = [];
-    for(let i = 0; i < this.props.user.places.length; i++) {
-
-      API.getPlace(this.props.user.places[i].place_id, (err, place) => {
-        if(err) {
-          Alert.alert(err.message);
-        } else {
-          placeCount++;
-          places.push(place);
-          // console.log(place);
-
-          if(placeCount === this.props.user.places.length) {
-            // console.log(places);
-            // FIX THIS STATE BULLSHIT
-            // this.setState({ places: places });
-            this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
-            this.loadEmployeesOfEmployee();
-          }
-        }
-      })
     }
   }
 
