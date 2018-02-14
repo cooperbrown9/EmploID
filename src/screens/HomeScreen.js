@@ -162,11 +162,6 @@ class HomeScreen extends Component {
     this.setState({ employeeFormPresented: false });
   }
 
-  _presentAddPlaceModal = () => {
-    this.props.dispatch({ type: NavActions.RESTAURANT_PROFILE });
-    //this.setState({ employeeFormPresented: true });
-  }
-
   _dismissPlaceModal = () => {
     this.setState({ placeFormPresented: false });
   }
@@ -185,25 +180,17 @@ class HomeScreen extends Component {
       "sessionID": this.props.sessionID,
       "ownerID": this.props.user._id
     }
-    // let jsonData = JSON.stringify(data);
+
     DataBuilder.buildEmployeeForm(data, (obj) => {
-      debugger;
       API.createUser(obj, (err, emp) => {
         if(err) {
           Alert.alert(err.message);
         } else {
           console.log(emp);
-          this.props.dispatch({ type: LoadingActions.STOP_LOADING }, () => {
-            Alert.alert('Success!');
-            this.setState({ employeeFormPresented: false });
-
-          });
-          debugger;
-
+          Alert.alert('Success!');
 
           // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
           this.refreshOwner(data, () => {
-            this.loadEmployees();
             this.loadPlaces();
           });
         }
@@ -262,9 +249,12 @@ class HomeScreen extends Component {
         : <RestaurantScreen openProfile={(place) => this._openLocationProfile(place)} />
         }
 
-        <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
-          <Image style={{height:64,width:64}} source={require('../../assets/icons/plus.png')} />
-        </TouchableOpacity>
+        {(this.props.role === 3)
+          ? <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
+              <Image style={{height:64,width:64}} source={require('../../assets/icons/plus.png')} />
+            </TouchableOpacity>
+          : null
+        }
 
         <TouchableOpacity onPress={() => this._presentFilterModal()} style={styles.filterButton} >
           <Text style={styles.filterText}>Filter</Text>
@@ -281,8 +271,6 @@ class HomeScreen extends Component {
         <Modal animationType={'slide'} transparent={false} visible={this.state.placeFormPresented} >
           <PlaceForm submitForm={(data) => this._submitPlaceForm(data)} dismiss={() => this._dismissPlaceModal()} />
         </Modal>
-
-
 
       </View>
     )
@@ -327,7 +315,8 @@ var mapStateToProps = state => {
     user: state.user.user,
     isOwner: state.user.isOwner,
     sessionID: state.user.sessionID,
-    userID: state.user.userID
+    userID: state.user.userID,
+    role: state.user.role
   }
 }
 

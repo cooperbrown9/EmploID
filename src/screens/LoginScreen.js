@@ -42,89 +42,29 @@ class LoginScreen extends Component {
 
 
   componentDidMount() {
-    // this.checkKeys();
+
   }
 
-  login = async() => {
+  login = () => {
     let data = {
       "email": this.state.email,
       "password": this.state.password
     }
-
-    await API.login(data, async(err, response) => {
+    API.login(data, async(err, response) => {
       if(err) {
-        console.log(err);
-        debugger;
+        Alert.alert(err.message);
       } else {
-        console.log(response);
         await AsyncStorage.setItem(Keys.USER_ID, response.user._id);
         await AsyncStorage.setItem(Keys.SESSION_ID, response.session_id);
+
         this.props.dispatch({
           type: AuthActions.LOGIN_SUCCESS,
           user: response.user,
           sessionID: response.session_id,
           userID: response.user._id,
           role: response.user.role
-        })
-      }
-    })
-  }
-
-  _login = async() => {
-    if(this.state.email == null || this.state.email.length < 2 ||
-      this.state.password == null || this.state.password.length < 1) {
-      Alert.alert('Please check your fields!');
-      return;
-    }
-    if(this.state.isOwner) {
-      await this.loginOwnerHelper();
-    } else {
-      await this.loginEmployeeHelper();
-    }
-
-  }
-
-  loginOwnerHelper = async() => {
-    var data = {
-      email: this.state.email,
-      password: this.state.password
-    }
-
-    await this.loginOwner(data, async(e1, response) => {
-      if(e1) {
-        Alert.alert(e1.message);
-      } else {
-        await AsyncStorage.setItem(Keys.IS_OWNER, 'true');
-        await AsyncStorage.setItem(Keys.SESSION_ID, response.session_id);
-        await AsyncStorage.setItem(Keys.USER_ID, response.user_id);
-
-        await this.getOwner(response.user_id, (e2, response2) => {
-          console.log('user, session ' + response.user_id + ' ' + response.session_id);
-          this.props.dispatch({ type: AuthActions.LOGIN_OWNER_SUCCESS, user: response2, sessionID: response.session_id, userID: response.user_id });
-          this.props.dispatch({ type: NavActions.HOME });
         });
-      }
-    });
-  }
-
-  loginEmployeeHelper = async() => {
-    var data = {
-      email: this.state.email,
-      password: this.state.password
-    }
-
-    await this.loginEmployee(data, async(e1, response) => {
-      if(e1) {
-        Alert.alert(e1.message);
-      } else {
-        await AsyncStorage.setItem(Keys.IS_OWNER, 'false');
-        await AsyncStorage.setItem(Keys.SESSION_ID, response.session_id);
-        await AsyncStorage.setItem(Keys.USER_ID, response.user_id);
-
-        await this.getEmployee(response.user_id, (e2, response2) => {
-          this.props.dispatch({ type: AuthActions.LOGIN_EMPLOYEE_SUCCESS, user: response2, sessionID: response.session_id, userID: response.user_id });
-          this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
-        })
+        this.props.dispatch({ type: NavActions.HOME });
       }
     })
   }
@@ -134,11 +74,9 @@ class LoginScreen extends Component {
       this.setState({ options: arr });
       if(arr[0].selected) {
         this.setState({ isOwner: true });
-      }
-      else {
+      } else {
         this.setState({ isOwner: false });
       }
-      // console.log(this.state.isOwner);
     });
   }
 

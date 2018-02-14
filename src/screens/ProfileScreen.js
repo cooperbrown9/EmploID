@@ -103,45 +103,52 @@ class ProfileScreen extends Component {
     return (
         <ScrollView style={{flex:1}}>
           <View style={{flex: 1}}>
-          <View style={styles.profilePicContainer} >
-            <Image style={styles.profilePic} source={require('../../assets/images/chef1.png')} />
+            <View style={styles.profilePicContainer} >
+
+              <Image style={styles.profilePic} source={require('../../assets/images/chef1.png')} />
+
             <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.3)',zIndex:1000}}></View>
-            <View style={styles.backButton}>
-              <RoundButton onPress={() => this._goBack()} imagePath={require('../../assets/icons/back.png')}/>
-            </View>
-            <View style={styles.optionsButton}>
-              <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
-            </View>
 
-            <View style={styles.infoContainer} >
-              <Text style={styles.infoTextName}>{this.props.employee.name}</Text>
-              <Text style={styles.infoText}>{this.props.employee.position}</Text>
-              <Text style={styles.infoText}>{this.props.employee.phone}</Text>
-            </View>
-          </View>
+              <View style={styles.backButton}>
+                <RoundButton onPress={() => this._goBack()} imagePath={require('../../assets/icons/back.png')}/>
+              </View>
 
-          <View style={{height: 64, paddingBottom: 8}}>
-            <EmployeeTabBar />
-          </View>
-
-          <View style={styles.screenContainer} >
-
-         {(this.props.indexOn === 0)
-            ? <ProfileTab  />
-            : (this.props.indexOn === 1)
-              ? <LocationsTab />
-              : (this.props.indexOn === 2)
-                ? <DiscountsTab />
-              : (this.props.indexOn === 3)
-                  ? <NotesTab />
+              {(this.props.role === 3 || this.props.role === 2)
+                ? <View style={styles.optionsButton}>
+                    <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
+                  </View>
                 : null
-          }
+              }
 
-          </View>
+              <View style={styles.infoContainer} >
+                <Text style={styles.infoTextName}>{this.props.employee.name}</Text>
+                <Text style={styles.infoText}>{this.props.employee.position}</Text>
+                <Text style={styles.infoText}>{this.props.employee.phone}</Text>
+              </View>
+            </View>
 
-          <Modal animationType={'slide'} transparent={false} visible={this.state.formModal} styles={{marginTop: 0}}>
-            <EmployeeFormEditOwner dismiss={this._dismissFormModal} />
-          </Modal>
+            <View style={{height: 64, paddingBottom: 8}}>
+              <EmployeeTabBar />
+            </View>
+
+            <View style={styles.screenContainer} >
+
+           {(this.props.indexOn === 0)
+              ? <ProfileTab  />
+              : (this.props.indexOn === 1)
+                ? <LocationsTab />
+                : (this.props.indexOn === 2)
+                  ? <DiscountsTab />
+                : (this.props.indexOn === 3)
+                    ? <NotesTab />
+                  : null
+            }
+
+            </View>
+
+            <Modal animationType={'slide'} transparent={false} visible={this.state.formModal} styles={{marginTop: 0}}>
+              <EmployeeFormEditOwner dismiss={this._dismissFormModal} />
+            </Modal>
           </View>
         </ScrollView>
 
@@ -199,7 +206,8 @@ var mapStateToProps = state => {
     indexOn: state.employeeTab.indexOn,
     employeeID: state.user.userID,
     isOwner: state.user.isOwner,
-    employee: state.employeeDetail.employee
+    employee: state.employeeDetail.employee,
+    role: state.user.role
   }
 }
 

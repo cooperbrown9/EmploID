@@ -66,9 +66,10 @@ class EmployeeForm extends Component {
 
   submit = () => {
     console.log(this.state.employee);
-    this.props.dispatch({ type: LoadingActions.START_LOADING });
+    // this.props.dispatch({ type: LoadingActions.START_LOADING });
     // this.state.employee.password = 'abc123';
     this.props.submitForm(this.state.employee);
+    this.props.dismiss();
   }
 
 

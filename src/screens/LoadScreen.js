@@ -45,7 +45,7 @@ class LoadScreen extends Component {
       } else {
         console.log(response);
         this.props.dispatch({
-          type: AuthActions.LOGIN_OWNER_SUCCESS,
+          type: AuthActions.LOGIN_SUCCESS,
           user: response.user,
           sessionID: response.session_id,
           userID: response.user._id,
