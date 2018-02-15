@@ -57,6 +57,7 @@ class EmployeeFormEditOwner extends Component {
 
   componentDidMount() {
     this.setState({ employee: this.props.employee });
+    debugger;
     this.genderSelected(this.state.employee.gender);
     this.hairSelected(this.state.employee.hair);
   }

@@ -94,6 +94,18 @@ class ProfileScreen extends Component {
     this.props.dispatch({ type: NavActions.BACK });
   }
 
+  editProfileButton() {
+    if(this.props.role === 3 || this.props.role === 2) {
+      return (
+        <View style={styles.optionsButton}>
+            <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
+        </View>
+      )
+    } else {
+      return null;
+    }
+  }
+
   render() {
     if(!this.props.employee) {
       return(
@@ -107,21 +119,18 @@ class ProfileScreen extends Component {
 
               <Image style={styles.profilePic} source={require('../../assets/images/chef1.png')} />
 
-            <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.3)',zIndex:1000}}></View>
+              <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.3)',zIndex:1000}}></View>
 
               <View style={styles.backButton}>
                 <RoundButton onPress={() => this._goBack()} imagePath={require('../../assets/icons/back.png')}/>
               </View>
 
-              {(this.props.role === 3 || this.props.role === 2)
-                ? <View style={styles.optionsButton}>
-                    <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
-                  </View>
-                : null
-              }
+              {this.editProfileButton()}
 
               <View style={styles.infoContainer} >
-                <Text style={styles.infoTextName}>{this.props.employee.name}</Text>
+                <Text style={styles.infoTextName}>
+                  {this.props.employee.first_name} {this.props.employee.last_name}
+                </Text>
                 <Text style={styles.infoText}>{this.props.employee.position}</Text>
                 <Text style={styles.infoText}>{this.props.employee.phone}</Text>
               </View>
@@ -134,7 +143,7 @@ class ProfileScreen extends Component {
             <View style={styles.screenContainer} >
 
            {(this.props.indexOn === 0)
-              ? <ProfileTab  />
+              ? <ProfileTab />
               : (this.props.indexOn === 1)
                 ? <LocationsTab />
                 : (this.props.indexOn === 2)

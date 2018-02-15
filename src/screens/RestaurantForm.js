@@ -20,8 +20,6 @@ class RestaurantForm extends Component {
         phone: "555-555-5555"
       }
     };
-
-
   }
 
   static propTypes = {

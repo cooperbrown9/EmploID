@@ -5,7 +5,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 
 import { BLUE, DARK_GREY, BACKGROUND_GREY, MID_GREY } from '../constants/colors';
-import { loginOwner, loginEmployee, getOwner, getEmployee } from '../api/api';
+// import { loginOwner, loginEmployee, getOwner, getEmployee } from '../api/api';
 import * as API from '../api/api';
 
 import OptionView from '../ui-elements/option-view';
@@ -20,10 +20,10 @@ class LoginScreen extends Component {
   constructor() {
     super();
 
-    this.loginOwner = loginOwner.bind(this);
-    this.loginEmployee = loginEmployee.bind(this);
-    this.getOwner = getOwner.bind(this);
-    this.getEmployee = getEmployee.bind(this);
+    // this.loginOwner = loginOwner.bind(this);
+    // this.loginEmployee = loginEmployee.bind(this);
+    // this.getOwner = getOwner.bind(this);
+    // this.getEmployee = getEmployee.bind(this);
 
     this.state = {
       email: '',
@@ -89,9 +89,9 @@ class LoginScreen extends Component {
             <Text style={styles.loginText}>Login</Text>
           </View>
 
-          <View style={styles.optionView} >
+          {/*<View style={styles.optionView} >
             <OptionView options={this.state.options} selectOption={(index) => this._positionSelected(index)} />
-          </View>
+          </View>*/}
 
           <View style={styles.inputView} >
             <TextInput

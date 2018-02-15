@@ -10,6 +10,9 @@ import * as API from '../api/api';
 
 class LoadScreen extends Component {
 
+  static navigationOptions = {
+    header: null
+  }
 
   constructor() {
     super();
@@ -38,7 +41,6 @@ class LoadScreen extends Component {
     API.verifySession(data, async(err, response) => {
       if(err) {
         console.log(err);
-        debugger;
         await AsyncStorage.removeItem(Keys.USER_ID);
         await AsyncStorage.removeItem(Keys.SESSION_ID);
         this.props.dispatch({ type: 'START_LOGIN' });
@@ -124,7 +126,7 @@ class LoadScreen extends Component {
   render() {
     return(
       <View style={styles.container} >
-        <ActivityIndicator />
+        <ActivityIndicator size="large" />
       </View>
     )
   }
@@ -132,7 +134,8 @@ class LoadScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'center'
   }
 });
 

@@ -42,6 +42,7 @@ class HomeScreen extends Component {
     header: null
   }
 
+  // figure out why locations and employees dont update
   componentDidMount() {
     this.loadData();
   }
@@ -65,10 +66,9 @@ class HomeScreen extends Component {
           if(placeCount === this.props.user.places.length) {
             this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
 
-            // if owner
+            // if owner (3)
             if(this.props.user.role === 3) {
               console.log('yuh');
-
             }
 
             this.loadEmployees(places);
@@ -110,26 +110,26 @@ class HomeScreen extends Component {
     }
   }
 
-  _loadEmployees() {
-    let employeeCount = 0;
-    let employees = [];
-    for(let i = 0; i < this.props.user.employees.length; i++) {
-      API.getEmployee(this.props.user.employees[i].employee_id, (err, emp) => {
-        if(err) {
-          Alert.alert(err.message);
-        } else {
-          employeeCount++;
-          if(emp._id) {
-            employees.push(emp);
-          }
-
-          if(employeeCount === this.props.user.employees.length) {
-            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
-          }
-        }
-      });
-    }
-  }
+  // _loadEmployees() {
+  //   let employeeCount = 0;
+  //   let employees = [];
+  //   for(let i = 0; i < this.props.user.employees.length; i++) {
+  //     API.getEmployee(this.props.user.employees[i].employee_id, (err, emp) => {
+  //       if(err) {
+  //         Alert.alert(err.message);
+  //       } else {
+  //         employeeCount++;
+  //         if(emp._id) {
+  //           employees.push(emp);
+  //         }
+  //
+  //         if(employeeCount === this.props.user.employees.length) {
+  //           this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
 
   _changeTab = (index) => {
     this.props.dispatch({ type: (index === 0) ? TabActions.EMPLOYEE_TAB : TabActions.LOCATION_TAB });
@@ -202,17 +202,15 @@ class HomeScreen extends Component {
     data = {
       ...data,
       "sessionID": this.props.sessionID,
-      "ownerID": this.props.user._id
+      "userID": this.props.user._id
     }
     DataBuilder.buildPlaceForm(data, (obj) => {
       API.createPlace(obj, (err, emp) => {
         if(err) {
           Alert.alert(err.message);
         } else {
-          console.log(emp);
           this.refreshOwner(data, () => {
             this.loadPlaces();
-            this.loadEmployees();
           });
         }
       });
@@ -221,15 +219,16 @@ class HomeScreen extends Component {
 
   // USE THIS AFTER YOU CREATE AN EMPLOYEE OR LOCATION
   refreshOwner = (data, callback) => {
-    API.verifySessionGetOwner(data, async (err, response) => {
+    API.verifySession(data, async (err, response) => {
       if(err) {
         this.props.dispatch({ type: 'START_LOGIN' });
       } else {
         this.props.dispatch({
-          type: AuthActions.LOGIN_OWNER_SUCCESS,
-          user: response.owner,
+          type: AuthActions.LOGIN_SUCCESS,
+          user: response.user,
           sessionID: response.session_id,
-          userID: response.owner._id
+          userID: response.user._id,
+          role: response.user.role
         });
         // AFTER OWNER IS UPDATED ON REDUX, REFRESH EMPLOYEES OR LOCATIONS
         callback();
@@ -246,7 +245,7 @@ class HomeScreen extends Component {
 
         {(this.props.indexOn === 0)
           ? <EmployeeScreen openProfile={(employee) => this._openEmployeeProfile(employee)} />
-        : <RestaurantScreen openProfile={(place) => this._openLocationProfile(place)} />
+          : <RestaurantScreen openProfile={(place) => this._openLocationProfile(place)} />
         }
 
         {(this.props.role === 3)
