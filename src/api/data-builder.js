@@ -13,7 +13,8 @@ export function buildEmployeeForm(data, callback) {
     "birthday": data.birthday,
     "hireDate": data.hireDate,
     "sessionID": data.sessionID,
-    "ownerID": data.ownerID
+    "userID": data.userID,
+    "groupID": data.groupID
   }
 
   callback(obj);
@@ -26,7 +27,8 @@ export function buildPlaceForm(data, callback) {
     "email": data.email,
     "phone": data.phone,
     "sessionID": data.sessionID,
-    "ownerID": data.ownerID
+    "userID": data.userID,
+    "groupID": data.groupID
   }
 
   callback(obj);

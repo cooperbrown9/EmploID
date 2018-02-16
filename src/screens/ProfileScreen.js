@@ -15,7 +15,7 @@ import EmployeeFormEditOwner from './edit/EmployeeFormEditOwner';
 import * as NavActions from '../action-types/nav-action-types';
 import * as ProfileActions from '../action-types/employee-profile-action-types';
 import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
-
+import * as DetailActions from '../action-types/detail-action-types';
 
 
 class ProfileScreen extends Component {
@@ -42,22 +42,7 @@ class ProfileScreen extends Component {
   }
 
   componentDidMount () {
-    // remove API calls, move all to redux
-    // this.getEmployeePlaces();
     this.getPlaces();
-  }
-
-  getEmployeePlaces() {
-    API.getPlacesFromEmployee(this.props.employee._id, (err, response) => {
-      if(err){
-        console.log(err);
-        debugger
-      } else {
-        console.log(response);
-        // this.setState({places: response});
-        this.props.dispatch({ type: EmployeeDetailActions.SET_LOCATIONS, locations: response })
-      }
-    });
   }
 
   getPlaces() {
@@ -68,19 +53,43 @@ class ProfileScreen extends Component {
       API.getPlace(this.props.employee.places[i].place_id, (err, response) => {
         if(err) {
           console.log(err);
-          debugger;
         } else {
           placesCount++;
           places.push(response);
 
           if(placesCount === this.props.employee.places.length) {
-            this.props.dispatch({ type: EmployeeDetailActions.SET_LOCATIONS, locations: places });
+            this.props.dispatch({ type: DetailActions.SET_LOCATIONS, locations: places });
+            this.getDiscounts();
           }
         }
       })
     }
   }
 
+  getDiscounts = () => {
+    let count = 0;
+    let discounts = []
+
+    for(let i = 0; i < this.props.locations.length; i++) {
+      discounts.push(...this.props.locations[i].discounts);
+    }
+
+    for(let i = 0; i < discounts.length; i++) {
+      API.getDiscount(discounts[i].discount_id, (err, disc) => {
+        if(err) {
+          console.log(err);
+          debugger;
+        } else {
+          count++;
+          discounts[i] = disc;
+
+          if(count === discounts.length) {
+            this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: discounts });
+          }
+        }
+      })
+    }
+  }
 
   _dismissFormModal = () => {
     this.setState({formModal: false});
@@ -213,10 +222,11 @@ const styles = StyleSheet.create({
 var mapStateToProps = state => {
   return {
     indexOn: state.employeeTab.indexOn,
-    employeeID: state.user.userID,
     isOwner: state.user.isOwner,
-    employee: state.employeeDetail.employee,
-    role: state.user.role
+    employee: state.detail.user,
+    role: state.user.role,
+    discounts: state.detail.discounts,
+    locations: state.detail.locations
   }
 }
 

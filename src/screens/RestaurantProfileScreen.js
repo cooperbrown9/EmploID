@@ -12,7 +12,7 @@ import RestaurantFormEditOwner from './RestaurantFormEditOwner.js';
 import CreateDiscountForm from './CreateDiscountForm';
 
 import * as API from '../api/api';
-import * as LocationDetailActions from '../action-types/location-detail-action-types';
+import * as DetailActions from '../action-types/detail-action-types';
 import * as NavActions from '../action-types/nav-action-types';
 
 class RestaurantProfileScreen extends Component {
@@ -26,50 +26,58 @@ class RestaurantProfileScreen extends Component {
   }
 
   componentDidMount() {
-    this.loadEmployees();
-    this.loadDiscounts();
+    // this.loadEmployees();
+    // this.loadDiscounts();
+    this.getUsers();
   }
 
-  loadEmployees() {
-    let employees = this.props.location.employees;
-    let employeeCount = 0;
-    let cleanEmployees = [];
+  getUsers() {
+    let users = [];
+    let userCount = 0;
 
-    for(let i = 0; i < employees.length; i++) {
-      API.getEmployee(employees[i].employee_id, (err, emp) => {
+    for(let i = 0; i < this.props.location.employees.length; i++) {
+      API.getUser(this.props.location.employees[i].user_id, (err, user) => {
         if(err) {
           console.log(err);
+          debugger;
         } else {
-          console.log(emp);
-          employeeCount++;
-          cleanEmployees.push(emp);
+          userCount++;
+          users.push(user);
 
-          if(employeeCount === employees.length) {
-            this.props.dispatch({ type: LocationDetailActions.SET_EMPLOYEES, employees: cleanEmployees });
+          if(userCount === this.props.location.employees.length) {
+            this.props.dispatch({ type: DetailActions.SET_EMPLOYEES, employees: users });
+            this.getDiscounts();
           }
         }
-      })
+      });
     }
   }
 
-  loadDiscounts() {
-    let discounts = this.props.location.discounts;
-    let disCount = 0;
-    let cleanDiscounts = [];
+  getDiscounts() {
+    let discounts = [];
+    let count = 0;
 
-    for(let i = 0; i < discounts.length; i++) {
-      API.getDiscount(discounts[i]._id, (err, discount) => {
+    for(let i = 0; i < this.props.location.discounts.length; i++) {
+      API.getDiscount(this.props.location.discounts[i].discount_id, (err, disc) => {
         if(err) {
           console.log(err);
+          debugger;
         } else {
-          disCount++;
-          cleanDiscounts.push(discount);
+          count++;
 
-          if(disCount === discounts.length) {
-            this.props.dispatch({ type: LocationDetailActions.SET_DISCOUNTS, discounts: cleanDiscounts });
+          if(disc.exclusive) {
+            if(this.props.role === 2 || this.props.role === 3) {
+              discounts.push(disc);
+            }
+          } else {
+            discounts.push(disc);
+          }
+
+          if(count === this.props.location.discounts.length) {
+            this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: discounts });
           }
         }
-      })
+      });
     }
   }
 
@@ -93,7 +101,7 @@ class RestaurantProfileScreen extends Component {
         console.log(err);
       } else {
         console.log(loc);
-        this.props.dispatch({ type: LocationDetailActions.SET_LOCATION, location: loc });
+        this.props.dispatch({ type: DetailActions.SET_LOCATION, location: loc });
         this.loadEmployees();
         this.loadDiscounts();
       }
@@ -120,6 +128,18 @@ class RestaurantProfileScreen extends Component {
     this.props.dispatch({ type: NavActions.BACK });
   }
 
+  editProfileButton() {
+    if(this.props.role === 2 || this.props.role === 3) {
+      return (
+        <View style={styles.optionsButton}>
+          <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
+        </View>
+      )
+    } else {
+      return null;
+    }
+  }
+
   render() {
     return (
       <ScrollView style={{flex:1}}>
@@ -130,9 +150,8 @@ class RestaurantProfileScreen extends Component {
           <View style={styles.backButton}>
             <RoundButton onPress={this._goBack} imagePath={require('../../assets/icons/back.png')}/>
           </View>
-          <View style={styles.optionsButton}>
-            <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
-          </View>
+
+          {this.editProfileButton()}
 
           <View style={styles.infoContainer} >
             <Text style={styles.infoTextName}>{this.props.location.name}</Text>
@@ -216,8 +235,10 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    location: state.locationDetail.location,
-    indexOn: state.locationTab.indexOn
+    employees: state.detail.employees,
+    location: state.detail.location,
+    indexOn: state.locationTab.indexOn,
+    role: state.user.role
   }
 }
 

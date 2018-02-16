@@ -27,7 +27,6 @@ OptionView.propTypes = {
 }
 
 OptionView.selected = function(arr, index, callback) {
-  debugger;
   if(arr[index].selected) {
     arr[index].selected = false;
   } else {

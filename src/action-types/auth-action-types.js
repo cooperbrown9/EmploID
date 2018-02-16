@@ -10,3 +10,4 @@ export const LOGIN_EMPLOYEE_ERROR = 'login/employee-error';
 
 export const SET_EMPLOYEES = 'data/set-employees';
 export const SET_LOCATIONS = 'data/set-locations';
+export const SET_DISCOUNTS = 'data/set-discounts';

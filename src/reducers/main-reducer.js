@@ -10,6 +10,7 @@ import employeeDetail from './employee-detail-reducer';
 import locationDetail from './location-detail-reducer';
 import locationTab from './location-tab-reducer';
 import loading from './loading-reducer';
+import detail from './detail-reducer';
 export default MainReducer = combineReducers({
   nav,
   tab,
@@ -19,5 +20,6 @@ export default MainReducer = combineReducers({
   employeeDetail,
   locationDetail,
   locationTab,
-  loading
+  loading,
+  detail
 });

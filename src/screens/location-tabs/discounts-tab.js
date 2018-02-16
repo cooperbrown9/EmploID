@@ -9,7 +9,7 @@ const DiscountsTab = (props) => (
 
 
     <View style={styles.container}>
-      {(props.isOwner)
+      {(props.role === 3 || props.role === 2)
       ? <View style={styles.addDiscount} >
           <RoundButton onPress={() => props.presentForm()} imagePath={require('../../../assets/icons/plus.png')} />
         </View>
@@ -17,9 +17,9 @@ const DiscountsTab = (props) => (
       }
 
       {props.discounts.map(model =>
-        <TouchableOpacity style={styles.discountItem} key={model.name} >
+        <TouchableOpacity style={styles.discountItem} key={model._id} >
           <View style={styles.discountInfo}>
-            <Text style={{fontSize: 17, marginBottom: 6, fontFamily: 'roboto-regular'}}>{model.name} </Text>
+            <Text style={{fontSize: 17, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.name} </Text>
             <Text style={{fontSize: 15, color: 'gray', fontFamily: 'roboto-regular'}}>{model.offer}</Text>
         </View>
         </TouchableOpacity>
@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    discounts: state.locationDetail.discounts,
-    isOwner: state.user.isOwner
+    discounts: state.detail.discounts,
+    role: state.user.role
   }
 }
 

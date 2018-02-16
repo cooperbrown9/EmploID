@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView, ListView, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
+
 const DiscountsTab = (props) => (
 
 
     <View style={styles.container}>
 
       {props.discounts.map(model =>
-        <TouchableOpacity style={styles.discountItem} key={mode._id} >
+        <TouchableOpacity style={styles.discountItem} key={model._id} >
           <View style={styles.discountInfo}>
-            <Text style={{fontSize: 17, marginBottom: 6, fontFamily: 'roboto-regular'}}>{model.name} </Text>
-            <Text style={{fontSize: 15, color: 'gray', fontFamily: 'roboto-regular'}}>{model.address}</Text>
+            <Text style={{fontSize: 17, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.name} </Text>
+            <Text style={{fontSize: 15, color: 'gray', fontFamily: 'roboto-regular'}}>{model.offer}</Text>
         </View>
         </TouchableOpacity>
       )}
@@ -56,4 +57,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default DiscountsTab;
+var mapStateToProps = state => {
+  return {
+    discounts: state.detail.discounts
+  }
+}
+
+export default connect(mapStateToProps)(DiscountsTab);

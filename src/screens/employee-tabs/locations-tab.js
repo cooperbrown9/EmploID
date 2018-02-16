@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    locations: state.employeeDetail.locations
+    locations: state.detail.locations
   }
 }
 

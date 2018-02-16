@@ -4,8 +4,13 @@ const BASE = 'https://emploid.herokuapp.com/api';
 
 const GET_USER = '/get-user/';
 const GET_PLACES = '/get-places/';
+const GET_DISCOUNT = '/get-discount/';
+
 const CREATE_USER = '/create-user';
+const CREATE_PLACE = '/create-place';
+
 const VERIFY_SESSION_GET_USER = '/verify-session-get-user';
+
 const LOGIN_USER = '/login';
 
 export function getUser(userID, callback) {
@@ -21,6 +26,7 @@ export function getPlaces(userID, callback) {
 }
 
 export function createUser(data, callback) {
+  debugger;
   axios.post(BASE + CREATE_USER, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
@@ -38,7 +44,17 @@ export function verifySession(data, callback) {
     .catch(e => callback(e))
 }
 
+export function createPlace(data, callback) {
+  axios.post(BASE + CREATE_PLACE, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
 
+export function getDiscount(discID, callback) {
+  axios.get(BASE + GET_DISCOUNT + discID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
 
 
 
@@ -58,13 +74,13 @@ const CREATE_EMPLOYEE = '/create-employee';
 const GET_EMPLOYEE = '/get-employee/';
 const LOGIN_EMPLOYEE = '/login-employee';
 
-const CREATE_PLACE = '/create-place';
+// const CREATE_PLACE = '/create-place';
 const GET_PLACE = '/get-place/';
 const GET_PLACES_FROM_OWNER = '/get-places-from-owner';
 const GET_PLACES_AND_EMPLOYEES = '/get-places-and-employees';
 const GET_PLACES_FROM_EMPLOYEE = '/get-places-from-employee';
 
-const GET_DISCOUNT = '/get-discount/';
+// const GET_DISCOUNT = '/get-discount/';
 const CREATE_DISCOUNT = '/create-discount';
 
 const UPDATE_LOCATION = '/update-place';
@@ -132,11 +148,11 @@ export function getOwner(ownerID, callback) {
     .catch(e => callback(e))
 }
 
-export function createPlace(data, callback) {
-  axios.post(BASE + CREATE_PLACE, data)
-    .then(response => callback(null, response.data))
-    .catch(e => callback(e))
-}
+// export function createPlace(data, callback) {
+//   axios.post(BASE + CREATE_PLACE, data)
+//     .then(response => callback(null, response.data))
+//     .catch(e => callback(e))
+// }
 
 export function getPlace(placeID, callback) {
   axios.get(BASE + GET_PLACE + placeID)
@@ -162,11 +178,11 @@ export function getPlacesAndEmployees(data, callback) {
     .catch(e => callback(e))
 }
 
-export function getDiscount(discountID, callback) {
-  axios.get(BASE + GET_DISCOUNT + discountID)
-    .then(response => callback(null, response.data))
-    .catch(e => callback(e))
-}
+// export function getDiscount(discountID, callback) {
+//   axios.get(BASE + GET_DISCOUNT + discountID)
+//     .then(response => callback(null, response.data))
+//     .catch(e => callback(e))
+// }
 
 export function createDiscount(data, callback) {
   axios.post(BASE + CREATE_DISCOUNT, data)

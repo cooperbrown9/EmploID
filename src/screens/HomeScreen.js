@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert, Dimensions, AsyncStorage } from 'react-native';
 
 import { connect } from 'react-redux';
 
@@ -10,10 +10,12 @@ import * as AuthActions from '../action-types/auth-action-types';
 import * as ProfileActions from '../action-types/employee-profile-action-types';
 import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
 import * as LocDetailActions from '../action-types/location-detail-action-types';
+import * as DetailActions from '../action-types/detail-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
 import * as LoadingActions from '../action-types/loading-action-types';
+import * as Keys from '../constants/keys';
 
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
@@ -58,7 +60,7 @@ class HomeScreen extends Component {
 
       API.getPlace(this.props.user.places[i].place_id, (err, place) => {
         if(err) {
-          Alert.alert(err.message);
+          Alert.alert('ERROR LOADPLACES' + err.message);
         } else {
           placeCount++;
           places.push(place);
@@ -78,6 +80,7 @@ class HomeScreen extends Component {
     }
   }
 
+  // LEFT OFF...MAKE SURE YOU CAN ADD EMPLOYEES TO LOCATIONS AND LOCATIONS TO EMPLOYEES, THEN MAKE SURE THHEY SHOW UP ON RESPECTIVE PROFILES
   loadEmployees(locations) {
     let employees = [];
 
@@ -85,6 +88,14 @@ class HomeScreen extends Component {
       employees.push(...locations[i].employees);
     }
 
+    // remove current user from employees
+    // for(let i = 0; i < employees.length; i++) {
+    //   if(employees[i].user_id === this.props.user._id) {
+    //     employees.pop(i);
+    //   }
+    // }
+
+    // remove duplicates
     for(let i = 0; i < employees.length - 1; i++) {
       for(let j = 1; j < employees.length; j++) {
         if(employees[i]._id === employees[j]._id) {
@@ -95,13 +106,13 @@ class HomeScreen extends Component {
 
     let employeeCount = 0;
     for(let i = 0; i < employees.length; i++) {
-      API.getUser(employees[i].employee_id, (err, response) => {
+      API.getUser(employees[i].user_id, (err, response) => {
         if(err) {
-          Alert.alert(err.message);
+          Alert.alert('ERROR LOAD EMPLOYEES' + err.message);
         } else {
-          console.log(response);
           employees[i] = response;
           employeeCount++;
+
           if(employeeCount === employees.length) {
             this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
           }
@@ -109,27 +120,6 @@ class HomeScreen extends Component {
       })
     }
   }
-
-  // _loadEmployees() {
-  //   let employeeCount = 0;
-  //   let employees = [];
-  //   for(let i = 0; i < this.props.user.employees.length; i++) {
-  //     API.getEmployee(this.props.user.employees[i].employee_id, (err, emp) => {
-  //       if(err) {
-  //         Alert.alert(err.message);
-  //       } else {
-  //         employeeCount++;
-  //         if(emp._id) {
-  //           employees.push(emp);
-  //         }
-  //
-  //         if(employeeCount === this.props.user.employees.length) {
-  //           this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
-  //         }
-  //       }
-  //     });
-  //   }
-  // }
 
   _changeTab = (index) => {
     this.props.dispatch({ type: (index === 0) ? TabActions.EMPLOYEE_TAB : TabActions.LOCATION_TAB });
@@ -148,13 +138,13 @@ class HomeScreen extends Component {
     //this.setState({ employeeFormPresented: true });
   }
   _openEmployeeProfile = (employee) => {
-    this.props.dispatch({ type: EmployeeDetailActions.SET_EMPLOYEE, employee: employee });
+    this.props.dispatch({ type: DetailActions.SET_USER, user: employee });
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
     //this.setState({ employeeFormPresented: true });
   }
 
   _openLocationProfile = (place) => {
-    this.props.dispatch({ type: LocDetailActions.SET_LOCATION, location: place });
+    this.props.dispatch({ type: DetailActions.SET_LOCATION, location: place });
     this.props.dispatch({ type: NavActions.LOCATION_PROFILE });
   }
 
@@ -178,7 +168,7 @@ class HomeScreen extends Component {
     data = {
       ...data,
       "sessionID": this.props.sessionID,
-      "ownerID": this.props.user._id
+      "userID": this.props.user._id
     }
 
     DataBuilder.buildEmployeeForm(data, (obj) => {
@@ -190,7 +180,7 @@ class HomeScreen extends Component {
           Alert.alert('Success!');
 
           // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
-          this.refreshOwner(data, () => {
+          this.refreshUser(data, () => {
             this.loadPlaces();
           });
         }
@@ -204,12 +194,17 @@ class HomeScreen extends Component {
       "sessionID": this.props.sessionID,
       "userID": this.props.user._id
     }
+
     DataBuilder.buildPlaceForm(data, (obj) => {
       API.createPlace(obj, (err, emp) => {
         if(err) {
           Alert.alert(err.message);
         } else {
-          this.refreshOwner(data, () => {
+          var sessionData = {
+            "sessionID": this.props.sessionID,
+            "userID": this.props.user._id
+          }
+          this.refreshUser(sessionData, () => {
             this.loadPlaces();
           });
         }
@@ -218,7 +213,7 @@ class HomeScreen extends Component {
   }
 
   // USE THIS AFTER YOU CREATE AN EMPLOYEE OR LOCATION
-  refreshOwner = (data, callback) => {
+  refreshUser = (data, callback) => {
     API.verifySession(data, async (err, response) => {
       if(err) {
         this.props.dispatch({ type: 'START_LOGIN' });
@@ -236,11 +231,17 @@ class HomeScreen extends Component {
     });
   }
 
+  clearKeys() {
+    AsyncStorage.removeItem(Keys.SESSION_ID, () => {
+      AsyncStorage.removeItem(Keys.USER_ID);
+    });
+  }
+
   render() {
     return (
       <View style={styles.container} >
         <View style={styles.tabContainer} >
-          <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => console.log('left button') } rightOnPress={() => console.log('right button')} />
+          <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this.clearKeys() } rightOnPress={() => console.log('right button')} />
         </View>
 
         {(this.props.indexOn === 0)

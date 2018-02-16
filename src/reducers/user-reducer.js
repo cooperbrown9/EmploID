@@ -3,7 +3,7 @@ import * as AuthActions from '../action-types/auth-action-types';
 const initialState = {
   isLoggedIn: false, isOwner : true,
   sessionID: null, userID: null,
-  myEmployees: [], myLocations: [],
+  myEmployees: [], myLocations: [], myDiscounts: [],
   role: null
 };
 
@@ -67,6 +67,12 @@ export default function user (state = initialState, action) {
       return {
         ...state,
         myLocations: action.locations
+      }
+
+    case AuthActions.SET_DISCOUNTS:
+      return {
+        ...state,
+        myDiscounts: action.discounts
       }
 
     default:

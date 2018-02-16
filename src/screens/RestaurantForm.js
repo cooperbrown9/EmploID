@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image, Modal } from 'react-native';
 
 import { connect } from 'react-redux';
 import OptionView from '../ui-elements/option-view';
 import * as Colors from '../constants/colors';
+
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
+
+import LocationFormAddEmployee from './EmployeeFormAddLocation';
 
 class RestaurantForm extends Component {
   constructor() {
@@ -17,8 +20,10 @@ class RestaurantForm extends Component {
         name: "Rusty Moose",
         address: "6969 E. Rockford Way",
         email: "hello@restaurant.com",
-        phone: "555-555-5555"
-      }
+        phone: "555-555-5555",
+        employees: []
+      },
+      addEmployeeFormPresented: false
     };
   }
 
@@ -53,11 +58,18 @@ class RestaurantForm extends Component {
     )
   }
 
-
-
   render() {
     return(
       <ScrollView style={styles.scrollContainer} >
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.addEmployeeFormPresented} >
+          <LocationFormAddEmployee
+            dismissModal={() => this.setState({ addEmployeeFormPresented: false })}
+            addEmployees={(employees) => this.setState({ place: { ...this.state.place, employees: employees }})}
+          />
+        </Modal>
+
+
         <View style={styles.container} >
 
           <View style={styles.backButton} >
@@ -93,6 +105,10 @@ class RestaurantForm extends Component {
           </View>
           <Text style={styles.imageText}>Upload Restaurant Image</Text>
 
+          <View style={styles.submitContainer} >
+            <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addEmployeeFormPresented: true }) } />
+          </View>
+
           <TouchableOpacity style={styles.submitContainer} >
             <SubmitButton title={'CREATE LOCATION'} onPress={() => this.submit()} />
           </TouchableOpacity>
@@ -117,7 +133,7 @@ const styles = StyleSheet.create({
     marginLeft: 16, marginTop: 32, marginBottom: 32
   },
   submitContainer: {
-    marginLeft: 16, marginRight: 16, marginTop: 16, backgroundColor: 'yellow'
+    marginLeft: 16, marginRight: 16, marginTop: 16
   },
   imageContainer: {
     justifyContent: 'center',
