@@ -10,7 +10,7 @@ import OptionView from '../../ui-elements/option-view';
 import * as Colors from '../../constants/colors';
 import * as API from '../../api/api';
 import * as DataBuilder from '../../api/data-builder';
-import * as EmployeeDetailActions from '../../action-types/employee-detail-action-types';
+import * as DetailActions from '../../action-types/detail-action-types';
 
 import SubmitButton from '../../ui-elements/submit-button';
 import RoundButton from '../../ui-elements/round-button';
@@ -52,38 +52,58 @@ class EmployeeFormEditOwner extends Component {
   // MAKE ALL FIELDS EDITABLE AND WORK
   // UPDATE REDUX AFTER EMPLOYEE IS UPDATED
   componentWillMount() {
-    this.setState({ employee: this.props.employee });
+    // debugger;
+    // let emp = this.props.employee;
+    // let firstName = this.props.employee.first_name;
+    // delete emp.first_name;
+    // let lastName = this.props.employee.last_name;
+    // delete emp.last_name;
+    
+    // let employee = {
+    //   ...this.props.employee,
+    //   firstName: this.props.employee.first_name,
+    //   lastName: this.props.employee.last_name,
+    // }
+    this.setState({ employee: 
+      { ...this.props.employee, firstName: this.props.employee.first_name, 
+        lastName: this.props.employee.last_name, hireDate: this.props.employee.hire_date 
+      }});
   }
 
   componentDidMount() {
-    this.setState({ employee: this.props.employee });
-    debugger;
     this.genderSelected(this.state.employee.gender);
     this.hairSelected(this.state.employee.hair);
   }
 
   // updates employee, then puts new employee on redux
   submit = () => {
-    API.updateEmployee(this.state.employee, (err, data) => {
+    let data = {
+      "userID": this.props.userID,
+      ...this.state.employee
+    }
+    // places are coming thru undefined...check callback u pass to AddLocationForm
+    debugger;
+    API.updateUser(data, (err, data) => {
       if(err) {
         console.log(err);
         debugger;
       } else {
+        debugger;
         console.log(data);
-        this.getUpdatedEmployee();
+        this.getUpdatedUser();
       }
     });
-    return;
+    // return;
   }
 
-  getUpdatedEmployee = () => {
-    API.getEmployee(this.state.employee._id, (err, emp) => {
+  getUpdatedUser = () => {
+    API.getUser(this.state.employee._id, (err, emp) => {
       if(err) {
         console.log(err);
         debugger;
       } else {
         console.log(emp);
-        this.props.dispatch({ type: EmployeeDetailActions.SET_EMPLOYEE, employee: emp });
+        this.props.dispatch({ type: DetailActions.SET_USER, user: emp });
         this.props.dismiss();
       }
     });
@@ -149,10 +169,17 @@ class EmployeeFormEditOwner extends Component {
             <RoundButton onPress={this.props.dismiss} />
           </View>
 
-          <Text style={styles.textHeader} >Employee Name</Text>
+          <Text style={styles.textHeader} >First Name</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Name', (text) => this.setState({ employee: {...this.state.employee, name: text}}), this.state.employee.name, true)
+              this.textInputFactory('First Name', (text) => this.setState({ employee: {...this.state.employee, firstName: text}}), this.state.employee.firstName, true)
+            }
+          </View>
+          
+          <Text style={styles.textHeader} >Last Name</Text>
+          <View style={styles.inputView} >
+            {
+              this.textInputFactory('Last Name', (text) => this.setState({ employee: {...this.state.employee, lastName: text}}), this.state.employee.lastName, true)
             }
           </View>
 
@@ -187,8 +214,8 @@ class EmployeeFormEditOwner extends Component {
           <Text style={styles.textHeader} >Hire Date</Text>
           <View style={styles.dateView} >
             <DatePickerIOS
-              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, hire_date: date.toDateString() }}) }}
-              date={new Date(this.state.employee.hire_date)}
+              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, hireDate: date.toDateString() }}) }}
+              date={new Date(this.state.employee.hireDate)}
               mode={'date'} maximumDate={new Date()}
             />
           </View>
@@ -303,7 +330,8 @@ var mapStateToProps = state => {
   return {
     isOwner: state.user.isOwner,
     places: state.user.myLocations,
-    employee: state.employeeDetail.employee
+    employee: state.detail.user,
+    userID: state.detail.user._id
   }
 }
 

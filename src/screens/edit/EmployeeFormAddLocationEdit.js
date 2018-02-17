@@ -30,21 +30,42 @@ class EmployeeFormAddLocationEdit extends Component {
   }
 
   async componentWillMount() {
-    let localPlaces = this.props.places;
-    let places = [];
-    let promises = localPlaces.map((place, index) => {
-      for(let i = 0; i < this.props.employeePlaces.length; i++) {
-        place.index = index;
-        place.selected = false;
-        if(place._id == this.props.employeePlaces[i].place_id) {
-          place.selected = true;
+    this.getAllLocations((locs) => {
+      let groupPlaces = locs;
+      let places = [];
+      
+      let promises = groupPlaces.map((place, index) => {
+        
+        for(let i = 0; i < this.props.employeePlaces.length; i++) {
+          place.index = index;
+          place.selected = false;
+          
+          if(place._id == this.props.employeePlaces[i].place_id) {
+            place.selected = true;
+          }
           places.push(place);
-          if(index === this.props.employeePlaces.length - 1) {
+          if(index === groupPlaces.length - 1) {
             this.setState({ places: places });
+            this.forceUpdate();
           }
         }
-      }
+      });
     });
+  }
+  
+  getAllLocations = (callback) => {
+    API.getLocationsInGroup(this.props.user.group_id, (err, locs) => {
+      if(err) {
+        console.log(err);
+        debugger;
+      } else {
+        console.log(locs);
+        callback(locs);
+        // this.setState({ places: locs }, () => {
+          // callback();
+        // });
+      }
+    })
   }
 
   selectPlace = (place) => {
@@ -52,33 +73,33 @@ class EmployeeFormAddLocationEdit extends Component {
     this.setState({ places: this.state.places });
   }
 
-  updatePlaces = () => {
-    var data = {
-      "_id": this.props.employee._id,
-      "places": this.state.selectedPlaces
-    }
-    debugger;
-    API.updateEmployeePlaces(data, (err, response) => {
-      if(err) {
-        console.log(err);
-        debugger;
-      } else {
-        console.log(response);
-        this.props.dismissModal();
-      }
-    })
-  }
+  // updatePlaces = () => {
+  //   var data = {
+  //     "_id": this.props.employee._id,
+  //     "places": this.state.selectedPlaces
+  //   }
+  //   debugger;
+  //   API.updateEmployeePlaces(data, (err, response) => {
+  //     if(err) {
+  //       console.log(err);
+  //       debugger;
+  //     } else {
+  //       console.log(response);
+  //       this.props.dismissModal();
+  //     }
+  //   })
+  // }
 
   submit() {
     let selectedPlaces = [];
     for(let i = 0; i < this.state.places.length; i++) {
       if(this.state.places[i].selected) {
-        selectedPlaces.push({ "place_id": this.state.places[i]._id });
+        selectedPlaces.push({ "place_id": this.state.places[i].place_id });
       }
     }
     // this.updatePlaces();
     this.props.addLocations(selectedPlaces);
-    // this.props.dismissModal();
+    this.props.dismissModal();
   }
 
   render() {
@@ -105,7 +126,6 @@ class EmployeeFormAddLocationEdit extends Component {
           <View style={styles.submitButton} >
             <SubmitButton onPress={() => this.submit() } title={'SUBMIT'} />
           </View>
-
 
       </ScrollView>
     )
@@ -165,7 +185,7 @@ var mapStateToProps = state => {
     user: state.user.user,
     sessionID: state.user.sessionID,
     places: state.user.myLocations,
-    employeePlaces: state.employeeDetail.employee.places
+    employeePlaces: state.detail.user.places
   }
 }
 

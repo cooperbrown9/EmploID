@@ -5,9 +5,12 @@ const BASE = 'https://emploid.herokuapp.com/api';
 const GET_USER = '/get-user/';
 const GET_PLACES = '/get-places/';
 const GET_DISCOUNT = '/get-discount/';
+const GET_LOCATIONS_IN_GROUP = '/get-locations-in-group/';
 
 const CREATE_USER = '/create-user';
 const CREATE_PLACE = '/create-place';
+
+const UPDATE_USER = '/update-user';
 
 const VERIFY_SESSION_GET_USER = '/verify-session-get-user';
 
@@ -56,6 +59,17 @@ export function getDiscount(discID, callback) {
     .catch(e => callback(e))
 }
 
+export function updateUser(data, callback) {
+  axios.post(BASE + UPDATE_USER, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getLocationsInGroup(groupID, callback) {
+  axios.get(BASE + GET_LOCATIONS_IN_GROUP + groupID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
 
 
 
