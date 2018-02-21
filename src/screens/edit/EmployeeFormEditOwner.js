@@ -58,15 +58,15 @@ class EmployeeFormEditOwner extends Component {
     // delete emp.first_name;
     // let lastName = this.props.employee.last_name;
     // delete emp.last_name;
-    
+
     // let employee = {
     //   ...this.props.employee,
     //   firstName: this.props.employee.first_name,
     //   lastName: this.props.employee.last_name,
     // }
-    this.setState({ employee: 
-      { ...this.props.employee, firstName: this.props.employee.first_name, 
-        lastName: this.props.employee.last_name, hireDate: this.props.employee.hire_date 
+    this.setState({ employee:
+      { ...this.props.employee, firstName: this.props.employee.first_name,
+        lastName: this.props.employee.last_name, hireDate: this.props.employee.hire_date
       }});
   }
 
@@ -82,7 +82,7 @@ class EmployeeFormEditOwner extends Component {
       ...this.state.employee
     }
     // places are coming thru undefined...check callback u pass to AddLocationForm
-    debugger;
+
     API.updateUser(data, (err, data) => {
       if(err) {
         console.log(err);
@@ -160,7 +160,7 @@ class EmployeeFormEditOwner extends Component {
 
           <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
             <EmployeeFormAddLocationEdit
-              dismissModal={() => this.setState({ addLocationsPresented: false }) }
+              dismissModal={(callback) => this.setState({ addLocationsPresented: false }) }
               addLocations={(places) => this.setState({ employee: { ...this.state.employee, places: places }}) }
             />
           </Modal>
@@ -175,7 +175,7 @@ class EmployeeFormEditOwner extends Component {
               this.textInputFactory('First Name', (text) => this.setState({ employee: {...this.state.employee, firstName: text}}), this.state.employee.firstName, true)
             }
           </View>
-          
+
           <Text style={styles.textHeader} >Last Name</Text>
           <View style={styles.inputView} >
             {

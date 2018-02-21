@@ -88,6 +88,10 @@ class HomeScreen extends Component {
       employees.push(...locations[i].employees);
     }
 
+    // for(let i = 0; i < employees.length; i++) {
+    //   delete employees[i]._id;
+    // }
+
     // remove current user from employees
     // for(let i = 0; i < employees.length; i++) {
     //   if(employees[i].user_id === this.props.user._id) {
@@ -95,15 +99,18 @@ class HomeScreen extends Component {
     //   }
     // }
 
+    // let arrCopy = employees;
     // remove duplicates
-    for(let i = 0; i < employees.length - 1; i++) {
-      for(let j = 1; j < employees.length; j++) {
-        if(employees[i]._id === employees[j]._id) {
-          employees.pop(j);
-        }
-      }
-    }
+    // for(let i = 0; i < employees.length - 1; i++) {
+    //   for(let j = i + 1; j < employees.length; j++) {
+    //     if(employees[i].user_id === employees[j].user_id) {
+    //       employees.pop(j);
+    //     }
+    //   }
+    // }
 
+    // let arr = employees.filter(this.uniqueArray);
+    // debugger;
     let employeeCount = 0;
     for(let i = 0; i < employees.length; i++) {
       API.getUser(employees[i].user_id, (err, response) => {
@@ -119,6 +126,10 @@ class HomeScreen extends Component {
         }
       })
     }
+  }
+
+  uniqueArray(val, index, self) {
+    return self.indexOf(val) === index;
   }
 
   _changeTab = (index) => {

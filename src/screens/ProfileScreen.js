@@ -17,6 +17,7 @@ import * as ProfileActions from '../action-types/employee-profile-action-types';
 import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
 import * as DetailActions from '../action-types/detail-action-types';
 
+import * as util from '../util';
 
 class ProfileScreen extends Component {
   static navigationOptions = {
@@ -141,7 +142,9 @@ class ProfileScreen extends Component {
                   {this.props.employee.first_name} {this.props.employee.last_name}
                 </Text>
                 <Text style={styles.infoText}>{this.props.employee.position}</Text>
-                <Text style={styles.infoText}>{this.props.employee.phone}</Text>
+                <TouchableOpacity onPress={() => util.callPhoneNumber(this.props.employee.phone)}>
+                  <Text style={styles.infoText}>{util.toPhoneNumber(this.props.employee.phone)}</Text>
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -181,19 +184,19 @@ const styles = StyleSheet.create({
   },
   infoTextName: {
     backgroundColor: 'transparent',
-    fontFamily: 'roboto-regular', fontSize: 40,
+    fontFamily: 'roboto-bold', fontSize: 38,
     color: 'white',
     marginBottom: 16
   },
   infoText: {
     backgroundColor: 'transparent',
-    fontFamily: 'roboto-regular', fontSize: 24,
+    fontFamily: 'roboto-bold', fontSize: 20,
     color: 'white',
-    marginBottom: 8
+    marginBottom: 16
   },
   infoContainer: {
     position: 'absolute',
-    left: 16, right: 120, bottom: 32,
+    left: 16, right: 16, bottom: 16,
     zIndex: 1001
   },
   screenContainer: {

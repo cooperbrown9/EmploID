@@ -15,6 +15,8 @@ import * as API from '../api/api';
 import * as DetailActions from '../action-types/detail-action-types';
 import * as NavActions from '../action-types/nav-action-types';
 
+import * as util from '../util';
+
 class RestaurantProfileScreen extends Component {
   static navigationOptions = {
     header: null
@@ -140,6 +142,16 @@ class RestaurantProfileScreen extends Component {
     }
   }
 
+  toPhoneNumber(num) {
+    let number = '(';
+    number += num.slice(0,3);
+    number += ')';
+    number += num.slice(3,6);
+    number += '-';
+    number += num.slice(6,10);
+    return number;
+  }
+
   render() {
     return (
       <ScrollView style={{flex:1}}>
@@ -155,7 +167,9 @@ class RestaurantProfileScreen extends Component {
 
           <View style={styles.infoContainer} >
             <Text style={styles.infoTextName}>{this.props.location.name}</Text>
-            <Text style={styles.infoText}>{this.props.location.phone}</Text>
+            <TouchableOpacity onPress={() => util.callPhoneNumber(this.props.location.phone)}>
+              <Text style={styles.infoText}>{util.toPhoneNumber(this.props.location.phone)}</Text>
+            </TouchableOpacity>
             <Text style={styles.infoText}>{this.props.location.address}</Text>
             <Text style={styles.infoText}>{this.props.location.email}</Text>
           </View>
@@ -209,7 +223,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     position: 'absolute',
-    left: 16, right: 32, bottom: 32,
+    left: 16, right: 16, bottom: 32,
     zIndex: 1001
   },
   profilePicContainer: {

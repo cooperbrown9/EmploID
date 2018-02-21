@@ -11,6 +11,7 @@ const CREATE_USER = '/create-user';
 const CREATE_PLACE = '/create-place';
 
 const UPDATE_USER = '/update-user';
+const UPDATE_USER_PLACES = '/update-user-places';
 
 const VERIFY_SESSION_GET_USER = '/verify-session-get-user';
 
@@ -24,7 +25,7 @@ export function getUser(userID, callback) {
 
 export function getPlaces(userID, callback) {
   axios.get(BASE + GET_PLACES + userID)
-    .then(resonse => callback(null, response.data))
+    .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
 
@@ -61,6 +62,12 @@ export function getDiscount(discID, callback) {
 
 export function updateUser(data, callback) {
   axios.post(BASE + UPDATE_USER, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function updateUserPlaces(data, callback) {
+  axios.post(BASE + UPDATE_USER_PLACES, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
