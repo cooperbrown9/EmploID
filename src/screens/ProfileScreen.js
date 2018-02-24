@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Modal} from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Modal } from 'react-native';
 import { connect } from 'react-redux';
 import EmployeeTabBar from '../ui-elements/employee-tab-bar.js';
 import RoundButton from '../ui-elements/round-button.js';
@@ -11,6 +11,7 @@ import LocationsTab from './employee-tabs/locations-tab.js';
 import NotesTab from './employee-tabs/notes-tab.js';
 import ProfileTab from './employee-tabs/profile-tab.js';
 import EmployeeFormEditOwner from './edit/EmployeeFormEditOwner';
+import DiscountModal from './DiscountModal';
 
 import * as NavActions from '../action-types/nav-action-types';
 import * as ProfileActions from '../action-types/employee-profile-action-types';
@@ -25,9 +26,9 @@ class ProfileScreen extends Component {
   }
 
   state = {
-    formModal: false,
-    places: [],
-    name: null
+    editModalPresented: false,
+    discountModalPresented: false,
+    selectedDiscount: null
   }
 
   static defaultPropTypes = {
@@ -85,6 +86,11 @@ class ProfileScreen extends Component {
           discounts[i] = disc;
 
           if(count === discounts.length) {
+            if(this.props.role !== 2 && this.props.role !== 3) {
+              for(let i = 0; i < discounts.length; i++) {
+                discounts = discounts.filter(d => d.exclusive === false);
+              }
+            }
             this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: discounts });
           }
         }
@@ -93,11 +99,19 @@ class ProfileScreen extends Component {
   }
 
   _dismissFormModal = () => {
-    this.setState({formModal: false});
+    this.setState({editModalPresented: false});
   }
 
   _presentFormModal = () => {
-    this.setState({formModal: true});
+    this.setState({editModalPresented: true});
+  }
+
+  _dismissDiscountModal = () => {
+    this.setState({ discountModalPresented: false });
+  }
+
+  _presentDiscountModal = () => {
+    this.setState({ discountModalPresented: true });
   }
 
   _goBack = () => {
@@ -159,7 +173,7 @@ class ProfileScreen extends Component {
               : (this.props.indexOn === 1)
                 ? <LocationsTab />
                 : (this.props.indexOn === 2)
-                  ? <DiscountsTab />
+                  ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }), () => this._presentDiscountModal()} />
                 : (this.props.indexOn === 3)
                     ? <NotesTab />
                   : null
@@ -167,9 +181,14 @@ class ProfileScreen extends Component {
 
             </View>
 
-            <Modal animationType={'slide'} transparent={false} visible={this.state.formModal} styles={{marginTop: 0}}>
+            <Modal animationType={'slide'} transparent={false} visible={this.state.editModalPresented} styles={{marginTop: 0}}>
               <EmployeeFormEditOwner dismiss={this._dismissFormModal} />
             </Modal>
+
+            <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal}>
+              <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} />
+            </Modal>
+
           </View>
         </ScrollView>
 
@@ -220,13 +239,17 @@ const styles = StyleSheet.create({
   tabContainer: {
     height: 64
   },
+  discountModal: {
+    marginTop: 32, marginLeft: 16, marginRight: 16, marginBottom: 32,
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  }
 });
 
 var mapStateToProps = state => {
   return {
     indexOn: state.employeeTab.indexOn,
-    isOwner: state.user.isOwner,
     employee: state.detail.user,
+    user: state.user.user,
     role: state.user.role,
     discounts: state.detail.discounts,
     locations: state.detail.locations

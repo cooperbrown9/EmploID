@@ -1,9 +1,10 @@
 
 import * as DetailActions from '../action-types/detail-action-types';
+import { connect } from 'react-redux';
 
 const initialState = { location: {}, employees: [], discounts: [] }
 
-export default function detail(state = initialState, action) {
+function detail(state = initialState, action) {
 
   switch(action.type) {
 
@@ -41,3 +42,12 @@ export default function detail(state = initialState, action) {
       return state;
   }
 }
+
+var mapStateToProps = state => {
+  return {
+
+  }
+}
+
+// export default connect(mapStateToProps)(detail);
+export default detail;

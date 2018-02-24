@@ -7,7 +7,7 @@ const NotesTab = (props) => (
 
     <View style={styles.container}>
 
-        <Text>Notes Tabular</Text>
+        <Text></Text>
 
     </View>
 )

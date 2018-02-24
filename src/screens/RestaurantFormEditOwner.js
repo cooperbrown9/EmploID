@@ -56,7 +56,7 @@ class RestaurantFormEditOwner extends Component {
         <View style={styles.container} >
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} />
+            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/back.png')} />
           </View>
 
           <Text style={styles.textHeader} >Restaurant Name</Text>
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    location: state.locationDetail.location
+    location: state.detail.location
   }
 }
 

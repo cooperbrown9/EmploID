@@ -7,7 +7,7 @@ const ProfileTab = (props) => (
 
     <View style={styles.container}>
 
-        <Text>Profile Tabular</Text>
+        <Text></Text>
 
     </View>
 )

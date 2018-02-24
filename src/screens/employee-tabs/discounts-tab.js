@@ -9,7 +9,7 @@ const DiscountsTab = (props) => (
     <View style={styles.container}>
 
       {props.discounts.map(model =>
-        <TouchableOpacity style={styles.discountItem} key={model._id} >
+        <TouchableOpacity style={styles.discountItem} onPress={() => props.selectDiscount(model)} key={model._id} >
           <View style={styles.discountInfo}>
             <Text style={{fontSize: 17, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.name} </Text>
             <Text style={{fontSize: 15, color: 'gray', fontFamily: 'roboto-regular'}}>{model.offer}</Text>
@@ -21,7 +21,8 @@ const DiscountsTab = (props) => (
 )
 
 DiscountsTab.propTypes = {
-  discounts: PropTypes.array
+  discounts: PropTypes.array,
+  selectDiscount: PropTypes.func
 };
 
 DiscountsTab.defaultPropTypes = {
