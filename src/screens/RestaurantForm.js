@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image, Modal } from 'react-native';
 
+import { Camera, Permissions } from 'expo';
 import { connect } from 'react-redux';
 import OptionView from '../ui-elements/option-view';
 import * as Colors from '../constants/colors';
@@ -23,6 +24,8 @@ class RestaurantForm extends Component {
         phone: "555-555-5555",
         employees: []
       },
+      cameraPermission: false,
+      cameraType: Camera.Constants.Type.back,
       addEmployeeFormPresented: false
     };
   }
@@ -35,6 +38,21 @@ class RestaurantForm extends Component {
 
   static defaultProps = {
     edit: false
+  }
+
+
+  async componentWillMount() {
+    // await this.getCameraPermission();
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+
+    this.setState({ cameraPermission: status === 'granted' });
+  }
+
+  getCameraPermission = async() => {
+    return;
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    debugger;
+    this.setState({ cameraPermission: status === 'granted' });
   }
 
   submit = () => {
@@ -100,14 +118,24 @@ class RestaurantForm extends Component {
             {this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone)}
           </View>
 
-          <View style={styles.imageContainer} >
+          <TouchableOpacity onPress={this.getCameraPermission} style={styles.imageContainer} >
             <Image style={styles.image} />
-          </View>
+          </TouchableOpacity>
           <Text style={styles.imageText}>Upload Restaurant Image</Text>
 
           <View style={styles.submitContainer} >
             <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addEmployeeFormPresented: true }) } />
           </View>
+
+          {(this.state.cameraPermission)
+            ? <View style={{flex: 1}}>
+                <Camera type={this.state.cameraType} style={{flex: 1}} >
+                </Camera>
+              </View>
+
+
+            : null
+          }
 
           <TouchableOpacity style={styles.submitContainer} >
             <SubmitButton title={'CREATE LOCATION'} onPress={() => this.submit()} />

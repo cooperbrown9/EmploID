@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, ActivityIndicator, StyleSheet, Modal, TextInput, Image } from 'react-native';
 
 import { connect } from 'react-redux';
+import { Camera, Permissions } from 'expo';
 
 import EmployeeFormAddLocation from './EmployeeFormAddLocation';
 import OptionView from '../ui-elements/option-view';
@@ -43,8 +44,11 @@ class EmployeeForm extends Component {
         gender: 0,
         hairColor: 0,
         birthday: new Date(1997, 8, 3).toDateString(),
-        hireDate: new Date().toDateString()
-      }
+        hireDate: new Date().toDateString(),
+        imageURI: null
+      },
+      cameraPermission: false,
+      cameraType: Camera.Constants.Type.back
     };
   }
 
@@ -70,6 +74,10 @@ class EmployeeForm extends Component {
     // this.state.employee.password = 'abc123';
     this.props.submitForm(this.state.employee);
     this.props.dismiss();
+  }
+
+  addImage() {
+    var data = new FormData();
   }
 
 
@@ -111,10 +119,25 @@ class EmployeeForm extends Component {
     )
   }
 
+  getCameraPermission = async() => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+
+    this.setState({ cameraPermission: status === 'granted' });
+  }
+
+  takePicture = async() => {
+    if(this.camera) {
+      await this.camera.takePictureAsync()
+        .then((data) => { console.log(data); this.setState({ employee: { ...this.state.employee, imageURI: data.uri }, cameraPermission: false }) })
+        .catch(e => console.log(e))
+    }
+  }
+
   render() {
 
     console.log(this.state);
     return(
+      <View style={{flex: 1}}>
       <ScrollView style={styles.scrollContainer} >
         <View style={styles.container} >
 
@@ -190,9 +213,13 @@ class EmployeeForm extends Component {
             <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
           </View>
 
-          <View style={styles.imageContainer} >
-            <Image style={styles.image} />
-          </View>
+          <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
+            {(this.state.employee.imageURI == null)
+              ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
+              : <Image source={{uri:this.state.employee.imageURI}} style={styles.image} />
+
+            }
+          </TouchableOpacity>
           <Text style={styles.imageText}>Upload Employee Image</Text>
 
 
@@ -203,6 +230,8 @@ class EmployeeForm extends Component {
             <SubmitButton title={'ADD EMPLOYEE'} onPress={() => this.submit()} />
           </View>
 
+
+
           <View style={{height: 64}}/>
         </View>
         {(this.props.isLoading)
@@ -210,6 +239,19 @@ class EmployeeForm extends Component {
           : null
         }
       </ScrollView>
+      {(this.state.cameraPermission)
+        ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
+            <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1}} >
+              <TouchableOpacity onPress={this.takePicture} style={{ height:40, width:40 }} >
+                <Image source={require('../../assets/icons/camera.png')} />
+              </TouchableOpacity>
+            </Camera>
+          </View>
+
+
+        : null
+      }
+    </View>
     )
   }
 }
@@ -233,10 +275,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  imageEmpty: {
+    width: 140, height: 140,
+    borderRadius: 70,
+    tintColor: Colors.BLUE
+  },
   image: {
-    width: 80, height: 80,
-    borderRadius: 40,
-    backgroundColor: 'yellow'
+    width: 140, height: 140,
+    borderRadius: 70
   },
   imageText: {
     textAlign: 'center',

@@ -28,6 +28,7 @@ export default class App extends React.Component {
   // still valid. If they are, dispatch START_HOME
   async componentDidMount() {
     // await this.clearKeys();
+    console.disableYellowBox = true;
     await Font.loadAsync({
       'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf'),
       'roboto-bold': require('./assets/fonts/Roboto-Bold.ttf')

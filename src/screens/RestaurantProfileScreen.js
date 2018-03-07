@@ -58,7 +58,7 @@ class RestaurantProfileScreen extends Component {
   getDiscounts() {
     let discounts = [];
     let count = 0;
-
+    
     for(let i = 0; i < this.props.location.discounts.length; i++) {
       API.getDiscount(this.props.location.discounts[i].discount_id, (err, disc) => {
         if(err) {

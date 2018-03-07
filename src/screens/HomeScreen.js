@@ -16,6 +16,9 @@ import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
 import * as LoadingActions from '../action-types/loading-action-types';
 import * as Keys from '../constants/keys';
+import * as _ from 'lodash';
+
+import axios from 'axios';
 
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
@@ -24,7 +27,7 @@ import FilterModal from './FilterModal';
 import EmployeeForm from './EmployeeForm';
 import PlaceForm from './RestaurantForm';
 
-
+import { Camera, Permissions } from 'expo';
 
 class HomeScreen extends Component {
 
@@ -36,7 +39,9 @@ class HomeScreen extends Component {
       employeeFormPresented: false,
       placeFormPresented: false,
       places: [],
-      employees: []
+      employees: [],
+      cameraPermission: false,
+      cameraType: Camera.Constants.Type.back
     }
   }
 
@@ -45,8 +50,20 @@ class HomeScreen extends Component {
   }
 
   // figure out why locations and employees dont update
-  componentDidMount() {
+  async componentDidMount() {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+
+    this.setState({ cameraPermission: status === 'granted' });
     this.loadData();
+    // axios.post('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=vict&key=AIzaSyBkVEYDc-9oBKvnoAle1JA5ycKIPBDHU7w')
+    //   .then((response) => {
+    //     console.log(response);
+    //     debugger;
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //     debugger;
+    //   })
   }
 
   loadData() {
@@ -109,8 +126,11 @@ class HomeScreen extends Component {
     //   }
     // }
 
-    // let arr = employees.filter(this.uniqueArray);
-    // debugger;
+    // _.uniqBy(employees, 'user_id');
+
+
+    // employees = employees.filter(this.uniqueArray);
+
     let employeeCount = 0;
     for(let i = 0; i < employees.length; i++) {
       API.getUser(employees[i].user_id, (err, response) => {
@@ -242,6 +262,15 @@ class HomeScreen extends Component {
     });
   }
 
+  // takePicture = async() => {
+  //   debugger;
+  //   if(this.camera) {
+  //     await this.camera.takePictureAsync()
+  //       .then(data => console.log(data))
+  //       .catch(e => console.log(data))
+  //   }
+  // }
+
   clearKeys() {
     AsyncStorage.removeItem(Keys.SESSION_ID, () => {
       AsyncStorage.removeItem(Keys.USER_ID);
@@ -270,6 +299,19 @@ class HomeScreen extends Component {
         <TouchableOpacity onPress={() => this._presentFilterModal()} style={styles.filterButton} >
           <Text style={styles.filterText}>Filter</Text>
         </TouchableOpacity>
+
+        {/*(this.state.cameraPermission)
+          ? <View style={{flex: 1, position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
+              <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1}} >
+                <TouchableOpacity onPress={this.takePicture} style={{ justifyContent:'center', alignItems:'center', position: 'absolute', bottom: 32, height:40, width:40 }} >
+                  <Image source={require('../../assets/icons/plus.png')} />
+                </TouchableOpacity>
+              </Camera>
+            </View>
+
+
+          : null
+        */}
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
           <FilterModal dismiss={() => this._dismissFilterModal()} />

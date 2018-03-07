@@ -86,6 +86,14 @@ class ProfileScreen extends Component {
           discounts[i] = disc;
 
           if(count === discounts.length) {
+            // if(this.props.role === 3 || this.props.role === 2) {
+            //   // owner is using the app
+            //
+            // } else {
+            //   // employee is using the app
+            //
+            // }
+
             if(this.props.role !== 2 && this.props.role !== 3) {
               for(let i = 0; i < discounts.length; i++) {
                 discounts = discounts.filter(d => d.exclusive === false);
@@ -173,7 +181,7 @@ class ProfileScreen extends Component {
               : (this.props.indexOn === 1)
                 ? <LocationsTab />
                 : (this.props.indexOn === 2)
-                  ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }), () => this._presentDiscountModal()} />
+                  ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }, () => this._presentDiscountModal())} />
                 : (this.props.indexOn === 3)
                     ? <NotesTab />
                   : null
@@ -251,6 +259,7 @@ var mapStateToProps = state => {
     employee: state.detail.user,
     user: state.user.user,
     role: state.user.role,
+    employeeRole: state.detail.user.role,
     discounts: state.detail.discounts,
     locations: state.detail.locations
   }

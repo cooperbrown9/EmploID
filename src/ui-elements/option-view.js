@@ -78,13 +78,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 16, marginRight: 16,
     color: 'white', textAlign: 'center',
-    fontFamily: 'roboto-regular'
+    fontFamily: 'roboto-bold'
   },
   textOff: {
     fontSize: 18,
     marginLeft: 16, marginRight: 16,
     color: Colors.DARK_GREY, textAlign: 'center',
-    fontFamily: 'roboto-regular'
+    fontFamily: 'roboto-bold'
   }
 });
 

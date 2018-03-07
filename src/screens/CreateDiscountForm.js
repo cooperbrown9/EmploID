@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
+import OptionView from '../ui-elements/option-view';
 
 import * as API from '../api/api';
 import * as Colors from '../constants/colors';
@@ -16,7 +17,11 @@ class CreateDiscountForm extends Component {
 
     this.state = {
       name: '',
-      description: ''
+      description: '',
+      exclusiveOptions: [
+        { value: 'MANAGEMENT', selected: true, index: 0 },
+        { value: 'EMPLOYEES', selected: false, index: 1 }
+      ]
     }
   }
 
@@ -29,19 +34,30 @@ class CreateDiscountForm extends Component {
   }
 
   createDiscount = () => {
-    let discountData = { "name": this.state.name, "offer": this.state.description, "ownerID": this.props.userID, "placeID": this.props.locationID };
-    var data = {
-      ...discountData,
-      "sessionID": this.props.sessionID,
-      "userID": this.props.userID
-    }
-    API.createDiscount(data, (err, response) => {
+    let exclusive = this.state.exclusiveOptions[0].selected;
+    let discountData = {
+      "name": this.state.name,
+      "offer": this.state.description,
+      "placeID": this.props.locationID,
+      "exclusive": exclusive
+    };
+    // var data = {
+    //   ...discountData,
+    //   "sessionID": this.props.sessionID,
+    // }
+    API.createDiscount(discountData, (err, response) => {
       if(err) {
         console.log(err);
       } else {
         console.log(response);
         this.props.dismiss();
       }
+    });
+  }
+
+  optionSelected = (index) => {
+    OptionView.selected(this.state.exclusiveOptions, index, (arr) => {
+      this.setState({ exclusiveOptions: arr });
     });
   }
 
@@ -73,6 +89,14 @@ class CreateDiscountForm extends Component {
             {this.textInputFactory('Description', (text) => this.setState({ description: text }), this.state.description)}
           </View>
 
+          <Text style={styles.textHeader}>Access to the discount</Text>
+          <View style={styles.optionContainer} >
+            <OptionView
+              options={this.state.exclusiveOptions}
+              selectOption={(index) => this.optionSelected(index)}
+            />
+          </View>
+
         </View>
 
         <View style={styles.submitButton} >
@@ -92,6 +116,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginLeft: 16, marginRight: 16, marginTop: 84
+  },
+  optionContainer: {
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    marginBottom: 16,
+    flex: 1,
   },
   inputView: {
     borderRadius: 8,
@@ -118,7 +148,7 @@ var mapStateToProps = state => {
   return {
     sessionID: state.user.sessionID,
     userID: state.user.userID,
-    locationID: state.locationDetail.location._id
+    locationID: state.detail.location._id
   }
 }
 
