@@ -10,7 +10,7 @@ import * as Colors from '../constants/colors';
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 
-import LocationFormAddEmployee from './EmployeeFormAddLocation';
+// import LocationFormAddEmployee from './EmployeeFormAddLocation';
 
 class RestaurantForm extends Component {
   constructor() {
@@ -87,12 +87,14 @@ class RestaurantForm extends Component {
       <View style={{flex: 1}} >
       <ScrollView style={styles.scrollContainer} >
 
+        {/*
         <Modal animationType={'slide'} transparent={false} visible={this.state.addEmployeeFormPresented} >
           <LocationFormAddEmployee
             dismissModal={() => this.setState({ addEmployeeFormPresented: false })}
             addEmployees={(employees) => this.setState({ place: { ...this.state.place, employees: employees }})}
           />
         </Modal>
+        */}
 
 
         <View style={styles.container} >
@@ -134,9 +136,11 @@ class RestaurantForm extends Component {
           </TouchableOpacity>
           <Text style={styles.imageText}>Upload Restaurant Image</Text>
 
+          {/*
           <View style={styles.submitContainer} >
             <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addEmployeeFormPresented: true }) } />
           </View>
+          */}
 
           <TouchableOpacity style={styles.submitContainer} >
             <SubmitButton title={'CREATE LOCATION'} onPress={() => this.submit()} />

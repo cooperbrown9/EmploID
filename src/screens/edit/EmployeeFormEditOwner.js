@@ -49,25 +49,11 @@ class EmployeeFormEditOwner extends Component {
     edit: false
   }
 
-  // MAKE ALL FIELDS EDITABLE AND WORK
-  // UPDATE REDUX AFTER EMPLOYEE IS UPDATED
   componentWillMount() {
-    // debugger;
-    // let emp = this.props.employee;
-    // let firstName = this.props.employee.first_name;
-    // delete emp.first_name;
-    // let lastName = this.props.employee.last_name;
-    // delete emp.last_name;
-
-    // let employee = {
-    //   ...this.props.employee,
-    //   firstName: this.props.employee.first_name,
-    //   lastName: this.props.employee.last_name,
-    // }
-    this.setState({ employee:
-      { ...this.props.employee, firstName: this.props.employee.first_name,
-        lastName: this.props.employee.last_name, hireDate: this.props.employee.hire_date
-      }});
+    this.setState({ employee: {
+      ...this.props.employee, firstName: this.props.employee.first_name,
+      lastName: this.props.employee.last_name, hireDate: this.props.employee.hire_date
+    }});
   }
 
   componentDidMount() {
@@ -75,34 +61,26 @@ class EmployeeFormEditOwner extends Component {
     this.hairSelected(this.state.employee.hair);
   }
 
-  // updates employee, then puts new employee on redux
   submit = () => {
     let data = {
       "userID": this.props.userID,
       ...this.state.employee
     }
-    // places are coming thru undefined...check callback u pass to AddLocationForm
 
     API.updateUser(data, (err, data) => {
       if(err) {
         console.log(err);
-        debugger;
       } else {
-        debugger;
-        console.log(data);
         this.getUpdatedUser();
       }
     });
-    // return;
   }
 
   getUpdatedUser = () => {
     API.getUser(this.state.employee._id, (err, emp) => {
       if(err) {
         console.log(err);
-        debugger;
       } else {
-        console.log(emp);
         this.props.dispatch({ type: DetailActions.SET_USER, user: emp });
         this.props.dismiss();
       }
@@ -147,8 +125,6 @@ class EmployeeFormEditOwner extends Component {
   }
 
   render() {
-
-    console.log(this.state);
     if(!this.state.employee) {
       return(
         <View></View>
@@ -166,7 +142,7 @@ class EmployeeFormEditOwner extends Component {
           </Modal>
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} />
+            <RoundButton imagePath={require('../../../assets/icons/back.png')} onPress={this.props.dismiss} />
           </View>
 
           <Text style={styles.textHeader} >First Name</Text>
@@ -228,11 +204,6 @@ class EmployeeFormEditOwner extends Component {
           <Text style={styles.textHeader}>Hair Color</Text>
           <View style={styles.optionContainer} >
             <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
-          </View>
-
-          <Text style={styles.textHeader} >Age</Text>
-          <View style={styles.inputView} >
-            {this.textInputFactory('99', (text) => this.setState({ employee: {...this.state.employee, age: text}}), this.state.employee.age, this.props.isOwner)}
           </View>
 
           <View style={styles.imageContainer} >

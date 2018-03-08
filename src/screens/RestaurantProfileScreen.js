@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Modal} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, RefreshControl } from 'react-native';
 import { connect } from 'react-redux';
 
 import LocationTabBar from '../ui-elements/location-tab-bar.js';
@@ -24,7 +24,8 @@ class RestaurantProfileScreen extends Component {
 
   state = {
     formModal: false,
-    discountModalPresented: false
+    discountModalPresented: false,
+    isRefreshing: false
   }
 
   componentDidMount() {
@@ -41,6 +42,7 @@ class RestaurantProfileScreen extends Component {
       API.getUser(this.props.location.employees[i].user_id, (err, user) => {
         if(err) {
           console.log(err);
+          this.setState({ isRefreshing: false });
           debugger;
         } else {
           userCount++;
@@ -58,11 +60,12 @@ class RestaurantProfileScreen extends Component {
   getDiscounts() {
     let discounts = [];
     let count = 0;
-    
+
     for(let i = 0; i < this.props.location.discounts.length; i++) {
       API.getDiscount(this.props.location.discounts[i].discount_id, (err, disc) => {
         if(err) {
           console.log(err);
+          this.setState({ isRefreshing: false });
           debugger;
         } else {
           count++;
@@ -76,6 +79,7 @@ class RestaurantProfileScreen extends Component {
           }
 
           if(count === this.props.location.discounts.length) {
+            this.setState({ isRefreshing: false });
             this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: discounts });
           }
         }
@@ -87,8 +91,8 @@ class RestaurantProfileScreen extends Component {
     API.updateLocation(place, (err, loc) => {
       if(err) {
         console.log(err);
+        this.setState({ isRefreshing: false });
       } else {
-        console.log(loc);
         this.getUpdatedLocation();
         // this.props.dispatch({ type: LocationDetailActions.SET_LOCATION, location: loc });
         // this.loadEmployees();
@@ -101,12 +105,19 @@ class RestaurantProfileScreen extends Component {
     API.getPlace(this.props.location._id, (err, loc) => {
       if(err) {
         console.log(err);
+        this.setState({ isRefreshing: false });
       } else {
-        console.log(loc);
         this.props.dispatch({ type: DetailActions.SET_LOCATION, location: loc });
         this.loadEmployees();
         this.loadDiscounts();
       }
+    })
+  }
+
+  // wrapper for getUpdatedLocation so it can setState
+  refreshLocation = () => {
+    this.setState({ isRefreshing: true}, () => {
+      this.getUpdatedLocation();
     })
   }
 
@@ -154,7 +165,10 @@ class RestaurantProfileScreen extends Component {
 
   render() {
     return (
-      <ScrollView style={{flex:1}}>
+      <ScrollView
+        style={{flex:1}}
+        refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshLocation} />}
+      >
         <View style={styles.picContainer} >
           <Image style={styles.profilePic} source={require('../../assets/images/chef1.png')} />
           <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.3)',zIndex:1000}}></View>
@@ -186,7 +200,7 @@ class RestaurantProfileScreen extends Component {
             ? <DiscountsTab presentForm={() => this._presentDiscountForm()}/>
             : (this.props.indexOn === 2)
               ? <NotesTab />
-            : null
+              : null
         }
 
         </View>
@@ -207,7 +221,6 @@ class RestaurantProfileScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1
-
   },
   infoText: {
     backgroundColor: 'transparent',

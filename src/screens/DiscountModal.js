@@ -112,7 +112,7 @@ class DiscountModal extends Component {
 
   render() {
     return(
-      <View style={styles.container} backgroundColor={BACKGROUND_GREY}>
+      <View style={{ flex: 1, backgroundColor: 'rgb(' + this.state.red + ',' + this.state.green + ',' + this.state.blue +')' }} >
         <View style={styles.backButton} >
           <RoundButton onPress={() => this.props.dismiss()} imagePath={require('../../assets/icons/back.png')}/>
         </View>
@@ -126,7 +126,7 @@ class DiscountModal extends Component {
 
         <View style={styles.buttonContainer}>
           <View style={{ height: 64 }}>
-            <SubmitButton title={'REDEEM'} />
+            <SubmitButton title={'REDEEM'} onPress={this.props.dismiss} />
           </View>
         </View>
 

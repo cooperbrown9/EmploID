@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, Image, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, RefreshControl } from 'react-native';
 import { connect } from 'react-redux';
 import EmployeeTabBar from '../ui-elements/employee-tab-bar.js';
 import RoundButton from '../ui-elements/round-button.js';
@@ -28,7 +28,8 @@ class ProfileScreen extends Component {
   state = {
     editModalPresented: false,
     discountModalPresented: false,
-    selectedDiscount: null
+    selectedDiscount: null,
+    isRefreshing: false
   }
 
   static defaultPropTypes = {
@@ -47,6 +48,12 @@ class ProfileScreen extends Component {
     this.getPlaces();
   }
 
+  refreshUser = () => {
+    this.setState({ isRefreshing: true }, () => {
+      this.getPlaces();
+    });
+  }
+
   getPlaces() {
     let placesCount = 0;
     let places = [];
@@ -55,6 +62,7 @@ class ProfileScreen extends Component {
       API.getPlace(this.props.employee.places[i].place_id, (err, response) => {
         if(err) {
           console.log(err);
+          this.setState({ isRefreshing: false });
         } else {
           placesCount++;
           places.push(response);
@@ -80,7 +88,7 @@ class ProfileScreen extends Component {
       API.getDiscount(discounts[i].discount_id, (err, disc) => {
         if(err) {
           console.log(err);
-          debugger;
+          this.setState({ isRefreshing: false });
         } else {
           count++;
           discounts[i] = disc;
@@ -99,6 +107,7 @@ class ProfileScreen extends Component {
                 discounts = discounts.filter(d => d.exclusive === false);
               }
             }
+            this.setState({ isRefreshing: false });
             this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: discounts });
           }
         }
@@ -145,7 +154,10 @@ class ProfileScreen extends Component {
       )
     }
     return (
-        <ScrollView style={{flex:1}}>
+        <ScrollView
+          style={{flex:1}}
+          refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshUser} /> }
+        >
           <View style={{flex: 1}}>
             <View style={styles.profilePicContainer} >
 

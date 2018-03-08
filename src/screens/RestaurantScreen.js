@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, ScrollView, ListView, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
-// import NavBar from '../ui-elements/nav-bar.js';
+import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import {SearchBar} from 'react-native-elements';
+
 const RestaurantScreen = (props) => (
 
 
@@ -16,8 +16,8 @@ const RestaurantScreen = (props) => (
             <Image style={styles.restaurantImage} source={require('../../assets/images/rest-1.png')}/>
 
             <View style={styles.restaurantInfo}>
-              <Text style={{fontSize: 17, marginBottom: 6}}>{place.name}</Text>
-              <Text style={{fontSize: 15, color: 'gray'}}>{place.address}</Text>
+              <Text style={styles.nameText}>{place.name}</Text>
+              <Text style={styles.addyText}>{place.address}</Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -36,14 +36,17 @@ RestaurantScreen.defaultPropTypes = {
 
 };
 
-
-
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  nameText: {
+    fontSize: 24, marginBottom: 6,
+    fontFamily: 'roboto-bold', color: 'black'
+  },
+  addyText: {
+    fontSize: 18, fontFamily: 'roboto-bold',
+    color: 'gray'
   },
   restaurantItem: {
     flex: 1,

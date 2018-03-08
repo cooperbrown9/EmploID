@@ -78,6 +78,10 @@ class CreateDiscountForm extends Component {
       <ScrollView style={styles.scrollContainer} >
         <View style={styles.container} >
 
+          <View style={styles.backButton} >
+            <RoundButton imagePath={require('../../assets/icons/back.png')} onPress={this.props.dismiss} />
+          </View>
+
           <Text style={styles.textHeader}>Name</Text>
           <View style={styles.inputView}>
             {this.textInputFactory('Name', (text) => this.setState({ name: text }), this.state.name)}
@@ -112,6 +116,9 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
     backgroundColor: Colors.BACKGROUND_GREY
+  },
+  backButton: {
+    marginLeft: 16, marginTop: 32, marginBottom: 32
   },
   container: {
     flex: 1,

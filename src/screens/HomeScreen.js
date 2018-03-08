@@ -40,8 +40,7 @@ class HomeScreen extends Component {
       placeFormPresented: false,
       places: [],
       employees: [],
-      cameraPermission: false,
-      cameraType: Camera.Constants.Type.back
+      isRefreshing: false
     }
   }
 
@@ -66,6 +65,7 @@ class HomeScreen extends Component {
       API.getPlace(this.props.user.places[i].place_id, (err, place) => {
         if(err) {
           Alert.alert('ERROR LOADPLACES' + err.message);
+          this.setState({ isRefreshing: false });
         } else {
           placeCount++;
           places.push(place);
@@ -87,10 +87,27 @@ class HomeScreen extends Component {
 
   // LEFT OFF...MAKE SURE YOU CAN ADD EMPLOYEES TO LOCATIONS AND LOCATIONS TO EMPLOYEES, THEN MAKE SURE THHEY SHOW UP ON RESPECTIVE PROFILES
   loadEmployees(locations) {
-    let employees = [];
+    let dirty_employees = [];
 
     for(let i = 0; i < locations.length; i++) {
-      employees.push(...locations[i].employees);
+      dirty_employees.push(...locations[i].employees);
+    }
+
+    // fuck this had to remove duplicates
+    let employees = [];
+    let match = false;
+    employees.push(dirty_employees[0]);
+    for(let i = 0; i < dirty_employees.length; i++) {
+      for(let j = 0; j < employees.length; j++) {
+        if(dirty_employees[i].user_id == employees[j].user_id) {
+          match = true;
+          continue;
+        }
+      }
+      if(!match) {
+        employees.push(dirty_employees[i]);
+      }
+      match = false;
     }
 
     // for(let i = 0; i < employees.length; i++) {
@@ -124,12 +141,14 @@ class HomeScreen extends Component {
       API.getUser(employees[i].user_id, (err, response) => {
         if(err) {
           Alert.alert('ERROR LOAD EMPLOYEES' + err.message);
+          this.setState({ isRefreshing: false });
         } else {
           employees[i] = response;
           employeeCount++;
 
           if(employeeCount === employees.length) {
             this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
+            this.setState({ isRefreshing: false });
           }
         }
       })
@@ -250,6 +269,12 @@ class HomeScreen extends Component {
     });
   }
 
+  refreshData = () => {
+    this.setState({ isRefreshing: true }, () => {
+      this.loadData();
+    });
+  }
+
   clearKeys() {
     AsyncStorage.removeItem(Keys.SESSION_ID, () => {
       AsyncStorage.removeItem(Keys.USER_ID);
@@ -264,7 +289,7 @@ class HomeScreen extends Component {
         </View>
 
         {(this.props.indexOn === 0)
-          ? <EmployeeScreen openProfile={(employee) => this._openEmployeeProfile(employee)} />
+          ? <EmployeeScreen isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
           : <RestaurantScreen openProfile={(place) => this._openLocationProfile(place)} />
         }
 
@@ -278,19 +303,6 @@ class HomeScreen extends Component {
         <TouchableOpacity onPress={() => this._presentFilterModal()} style={styles.filterButton} >
           <Text style={styles.filterText}>Filter</Text>
         </TouchableOpacity>
-
-        {/*(this.state.cameraPermission)
-          ? <View style={{flex: 1, position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
-              <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1}} >
-                <TouchableOpacity onPress={this.takePicture} style={{ justifyContent:'center', alignItems:'center', position: 'absolute', bottom: 32, height:40, width:40 }} >
-                  <Image source={require('../../assets/icons/plus.png')} />
-                </TouchableOpacity>
-              </Camera>
-            </View>
-
-
-          : null
-        */}
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
           <FilterModal dismiss={() => this._dismissFilterModal()} />
