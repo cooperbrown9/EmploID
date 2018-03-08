@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
 
 import { connect } from 'react-redux';
 
@@ -41,14 +41,16 @@ TabBar.propTypes = {
   rightOnPress: PropTypes.func
 }
 
+const FRAME = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.BLUE
+    backgroundColor: Colors.BLUE,
+    zIndex: 2
   },
   subContainer: {
     flex: 1,
-    marginTop: 8
+    marginTop: (FRAME.height === 812) ? 16 : 8
   },
   image: {
     width: 24, height: 24,
@@ -73,14 +75,14 @@ const styles = StyleSheet.create({
   },
   leftButtonOn: {
     flex: 1,
-    marginRight: 16, marginTop: 2,
+    marginRight: 16, marginTop: 8,
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomColor: 'white', borderBottomWidth: 2
   },
   rightButtonOn: {
     flex: 1,
-    marginLeft: 16, marginTop: 2,
+    marginLeft: 16, marginTop: 8,
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomColor: 'white', borderBottomWidth: 2

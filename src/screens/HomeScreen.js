@@ -50,20 +50,8 @@ class HomeScreen extends Component {
   }
 
   // figure out why locations and employees dont update
-  async componentDidMount() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-
-    this.setState({ cameraPermission: status === 'granted' });
+  componentDidMount() {
     this.loadData();
-    // axios.post('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=vict&key=AIzaSyBkVEYDc-9oBKvnoAle1JA5ycKIPBDHU7w')
-    //   .then((response) => {
-    //     console.log(response);
-    //     debugger;
-    //   })
-    //   .catch((e) => {
-    //     console.log(e);
-    //     debugger;
-    //   })
   }
 
   loadData() {
@@ -262,15 +250,6 @@ class HomeScreen extends Component {
     });
   }
 
-  // takePicture = async() => {
-  //   debugger;
-  //   if(this.camera) {
-  //     await this.camera.takePictureAsync()
-  //       .then(data => console.log(data))
-  //       .catch(e => console.log(data))
-  //   }
-  // }
-
   clearKeys() {
     AsyncStorage.removeItem(Keys.SESSION_ID, () => {
       AsyncStorage.removeItem(Keys.USER_ID);
@@ -358,7 +337,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   tabContainer: {
-    height: 72
+    height: (FRAME.height === 812) ? 84 : 72
   }
 });
 

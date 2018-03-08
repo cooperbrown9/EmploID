@@ -69,9 +69,6 @@ class EmployeeForm extends Component {
   }
 
   submit = () => {
-    console.log(this.state.employee);
-    // this.props.dispatch({ type: LoadingActions.START_LOADING });
-    // this.state.employee.password = 'abc123';
     this.props.submitForm(this.state.employee);
     this.props.dismiss();
   }
@@ -149,7 +146,7 @@ class EmployeeForm extends Component {
           </Modal>
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} />
+            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/back.png')} />
           </View>
 
           <Text style={styles.textHeader} >First Name</Text>

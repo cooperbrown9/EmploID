@@ -22,7 +22,8 @@ class RestaurantForm extends Component {
         address: "6969 E. Rockford Way",
         email: "hello@restaurant.com",
         phone: "555-555-5555",
-        employees: []
+        employees: [],
+        imageURI: null
       },
       cameraPermission: false,
       cameraType: Camera.Constants.Type.back,
@@ -41,18 +42,9 @@ class RestaurantForm extends Component {
   }
 
 
-  async componentWillMount() {
+  componentWillMount() {
     // await this.getCameraPermission();
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
 
-    this.setState({ cameraPermission: status === 'granted' });
-  }
-
-  getCameraPermission = async() => {
-    return;
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    debugger;
-    this.setState({ cameraPermission: status === 'granted' });
   }
 
   submit = () => {
@@ -76,8 +68,23 @@ class RestaurantForm extends Component {
     )
   }
 
+  getCameraPermission = async() => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+
+    this.setState({ cameraPermission: status === 'granted' });
+  }
+
+  takePicture = async() => {
+    if(this.camera) {
+      await this.camera.takePictureAsync()
+        .then((data) => { console.log(data); this.setState({ place: { ...this.state.place, imageURI: data.uri }, cameraPermission: false }) })
+        .catch(e => console.log(e))
+    }
+  }
+
   render() {
     return(
+      <View style={{flex: 1}} >
       <ScrollView style={styles.scrollContainer} >
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.addEmployeeFormPresented} >
@@ -91,7 +98,7 @@ class RestaurantForm extends Component {
         <View style={styles.container} >
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} />
+            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/back.png')} />
           </View>
 
           <Text style={styles.textHeader} >Restaurant Name</Text>
@@ -118,24 +125,18 @@ class RestaurantForm extends Component {
             {this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone)}
           </View>
 
-          <TouchableOpacity onPress={this.getCameraPermission} style={styles.imageContainer} >
-            <Image style={styles.image} />
+          <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
+            {(this.state.place.imageURI == null)
+              ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
+            : <Image source={{uri:this.state.place.imageURI}} style={styles.image} />
+
+            }
           </TouchableOpacity>
           <Text style={styles.imageText}>Upload Restaurant Image</Text>
 
           <View style={styles.submitContainer} >
             <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addEmployeeFormPresented: true }) } />
           </View>
-
-          {(this.state.cameraPermission)
-            ? <View style={{flex: 1}}>
-                <Camera type={this.state.cameraType} style={{flex: 1}} >
-                </Camera>
-              </View>
-
-
-            : null
-          }
 
           <TouchableOpacity style={styles.submitContainer} >
             <SubmitButton title={'CREATE LOCATION'} onPress={() => this.submit()} />
@@ -144,6 +145,19 @@ class RestaurantForm extends Component {
           <View style={{height: 64}}/>
         </View>
       </ScrollView>
+      {(this.state.cameraPermission)
+        ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
+            <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1}} >
+              <TouchableOpacity onPress={this.takePicture} style={{ height:40, width:40 }} >
+                <Image source={require('../../assets/icons/camera.png')} />
+              </TouchableOpacity>
+            </Camera>
+          </View>
+
+
+        : null
+      }
+    </View>
     )
   }
 }
