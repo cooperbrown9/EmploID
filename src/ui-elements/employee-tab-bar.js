@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { connect } from 'react-redux';
 
@@ -21,11 +21,11 @@ class EmployeeTabBar extends Component {
 
   }
 
-  bottomBar() {
-    return(
-      <View style={styles.bottomBar} />
-    )
-  }
+  // bottomBar() {
+  //   return(
+  //     <View style={styles.bottomBar} />
+  //   )
+  // }
 
   render() {
 
@@ -53,7 +53,7 @@ class EmployeeTabBar extends Component {
   }
 }
 
-const FRAME = Dimensions.get('window');
+// const FRAME = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -78,14 +78,14 @@ const styles = StyleSheet.create({
   },
   buttonTextOn: {
     textAlign: 'center',
-    fontSize: 14,
-    fontFamily: 'roboto-regular',
+    fontSize: 16, marginTop: 3,
+    fontFamily: 'roboto-bold',
     color: 'black'
   },
   buttonTextOff: {
     textAlign: 'center',
-    fontSize: 14,
-    fontFamily: 'roboto-regular',
+    fontSize: 16,
+    fontFamily: 'roboto-bold',
     color: 'rgb(200, 200, 200)'
   }
 

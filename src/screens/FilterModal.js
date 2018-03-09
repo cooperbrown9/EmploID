@@ -4,8 +4,6 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 
 import OptionView from '../ui-elements/option-view';
-// import Slider from 'react-native-multi-slider';
-// import MultiSlider from 'react-native-multi-slider';
 
 class FilterModal extends Component {
 
@@ -161,7 +159,7 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    ...state
+    user: state.user
   }
 }
 

@@ -6,13 +6,13 @@ const initialState = { index: 0 };
 export default function tab(state = initialState, action) {
   switch(action.type) {
 
-    case TabActions.EMPLOYEE_TAB:
+    case TabActions.LOCATION_TAB:
       return {
         ...state,
         index: 0
       }
 
-    case TabActions.LOCATION_TAB:
+    case TabActions.EMPLOYEE_TAB:
       return {
         ...state,
         index: 1

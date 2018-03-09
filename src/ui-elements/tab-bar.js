@@ -18,13 +18,13 @@ const TabBar = props => (
         <TouchableOpacity onPress={() => props.changeTab(0)}
           style={(props.index === 0) ? styles.leftButtonOn : styles.leftButtonOff}
         >
-          <Text style={styles.text}>Employees</Text>
+          <Text style={styles.text}>Locations</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => props.changeTab(1)}
           style={(props.index === 1) ? styles.rightButtonOn : styles.rightButtonOff}
         >
-          <Text style={styles.text}>Locations</Text>
+          <Text style={styles.text}>Employees</Text>
         </TouchableOpacity>
       </View>
 
@@ -57,32 +57,32 @@ const styles = StyleSheet.create({
     tintColor: 'white'
   },
   text: {
-    fontSize: 18,
-    color: 'white',
+    fontSize: 20,
+    color: 'white', fontFamily: 'roboto-bold',
     textAlign: 'center'
   },
   leftButtonOff: {
     flex: 1,
-    marginRight: 16,
+    marginRight: 16, marginTop: 8,
     justifyContent: 'center',
     alignItems: 'center'
   },
   rightButtonOff: {
     flex: 1,
-    marginLeft: 16,
+    marginLeft: 16, marginTop: 8,
     justifyContent: 'center',
     alignItems: 'center'
   },
   leftButtonOn: {
     flex: 1,
-    marginRight: 16, marginTop: 8,
+    marginRight: 16, marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomColor: 'white', borderBottomWidth: 2
   },
   rightButtonOn: {
     flex: 1,
-    marginLeft: 16, marginTop: 8,
+    marginLeft: 16, marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomColor: 'white', borderBottomWidth: 2

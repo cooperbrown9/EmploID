@@ -14,7 +14,7 @@ class EmployeeFormAddLocation extends Component {
   constructor() {
     super();
 
-    state = {
+    this.state = {
       places: [
         { name: 'ABC', _id: '123', selected: false }
       ],
@@ -26,7 +26,7 @@ class EmployeeFormAddLocation extends Component {
   static propTypes = {
     dismissModal: PropTypes.func,
     addLocations: PropTypes.func,
-    places: PropTypes.array
+    places: PropTypes.array,
   }
 
   componentWillMount() {

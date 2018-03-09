@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, RefreshControl } from 'react-native';
 import { connect } from 'react-redux';
 import EmployeeTabBar from '../ui-elements/employee-tab-bar.js';
@@ -14,8 +15,8 @@ import EmployeeFormEditOwner from './edit/EmployeeFormEditOwner';
 import DiscountModal from './DiscountModal';
 
 import * as NavActions from '../action-types/nav-action-types';
-import * as ProfileActions from '../action-types/employee-profile-action-types';
-import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
+// import * as ProfileActions from '../action-types/employee-profile-action-types';
+// import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
 import * as DetailActions from '../action-types/detail-action-types';
 
 import * as util from '../util';
@@ -32,7 +33,13 @@ class ProfileScreen extends Component {
     isRefreshing: false
   }
 
-  static defaultPropTypes = {
+  static propTypes = {
+    dismiss: PropTypes.func,
+    isMyProfile: PropTypes.bool
+  }
+
+  // if something breaks check this out
+  static defaultProps = {
     employee: {
       name: '',
       email: '',
@@ -41,7 +48,8 @@ class ProfileScreen extends Component {
       phone: '',
       places: [],
       position: ''
-    }
+    },
+    isMyProfile: false
   }
 
   componentDidMount () {
@@ -132,7 +140,11 @@ class ProfileScreen extends Component {
   }
 
   _goBack = () => {
-    this.props.dispatch({ type: NavActions.BACK });
+    if(this.props.isMyProfile) {
+      this.props.dismiss();
+    } else {
+      this.props.dispatch({ type: NavActions.BACK });
+    }
   }
 
   editProfileButton() {

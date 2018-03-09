@@ -8,17 +8,17 @@ import * as TabActions from '../action-types/tab-action-types';
 import * as NavActions from '../action-types/nav-action-types';
 import * as AuthActions from '../action-types/auth-action-types';
 import * as ProfileActions from '../action-types/employee-profile-action-types';
-import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
-import * as LocDetailActions from '../action-types/location-detail-action-types';
+// import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
+// import * as LocDetailActions from '../action-types/location-detail-action-types';
 import * as DetailActions from '../action-types/detail-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
-import * as LoadingActions from '../action-types/loading-action-types';
+// import * as LoadingActions from '../action-types/loading-action-types';
 import * as Keys from '../constants/keys';
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
 
-import axios from 'axios';
+// import axios from 'axios';
 
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
@@ -26,6 +26,7 @@ import RestaurantScreen from './RestaurantScreen.js';
 import FilterModal from './FilterModal';
 import EmployeeForm from './EmployeeForm';
 import PlaceForm from './RestaurantForm';
+import ProfileScreen from './ProfileScreen';
 
 import { Camera, Permissions } from 'expo';
 
@@ -38,6 +39,7 @@ class HomeScreen extends Component {
       filterPresented: false,
       employeeFormPresented: false,
       placeFormPresented: false,
+      myProfilePresented: false,
       places: [],
       employees: [],
       isRefreshing: false
@@ -93,7 +95,7 @@ class HomeScreen extends Component {
       dirty_employees.push(...locations[i].employees);
     }
 
-    // fuck this had to remove duplicates
+    // fuck this, had to remove duplicates, janky ass way no normal sorting works
     let employees = [];
     let match = false;
     employees.push(dirty_employees[0]);
@@ -160,7 +162,11 @@ class HomeScreen extends Component {
   }
 
   _changeTab = (index) => {
-    this.props.dispatch({ type: (index === 0) ? TabActions.EMPLOYEE_TAB : TabActions.LOCATION_TAB });
+    if(this.props.places.length < 1) {
+      Alert.alert('You need to add a Restaurant before you add employees!');
+    } else {
+      this.props.dispatch({ type: (index === 0) ? TabActions.LOCATION_TAB : TabActions.EMPLOYEE_TAB });
+    }
   }
 
   _presentFilterModal = () => {
@@ -196,9 +202,9 @@ class HomeScreen extends Component {
 
   addPressed = () => {
     if(this.props.indexOn === 0) {
-      this.setState({ employeeFormPresented: true });
-    } else {
       this.setState({ placeFormPresented: true });
+    } else {
+      this.setState({ employeeFormPresented: true });
     }
   }
 
@@ -269,6 +275,15 @@ class HomeScreen extends Component {
     });
   }
 
+  presentMyProfile = () => {
+    this.props.dispatch({ type: DetailActions.SET_USER, user: this.props.user });
+    this.setState({ myProfilePresented: true });
+  }
+
+  _dismissMyProfile = () => {
+    this.setState({ myProfilePresented: false });
+  }
+
   refreshData = () => {
     this.setState({ isRefreshing: true }, () => {
       this.loadData();
@@ -281,16 +296,27 @@ class HomeScreen extends Component {
     });
   }
 
+  placesEmptyElement() {
+    return (
+      <View style={{ }}>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container} >
         <View style={styles.tabContainer} >
-          <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this.clearKeys() } rightOnPress={() => console.log('right button')} />
+          <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this.clearKeys() } rightOnPress={() => this.presentMyProfile()} />
         </View>
 
         {(this.props.indexOn === 0)
-          ? <EmployeeScreen isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
-          : <RestaurantScreen openProfile={(place) => this._openLocationProfile(place)} />
+          ? (this.props.places.length < 1)
+            ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ textAlign:'center', fontSize: 20, fontFamily: 'roboto-bold', color: Colors.MID_GREY}}>Add a Restaurant before you add employees!</Text>
+              </View>
+            : <RestaurantScreen openProfile={(place) => this._openLocationProfile(place)} />
+          : <EmployeeScreen isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
         }
 
         {(this.props.role === 3)
@@ -300,9 +326,11 @@ class HomeScreen extends Component {
           : null
         }
 
+        {/* FILTER BUTTON OUT FOR NOW
         <TouchableOpacity onPress={() => this._presentFilterModal()} style={styles.filterButton} >
           <Text style={styles.filterText}>Filter</Text>
         </TouchableOpacity>
+        */}
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
           <FilterModal dismiss={() => this._dismissFilterModal()} />
@@ -314,6 +342,10 @@ class HomeScreen extends Component {
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.placeFormPresented} >
           <PlaceForm submitForm={(data) => this._submitPlaceForm(data)} dismiss={() => this._dismissPlaceModal()} />
+        </Modal>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.myProfilePresented} >
+          <ProfileScreen dismiss={() => this.setState({ myProfilePresented: false })} isMyProfile={true} />
         </Modal>
 
       </View>
@@ -328,7 +360,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    backgroundColor: Colors.BACKGROUND_GREY
   },
   filterButton: {
     position: 'absolute',
@@ -360,7 +393,9 @@ var mapStateToProps = state => {
     isOwner: state.user.isOwner,
     sessionID: state.user.sessionID,
     userID: state.user.userID,
-    role: state.user.role
+    role: state.user.role,
+    places: state.user.myLocations,
+    employees: state.user.myEmployees
   }
 }
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, ActivityIndicator, StyleSheet, Modal, TextInput, Image } from 'react-native';
+import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, ActivityIndicator, StyleSheet, Modal, TextInput, Image, Alert } from 'react-native';
 
 import { connect } from 'react-redux';
 import { Camera, Permissions } from 'expo';
@@ -40,6 +40,8 @@ class EmployeeForm extends Component {
         position: "Head Chef",
         phone: "5094449999",
         email: "bruh@yahoo.com",
+        places: [],
+        groupID: "",
         role: 0,
         gender: 0,
         hairColor: 0,
@@ -47,6 +49,7 @@ class EmployeeForm extends Component {
         hireDate: new Date().toDateString(),
         imageURI: null
       },
+      placeSelected: false,
       cameraPermission: false,
       cameraType: Camera.Constants.Type.back
     };
@@ -69,8 +72,14 @@ class EmployeeForm extends Component {
   }
 
   submit = () => {
-    this.props.submitForm(this.state.employee);
-    this.props.dismiss();
+    if(this.state.employee.places.length < 1) {
+      Alert.alert('You need to assign the employee to a restaurant!');
+    } else {
+      this.setState({ employee: { ...this.state.employee, groupID: this.props.user.group_id }}, () => {
+        this.props.submitForm(this.state.employee);
+        this.props.dismiss();
+      });
+    }
   }
 
   addImage() {
@@ -214,7 +223,6 @@ class EmployeeForm extends Component {
             {(this.state.employee.imageURI == null)
               ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
               : <Image source={{uri:this.state.employee.imageURI}} style={styles.image} />
-
             }
           </TouchableOpacity>
           <Text style={styles.imageText}>Upload Employee Image</Text>
@@ -332,7 +340,8 @@ var mapStateToProps = state => {
   return {
     isOwner: state.user.isOwner,
     places: state.user.myLocations,
-    isLoading: state.loading.isLoading
+    isLoading: state.loading.isLoading,
+    user: state.user.user
   }
 }
 
