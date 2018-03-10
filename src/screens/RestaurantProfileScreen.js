@@ -71,7 +71,7 @@ class RestaurantProfileScreen extends Component {
           count++;
 
           if(disc.exclusive) {
-            if(this.props.role === 2 || this.props.role === 3) {
+            if(this.props.role === 2 || this.props.role === 1) {
               discounts.push(disc);
             }
           } else {
@@ -142,7 +142,7 @@ class RestaurantProfileScreen extends Component {
   }
 
   editProfileButton() {
-    if(this.props.role === 2 || this.props.role === 3) {
+    if(this.props.role === 2 || this.props.role === 1) {
       return (
         <View style={styles.optionsButton}>
           <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>

@@ -102,7 +102,7 @@ class ProfileScreen extends Component {
           discounts[i] = disc;
 
           if(count === discounts.length) {
-            // if(this.props.role === 3 || this.props.role === 2) {
+            // if(this.props.role === 2 || this.props.role === 1) {
             //   // owner is using the app
             //
             // } else {
@@ -110,7 +110,7 @@ class ProfileScreen extends Component {
             //
             // }
 
-            if(this.props.role !== 2 && this.props.role !== 3) {
+            if(this.props.role !== 2 && this.props.role !== 1) {
               for(let i = 0; i < discounts.length; i++) {
                 discounts = discounts.filter(d => d.exclusive === false);
               }
@@ -148,7 +148,7 @@ class ProfileScreen extends Component {
   }
 
   editProfileButton() {
-    if(this.props.role === 3 || this.props.role === 2) {
+    if(this.props.role === 1 || this.props.role === 2 || this.props.role === 3) {
       return (
         <View style={styles.optionsButton}>
             <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>

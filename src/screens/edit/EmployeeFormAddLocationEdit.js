@@ -10,6 +10,7 @@ import * as DetailActions from '../../action-types/detail-action-types';
 import SubmitButton from '../../ui-elements/submit-button';
 import RoundButton from '../../ui-elements/round-button';
 import LoadingOverlay from '../../ui-elements/loading-overlay';
+import OptionView from '../../ui-elements/option-view';
 
 class EmployeeFormAddLocationEdit extends Component {
 
@@ -19,6 +20,11 @@ class EmployeeFormAddLocationEdit extends Component {
     this.state = {
       places: [
         { name: 'ABC', _id: '123', selected: false }
+      ],
+      roleOptions: [
+        { value: 'Employee', selected: true, index: 0 },
+        { value: 'Manager', selected: false, index: 1 },
+        { value: 'Owner', selected: false, index: 2 }
       ],
       selectedPlaces: [],
       loading: false
@@ -33,6 +39,7 @@ class EmployeeFormAddLocationEdit extends Component {
   }
 
   componentDidMount() {
+    this.roleSelected(this.props.role);
 
     console.log(this.state.loading);
     this.getGroupLocations((locs) => {
@@ -70,15 +77,18 @@ class EmployeeFormAddLocationEdit extends Component {
     API.getLocationsInGroup(this.props.user.group_id, (err, locs) => {
       if(err) {
         console.log(err);
-        debugger;
+        this.props.dismissModal();
       } else {
         console.log(locs);
-        for(let i = 0; i < locs.length; i++) {
-          locs[i].selected = false;
-          locs[i].index = i;
+        if(!locs) {
+          console.log(locs);
+        } else {
+          for(let i = 0; i < locs.length; i++) {
+            locs[i].selected = false;
+            locs[i].index = i;
+          }
+          callback(locs);
         }
-
-        callback(locs);
       }
     })
   }
@@ -93,7 +103,7 @@ class EmployeeFormAddLocationEdit extends Component {
     let selectedPlaces = [];
     for(let i = 0; i < this.state.places.length; i++) {
       if(this.state.places[i].selected) {
-        selectedPlaces.push({ "place_id": this.state.places[i]._id });
+        selectedPlaces.push({ "place_id": this.state.places[i]._id, "role": this.state.role });
       }
     }
     // this.updatePlaces();
@@ -116,13 +126,19 @@ class EmployeeFormAddLocationEdit extends Component {
             Alert.alert('Couldn\'t update restaurants!');
           } else {
             this.setState({ loading: false }, () => {
-              this.props.dispatch({ type: DetailActions.SET_LOCATIONS, locations: places });
+              this.props.dispatch({ type: DetailActions.SET_LOCATIONS, locations: places, role: this.state.role });
               this.props.dismissModal();
             });
           }
         })
       }
     })
+  }
+
+  roleSelected = (index) => {
+    OptionView.selected(this.state.roleOptions, index, (arr) => {
+      this.setState({ roleOptions: arr, role: index });
+    });
   }
 
   render() {
@@ -146,6 +162,11 @@ class EmployeeFormAddLocationEdit extends Component {
             )) : null}
           </View>
 
+          <Text style={styles.textHeader}>Role</Text>
+          <View style={styles.optionContainer} >
+            <OptionView options={this.state.roleOptions} selectOption={(index) => this.roleSelected(index)} />
+          </View>
+
           <View style={styles.submitButton} >
             <SubmitButton onPress={() => this.submit() } title={'SUBMIT'} />
           </View>
@@ -166,6 +187,16 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
     backgroundColor: Colors.BACKGROUND_GREY
+  },
+  optionContainer: {
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    marginBottom: 16, marginLeft: 16, marginRight: 16,
+    flex: 1,
+  },
+  textHeader: {
+    fontSize: 16, marginLeft: 16, marginBottom: 12,
+    color: 'black'
   },
   submitButton: {
     marginLeft: 32, marginRight: 32, marginBottom: 64
@@ -212,6 +243,7 @@ var mapStateToProps = state => {
   return {
     user: state.user.user,
     employeeID: state.detail.user._id,
+    role: state.detail.user.role,
     sessionID: state.user.sessionID,
     places: state.user.myLocations,
     employeePlaces: state.detail.user.places

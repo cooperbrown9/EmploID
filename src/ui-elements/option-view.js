@@ -76,13 +76,13 @@ const styles = StyleSheet.create({
   },
   textOn: {
     fontSize: 18,
-    marginLeft: 16, marginRight: 16,
+    marginLeft: 12, marginRight: 12,
     color: 'white', textAlign: 'center',
     fontFamily: 'roboto-bold'
   },
   textOff: {
     fontSize: 18,
-    marginLeft: 16, marginRight: 16,
+    marginLeft: 12, marginRight: 12,
     color: Colors.DARK_GREY, textAlign: 'center',
     fontFamily: 'roboto-bold'
   }

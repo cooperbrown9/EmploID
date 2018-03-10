@@ -10,6 +10,7 @@ import OptionView from '../ui-elements/option-view';
 
 import * as Colors from '../constants/colors';
 import * as LoadingActions from '../action-types/loading-action-types';
+
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 import LoadingOverlay from '../ui-elements/loading-overlay';
@@ -32,6 +33,11 @@ class EmployeeForm extends Component {
         { value: 'Grey', selected: false, index: 3},
         { value: 'Blonde', selected: false, index: 4},
         { value: 'Other', selected: false, index: 5}
+      ],
+      roleOptions: [
+        { value: 'Employee', selected: true, index: 0 },
+        { value: 'Manager', selected: false, index: 1 },
+        { value: 'Owner', selected: false, index: 2 }
       ],
       employee: {
         firstName: "Dat",
@@ -76,16 +82,15 @@ class EmployeeForm extends Component {
       Alert.alert('You need to assign the employee to a restaurant!');
     } else {
       this.setState({ employee: { ...this.state.employee, groupID: this.props.user.group_id }}, () => {
+        for(let i = 0; i < this.state.employee.places.length; i++) {
+          this.state.employee.places[i].role = this.state.employee.role;
+        }
+        debugger;
         this.props.submitForm(this.state.employee);
         this.props.dismiss();
       });
     }
   }
-
-  addImage() {
-    var data = new FormData();
-  }
-
 
   genderSelected = (index) => {
     OptionView.selected(this.state.genderOptions, index, (arr) => {
@@ -96,6 +101,12 @@ class EmployeeForm extends Component {
   hairSelected = (index) => {
     OptionView.selected(this.state.hairOptions, index, (arr) => {
       this.setState({ hairOptions: arr, employee: {...this.state.employee, hairColor: index } });
+    });
+  }
+
+  roleSelected = (index) => {
+    OptionView.selected(this.state.roleOptions, index, (arr) => {
+      this.setState({ roleOptions: arr, employee: {...this.state.employee, role: index } });
     });
   }
 
@@ -217,6 +228,11 @@ class EmployeeForm extends Component {
           <Text style={styles.textHeader}>Hair Color</Text>
           <View style={styles.optionContainer} >
             <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
+          </View>
+
+          <Text style={styles.textHeader}>Role</Text>
+          <View style={styles.optionContainer} >
+            <OptionView options={this.state.roleOptions} selectOption={(index) => this.roleSelected(index)} />
           </View>
 
           <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >

@@ -75,8 +75,8 @@ class HomeScreen extends Component {
           if(placeCount === this.props.user.places.length) {
             this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
 
-            // if owner (3)
-            if(this.props.user.role === 3) {
+            // if owner (2)
+            if(this.props.user.role === 2) {
               console.log('yuh');
             }
 
@@ -348,7 +348,7 @@ class HomeScreen extends Component {
           : <EmployeeScreen isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
         }
 
-        {(this.props.role === 3)
+        {(this.props.role === 2)
           ? <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
               <Image style={{height:64,width:64}} source={require('../../assets/icons/plus.png')} />
             </TouchableOpacity>
