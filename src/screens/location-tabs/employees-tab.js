@@ -9,7 +9,7 @@ const EmployeesTab = (props) => (
 
       {props.employees.map(model =>
         <TouchableOpacity style={styles.employeeItem} key={model._id} >
-          <Image style={styles.employeeImage} source={require('../../../assets/images/chef1.png')} />
+          <Image style={styles.employeeImage} source={{ uri: model.image_url }} />
           <View style={styles.employeeInfo}>
             <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.first_name} {model.last_name}</Text>
             <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}}>{model.position}</Text>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, RefreshControl, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 
 import LocationTabBar from '../ui-elements/location-tab-bar.js';
@@ -170,7 +170,7 @@ class RestaurantProfileScreen extends Component {
         refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshLocation} />}
       >
         <View style={styles.picContainer} >
-          <Image style={styles.profilePic} source={require('../../assets/images/chef1.png')} />
+          <Image style={styles.profilePic} source={{ uri: this.props.location.image_url }} />
           <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.3)',zIndex:1000}}></View>
 
           <View style={styles.backButton}>
@@ -218,6 +218,7 @@ class RestaurantProfileScreen extends Component {
   }
 }
 
+const FRAME = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1
@@ -243,7 +244,10 @@ const styles = StyleSheet.create({
     flex: 4,
   },
   profilePic: {
-    flex: 1, zIndex: 1
+    flex: 1, zIndex: 1,
+    height: FRAME.height / 8 * 5,
+    width: FRAME.width,
+    resizeMode: 'cover'
   },
   backButton: {
     position: 'absolute', left: 20, top: 20,

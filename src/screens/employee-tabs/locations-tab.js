@@ -9,7 +9,7 @@ const LocationsTab = (props) => (
     <View style={styles.container}>
         {props.locations.map(model =>
           <TouchableOpacity style={styles.restaurantItem} key={model._id} >
-              <Image style={styles.restaurantImage} source={require('../../../assets/images/rest-1.png')}/>
+              <Image style={styles.restaurantImage} source={{ uri: model.image_url }}/>
 
             <View style={styles.restaurantInfo}>
               <Text style={{fontSize: 20, marginBottom: 12, fontFamily: 'roboto-bold'}}>{model.name} </Text>

@@ -30,7 +30,6 @@ export function getPlaces(userID, callback) {
 }
 
 export function createUser(data, callback) {
-  debugger;
   axios.post(BASE + CREATE_USER, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))

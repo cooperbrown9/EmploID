@@ -2,7 +2,13 @@
 import * as DetailActions from '../action-types/detail-action-types';
 import { connect } from 'react-redux';
 
-const initialState = { location: {}, employees: [], discounts: [] }
+const initialState = {
+  location: {},
+  employees: [], discounts: [], locations: [],
+  user: {
+    places: []
+  }
+ }
 
 function detail(state = initialState, action) {
 

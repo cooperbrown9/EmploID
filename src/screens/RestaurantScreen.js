@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl } from 'react-native';
 import {SearchBar} from 'react-native-elements';
 
 const RestaurantScreen = (props) => (
@@ -9,11 +9,22 @@ const RestaurantScreen = (props) => (
 
     <View style={styles.container}>
       <SearchBar lightTheme placeholder='Search' style={{marginBottom: 20}}/>
-      <ScrollView contentContainerStyle={{marginRight: 8, marginLeft: 8}}>
+      <ScrollView
+        contentContainerStyle={{marginRight: 8, marginLeft: 8}}
+        refreshControl={
+          <RefreshControl refreshing={props.isRefreshing} onRefresh={props.onRefresh} />
+        }
+      >
 
         {props.places.map((place) => (
           <TouchableOpacity style={styles.restaurantItem} key={place._id} onPress={() => props.openProfile(place)} >
-            <Image style={styles.restaurantImage} source={require('../../assets/images/rest-1.png')}/>
+            <Image
+              style={{
+                height: 100, width: 100,
+                flex: 1,
+                resizeMode: 'cover'}}
+                source={{ uri: place.image_url }}
+            />
 
             <View style={styles.restaurantInfo}>
               <Text style={styles.nameText}>{place.name}</Text>
@@ -29,7 +40,9 @@ const RestaurantScreen = (props) => (
 
 RestaurantScreen.propTypes = {
   places: PropTypes.array,
-  openProfile: PropTypes.func
+  openProfile: PropTypes.func,
+  isRefreshing: PropTypes.bool,
+  onRefresh: PropTypes.func
 };
 
 RestaurantScreen.defaultPropTypes = {

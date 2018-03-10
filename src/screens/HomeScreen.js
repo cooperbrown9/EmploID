@@ -18,7 +18,7 @@ import * as Colors from '../constants/colors';
 import * as Keys from '../constants/keys';
 // import * as _ from 'lodash';
 
-// import axios from 'axios';
+import axios from 'axios';
 
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
@@ -209,51 +209,80 @@ class HomeScreen extends Component {
   }
 
   _submitEmployeeForm(data) {
-    data = {
-      ...data,
-      "sessionID": this.props.sessionID,
-      "userID": this.props.user._id
-    }
-
-    DataBuilder.buildEmployeeForm(data, (obj) => {
-      API.createUser(obj, (err, emp) => {
-        if(err) {
-          Alert.alert(err.message);
-        } else {
-          console.log(emp);
-          Alert.alert('Success!');
-
-          // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
-          this.refreshUser(data, () => {
-            this.loadPlaces();
-          });
-        }
-      });
+    var img = new FormData();
+    img.append('file', {
+      uri: data.imageURI,
+      type: 'image/png',
+      name: 'testpic'
     });
+    axios.post('https://emploid.herokuapp.com/upload', img).then((response) => {
+        let newImage = response.data;
+
+        data = {
+          ...data,
+          "imageURL": newImage,
+          "sessionID": this.props.sessionID,
+          "userID": this.props.user._id
+        }
+
+        DataBuilder.buildEmployeeForm(data, (obj) => {
+          API.createUser(obj, (err, emp) => {
+            if(err) {
+              Alert.alert(err.message);
+            } else {
+              console.log(emp);
+              Alert.alert('Success!');
+
+              // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
+              this.refreshUser(data, () => {
+                this.loadPlaces();
+              });
+            }
+          });
+        });
+      }).catch((e) => {
+
+      })
   }
 
   _submitPlaceForm(data) {
-    data = {
-      ...data,
-      "sessionID": this.props.sessionID,
-      "userID": this.props.user._id
-    }
-
-    DataBuilder.buildPlaceForm(data, (obj) => {
-      API.createPlace(obj, (err, emp) => {
-        if(err) {
-          Alert.alert(err.message);
-        } else {
-          var sessionData = {
-            "sessionID": this.props.sessionID,
-            "userID": this.props.user._id
-          }
-          this.refreshUser(sessionData, () => {
-            this.loadPlaces();
-          });
-        }
-      });
+    var img = new FormData();
+    img.append('file', {
+      uri: data.imageURI,
+      type: 'image/png',
+      name: 'testpic'
     });
+    axios.post('https://emploid.herokuapp.com/upload', img)
+      .then((response) => {
+        let newImage = response.data;
+
+        data = {
+          ...data,
+          "imageURL": newImage,
+          "sessionID": this.props.sessionID,
+          "userID": this.props.user._id
+        }
+
+        DataBuilder.buildPlaceForm(data, (obj) => {
+          API.createPlace(obj, (err, emp) => {
+            if(err) {
+              Alert.alert(err.message);
+            } else {
+              var sessionData = {
+                "sessionID": this.props.sessionID,
+                "userID": this.props.user._id
+              }
+
+              this.refreshUser(sessionData, () => {
+                this.loadPlaces();
+              });
+            }
+          });
+        });
+      })
+      .catch((e) => {
+        debugger;
+      })
   }
 
   // USE THIS AFTER YOU CREATE AN EMPLOYEE OR LOCATION
@@ -315,7 +344,7 @@ class HomeScreen extends Component {
             ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ textAlign:'center', fontSize: 20, fontFamily: 'roboto-bold', color: Colors.MID_GREY}}>Add a Restaurant before you add employees!</Text>
               </View>
-            : <RestaurantScreen openProfile={(place) => this._openLocationProfile(place)} />
+            : <RestaurantScreen isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
           : <EmployeeScreen isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
         }
 
