@@ -11,7 +11,8 @@ import * as Colors from '../constants/colors';
 
 class UserPermissionModal extends Component {
   static navigationOptions = {
-    header: null
+    header: null,
+    gesturesEnabled: false
   }
 
   static propTypes = {

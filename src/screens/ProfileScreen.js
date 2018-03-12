@@ -24,7 +24,8 @@ import * as util from '../util';
 
 class ProfileScreen extends Component {
   static navigationOptions = {
-    header: null
+    header: null,
+    gesturesEnabled: false
   }
 
   state = {
@@ -79,6 +80,14 @@ class ProfileScreen extends Component {
           places.push(response);
 
           if(placesCount === this.props.employee.places.length) {
+            for(let i = 0; i < places.length; i++) {
+              for(let j = 0; j < this.props.employee.places.length; j++) {
+                if(places[i]._id === this.props.employee.places[j].place_id) {
+                  places[i].detailLocationRole = this.props.employee.places[j].role;
+                }
+              }
+            }
+            this.setState({ isRefreshing: false });
             this.props.dispatch({ type: DetailActions.SET_LOCATIONS, locations: places });
             this.getDiscounts();
           }
@@ -90,10 +99,23 @@ class ProfileScreen extends Component {
   getDiscounts = () => {
     let count = 0;
     let discounts = []
+    // for testing START
+    // let locs = this.props.locations;
+    // for(let i = 0; i < locs.length; i++) {
+    //   for(let j = 0; j < this.props.employee.places.length; j++) {
+    //     if(this.props.employee.places[j].role == 1 || this.props.employee.places[j].role == 2) {
+    //       // discounts.push();
+    //       j = this.props.employee.places.length;
+    //     }
+    //   }
+    // }
+    // END
 
     for(let i = 0; i < this.props.locations.length; i++) {
       discounts.push(...this.props.locations[i].discounts);
     }
+
+
 
     for(let i = 0; i < discounts.length; i++) {
       API.getDiscount(discounts[i].discount_id, (err, disc) => {
@@ -105,21 +127,38 @@ class ProfileScreen extends Component {
           discounts[i] = disc;
 
           if(count === discounts.length) {
-            // if(this.props.role === 2 || this.props.role === 1) {
-            //   // owner is using the app
-            //
-            // } else {
-            //   // employee is using the app
-            //
-            // }
+            //START
+            let cleanDiscounts = [];
 
-            if(this.props.role !== 2 && this.props.role !== 1) {
-              for(let i = 0; i < discounts.length; i++) {
-                discounts = discounts.filter(d => d.exclusive === false);
+            for(let i = 0; i < this.props.locations.length; i++) {
+              for(let j = 0; j < this.props.locations[i].discounts.length; j++) {
+                for(let l = 0; l < discounts.length; l++) {
+                  if(discounts[l]._id === this.props.locations[i].discounts[j].discount_id) {
+                    // if employee role for this place is manager or owner
+                    // then add it outright, otherwise
+                    if(this.props.locations[i].detailLocationRole == 1 || this.props.locations[i].detailLocationRole == 2) {
+                      cleanDiscounts.push(discounts[l]);
+                    } else {
+                      if(!discounts[l].exclusive) {
+                        cleanDiscounts.push(discounts[l]);
+                      }
+                    }
+                  } else {
+                    continue;
+                  }
+                }
               }
             }
+            //END
+
+            // if(this.props.role !== 2 && this.props.role !== 1) {
+            //
+            //   for(let i = 0; i < discounts.length; i++) {
+            //     discounts = discounts.filter(d => d.exclusive === false);
+            //   }
+            // }
             this.setState({ isRefreshing: false });
-            this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: discounts });
+            this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: cleanDiscounts });
           }
         }
       })
@@ -139,7 +178,9 @@ class ProfileScreen extends Component {
   }
 
   _presentDiscountModal = () => {
-    this.setState({ discountModalPresented: true });
+    if(this.props.employee._id === this.props.user._id) {
+      this.setState({ discountModalPresented: true });
+    }
   }
 
   _goBack = () => {
@@ -323,7 +364,7 @@ var mapStateToProps = state => {
     employee: state.detail.user,
     user: state.user.user,
     role: state.user.role,
-    employeeRole: state.detail.user.role,
+    employeeRole: state.detail.employeeRole,
     discounts: state.detail.discounts,
     locations: state.detail.locations
   }

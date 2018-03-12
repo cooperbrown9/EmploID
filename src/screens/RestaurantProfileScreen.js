@@ -19,7 +19,8 @@ import * as util from '../util';
 
 class RestaurantProfileScreen extends Component {
   static navigationOptions = {
-    header: null
+    header: null,
+    gesturesEnabled: false
   }
 
   state = {
@@ -116,7 +117,14 @@ class RestaurantProfileScreen extends Component {
         console.log(err);
         this.setState({ isRefreshing: false });
       } else {
-        this.props.dispatch({ type: DetailActions.SET_LOCATION, location: loc });
+        let role = 0;
+        for(let i = 0; i < this.props.user.places.length; i++) {
+          if(this.props.user.places[i].place_id === loc._id) {
+            role = this.props.user.places[i].role;
+            break;
+          }
+        }
+        this.props.dispatch({ type: DetailActions.SET_LOCATION, location: loc, role: role });
         this.loadEmployees();
         this.loadDiscounts();
       }
@@ -278,7 +286,8 @@ var mapStateToProps = state => {
     employees: state.detail.employees,
     location: state.detail.location,
     indexOn: state.locationTab.indexOn,
-    role: state.user.role
+    role: state.user.role,
+    user: state.user.user
   }
 }
 

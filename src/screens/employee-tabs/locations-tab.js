@@ -8,7 +8,7 @@ const LocationsTab = (props) => (
 
     <View style={styles.container}>
         {props.locations.map(model =>
-          <TouchableOpacity style={styles.restaurantItem} key={model._id} onPress={() => props.presentModal(model)} >
+          <TouchableOpacity style={(model.detailLocationRole === 0) ? styles.restaurantItem : (model.detailLocationRole === 1) ? styles.restaurantItemManager : styles.restaurantItemOwner} key={model._id} onPress={() => props.presentModal(model)} >
               <Image style={styles.restaurantImage} source={{ uri: model.image_url }}/>
 
             <View style={styles.restaurantInfo}>
@@ -47,6 +47,34 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     overflow: 'hidden',
     borderRadius: 4
+  },
+  restaurantItemManager: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    height: 100,
+    marginTop: 4,
+    marginBottom: 4,
+    backgroundColor: 'white',
+    overflow: 'hidden',
+    borderRadius: 4,
+    borderRightWidth: 8, borderColor: 'orange'
+  },
+  restaurantItemOwner: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    height: 100,
+    marginTop: 4,
+    marginBottom: 4,
+    backgroundColor: 'white',
+    overflow: 'hidden',
+    borderRadius: 4,
+    borderRightWidth: 8, borderColor: 'yellow'
   },
   restaurantImage: {
   height: 100,

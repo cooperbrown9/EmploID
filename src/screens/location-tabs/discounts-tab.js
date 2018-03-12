@@ -8,7 +8,7 @@ import RoundButton from '../../ui-elements/round-button';
 const DiscountsTab = (props) => (
 
     <View style={styles.container}>
-      {(props.role === 3 || props.role === 2)
+      {(props.role === 1 || props.role === 2)
         ? <View style={styles.addDiscount} >
             <RoundButton onPress={() => props.presentForm()} imagePath={require('../../../assets/icons/plus.png')} />
           </View>
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
 var mapStateToProps = state => {
   return {
     discounts: state.detail.discounts,
-    role: state.user.role
+    role: state.detail.employeeRole
   }
 }
 

@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
       marginTop: 4, marginBottom: 4,
       backgroundColor: 'white',
       overflow: 'hidden',
-      borderRightWidth: 4, borderColor: 'orange'
+      borderRightWidth: 8, borderColor: 'orange'
   },
   employeeItemOwner: {
       flex: 1,
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
       marginTop: 4, marginBottom: 4,
       backgroundColor: 'white',
       overflow: 'hidden',
-      borderRightWidth: 4, borderColor: 'yellow'
+      borderRightWidth: 8, borderColor: 'yellow'
   },
   employeeInfo: {
     flex:3,

@@ -47,7 +47,8 @@ class HomeScreen extends Component {
   }
 
   static navigationOptions = {
-    header: null
+    header: null,
+    gesturesEnabled: false
   }
 
   // figure out why locations and employees dont update
@@ -188,7 +189,14 @@ class HomeScreen extends Component {
   }
 
   _openLocationProfile = (place) => {
-    this.props.dispatch({ type: DetailActions.SET_LOCATION, location: place });
+    let role = 0;
+    for(let i = 0; i < this.props.user.places.length; i++) {
+      if(this.props.user.places[i].place_id === place._id) {
+        role = this.props.user.places[i].role;
+        break;
+      }
+    }
+    this.props.dispatch({ type: DetailActions.SET_LOCATION, location: place, role: role });
     this.props.dispatch({ type: NavActions.LOCATION_PROFILE });
   }
 
