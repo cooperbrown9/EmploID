@@ -83,9 +83,10 @@ class EmployeeForm extends Component {
     } else {
       this.setState({ employee: { ...this.state.employee, groupID: this.props.user.group_id }}, () => {
         for(let i = 0; i < this.state.employee.places.length; i++) {
-          this.state.employee.places[i].role = this.state.employee.role;
+          // make the user an employee at all restaurants by default
+          // must go to their profile to set if their real role of a restaurant
+          this.state.employee.places[i].role = 0;// this.state.employee.role;
         }
-        debugger;
         this.props.submitForm(this.state.employee);
         this.props.dismiss();
       });

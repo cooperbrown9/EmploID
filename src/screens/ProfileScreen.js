@@ -13,6 +13,7 @@ import NotesTab from './employee-tabs/notes-tab.js';
 import ProfileTab from './employee-tabs/profile-tab.js';
 import EmployeeFormEditOwner from './edit/EmployeeFormEditOwner';
 import DiscountModal from './DiscountModal';
+import UserPermissionModal from './UserPermissionModal';
 
 import * as NavActions from '../action-types/nav-action-types';
 // import * as ProfileActions from '../action-types/employee-profile-action-types';
@@ -29,8 +30,10 @@ class ProfileScreen extends Component {
   state = {
     editModalPresented: false,
     discountModalPresented: false,
+    userPermissionModalPresented: false,
     selectedDiscount: null,
-    isRefreshing: false
+    isRefreshing: false,
+    userPermissionModel: {}
   }
 
   static propTypes = {
@@ -147,6 +150,28 @@ class ProfileScreen extends Component {
     }
   }
 
+  updateUserPermissions = (role, location) => {
+    // update restaurant of that index for that user to the specified role
+    let employeePlaces = this.props.employee.places;
+    for(let i = 0; i < employeePlaces.length; i++) {
+      if(employeePlaces[i].place_id === location._id) {
+        employeePlaces[i].role = role;
+        break;
+      }
+    }
+    var data = {
+      "userID": this.props.employee._id,
+      "places": employeePlaces
+    }
+    API.updateUserPlaces(data, (err, user) => {
+      if(err) {
+        console.log('couldnt update places');
+      } else {
+        console.log(user);
+      }
+    });
+  }
+
   editProfileButton() {
     if(this.props.role === 1 || this.props.role === 2 || this.props.role === 3) {
       return (
@@ -156,6 +181,12 @@ class ProfileScreen extends Component {
       )
     } else {
       return null;
+    }
+  }
+
+  _presentUserPermissionModal = (model) => {
+    if(this.props.user.role === 1 || this.props.user.role === 2) {
+      this.setState({ userPermissionModalPresented: true, userPermissionModel: model });
     }
   }
 
@@ -203,7 +234,7 @@ class ProfileScreen extends Component {
            {(this.props.indexOn === 0)
               ? <ProfileTab />
               : (this.props.indexOn === 1)
-                ? <LocationsTab />
+                ? <LocationsTab presentModal={(model) => this._presentUserPermissionModal(model)} />
                 : (this.props.indexOn === 2)
                   ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }, () => this._presentDiscountModal())} />
                 : (this.props.indexOn === 3)
@@ -219,6 +250,11 @@ class ProfileScreen extends Component {
 
             <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal}>
               <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} />
+            </Modal>
+
+            <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} style={styles.discountModal}>
+              <View style={{height: 64, backgroundColor: 'transparent'}}></View>
+              <UserPermissionModal updatePermission={(role, location) => this.updateUserPermissions(role, location)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
             </Modal>
 
           </View>

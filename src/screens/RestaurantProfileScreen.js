@@ -46,9 +46,18 @@ class RestaurantProfileScreen extends Component {
           debugger;
         } else {
           userCount++;
+          // for(let i = 0; i < user.places.length; )
           users.push(user);
 
           if(userCount === this.props.location.employees.length) {
+            for(let i = 0; i < users.length; i++) {
+              for(let j = 0; j < users[i].places.length; j++) {
+                if(users[i].places[j].place_id === this.props.location._id) {
+                  users[i].detailLocationRole = users[i].places[j].role;
+                }
+              }
+            }
+            // debugger;
             this.props.dispatch({ type: DetailActions.SET_EMPLOYEES, employees: users });
             this.getDiscounts();
           }

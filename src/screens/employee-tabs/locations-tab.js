@@ -8,7 +8,7 @@ const LocationsTab = (props) => (
 
     <View style={styles.container}>
         {props.locations.map(model =>
-          <TouchableOpacity style={styles.restaurantItem} key={model._id} >
+          <TouchableOpacity style={styles.restaurantItem} key={model._id} onPress={() => props.presentModal(model)} >
               <Image style={styles.restaurantImage} source={{ uri: model.image_url }}/>
 
             <View style={styles.restaurantInfo}>
@@ -22,6 +22,7 @@ const LocationsTab = (props) => (
 
 LocationsTab.propTypes = {
   locations: PropTypes.array,
+  presentModal: PropTypes.func
 };
 
 LocationsTab.defaultPropTypes = {

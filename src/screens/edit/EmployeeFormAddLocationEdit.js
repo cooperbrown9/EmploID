@@ -103,7 +103,7 @@ class EmployeeFormAddLocationEdit extends Component {
     let selectedPlaces = [];
     for(let i = 0; i < this.state.places.length; i++) {
       if(this.state.places[i].selected) {
-        selectedPlaces.push({ "place_id": this.state.places[i]._id, "role": this.state.role });
+        selectedPlaces.push({ "place_id": this.state.places[i]._id, "role": 0 });
       }
     }
     // this.updatePlaces();
@@ -162,10 +162,12 @@ class EmployeeFormAddLocationEdit extends Component {
             )) : null}
           </View>
 
+          {/*
           <Text style={styles.textHeader}>Role</Text>
           <View style={styles.optionContainer} >
             <OptionView options={this.state.roleOptions} selectOption={(index) => this.roleSelected(index)} />
           </View>
+          */}
 
           <View style={styles.submitButton} >
             <SubmitButton onPress={() => this.submit() } title={'SUBMIT'} />

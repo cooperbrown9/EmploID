@@ -73,14 +73,14 @@ const styles = StyleSheet.create({
   },
   buttonTextOn: {
     textAlign: 'center',
-    fontSize: 18,
-    fontFamily: 'roboto-regular',
+    fontSize: 16,
+    fontFamily: 'roboto-bold',
     color: 'black'
   },
   buttonTextOff: {
     textAlign: 'center',
-    fontSize: 18,
-    fontFamily: 'roboto-regular',
+    fontSize: 16,
+    fontFamily: 'roboto-bold',
     color: 'rgb(200, 200, 200)'
   }
 

@@ -37,7 +37,7 @@ class EmployeeFormEditOwner extends Component {
         { value: 'Other', selected: false, index: 5}
       ],
       roleOptions: [
-        { value: 'Employee', selected: true, index: 0 },
+        { value: 'Employee', selected: false, index: 0 },
         { value: 'Manager', selected: false, index: 1 },
         { value: 'Owner', selected: false, index: 2 }
       ],

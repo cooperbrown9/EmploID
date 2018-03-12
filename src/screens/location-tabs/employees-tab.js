@@ -8,11 +8,14 @@ const EmployeesTab = (props) => (
     <View style={styles.container}>
 
       {props.employees.map(model =>
-        <TouchableOpacity style={styles.employeeItem} key={model._id} >
+        <TouchableOpacity style={(model.detailLocationRole === 0) ? styles.employeeItem : (model.detailLocationRole === 1) ? styles.employeeItemManager : styles.employeeItemOwner} key={model._id} >
           <Image style={styles.employeeImage} source={{ uri: model.image_url }} />
           <View style={styles.employeeInfo}>
             <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.first_name} {model.last_name}</Text>
             <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}}>{model.position}</Text>
+          </View>
+          <View style={{}}>
+
           </View>
         </TouchableOpacity>
       )}
@@ -49,6 +52,30 @@ const styles = StyleSheet.create({
       marginTop: 4, marginBottom: 4,
       backgroundColor: 'white',
       overflow: 'hidden'
+  },
+  employeeItemManager: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      flexDirection: 'row',
+      backgroundColor: 'white',
+      height: 100, borderRadius: 8,
+      marginTop: 4, marginBottom: 4,
+      backgroundColor: 'white',
+      overflow: 'hidden',
+      borderRightWidth: 4, borderColor: 'orange'
+  },
+  employeeItemOwner: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      flexDirection: 'row',
+      backgroundColor: 'white',
+      height: 100, borderRadius: 8,
+      marginTop: 4, marginBottom: 4,
+      backgroundColor: 'white',
+      overflow: 'hidden',
+      borderRightWidth: 4, borderColor: 'yellow'
   },
   employeeInfo: {
     flex:3,
