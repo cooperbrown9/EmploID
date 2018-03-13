@@ -188,6 +188,7 @@ class HomeScreen extends Component {
     //this.setState({ employeeFormPresented: true });
   }
 
+  // role based on user (me)'s role for that location
   _openLocationProfile = (place) => {
     let role = 0;
     for(let i = 0; i < this.props.user.places.length; i++) {

@@ -3,8 +3,13 @@ import PropTypes from 'prop-types';
 import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
 
 import { connect } from 'react-redux';
-import OptionView from '../ui-elements/option-view';
+import { Camera, Permissions } from 'expo';
+
 import * as Colors from '../constants/colors';
+import * as API from '../api/api';
+
+import axios from 'axios';
+import OptionView from '../ui-elements/option-view';
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 
@@ -18,7 +23,9 @@ class RestaurantFormEditOwner extends Component {
         address: "6969 E. Rockford Way",
         email: "hello@restaurant.com",
         phone: "555-555-5555"
-      }
+      },
+      cameraPermission: false,
+      cameraType: Camera.Constants.Type.back
     };
   }
 
@@ -27,15 +34,69 @@ class RestaurantFormEditOwner extends Component {
     updateLocation: PropTypes.func
   }
 
-  componentDidMount() {
-    this.setState({ place: this.props.location });
+  componentWillMount() {
+    this.setState({ place: { ...this.props.location, imageURL: this.props.location.image_url } });
   }
 
   submit = () => {
     console.log(this.state.place);
 
-    this.props.updateLocation(this.state.place);
-    this.props.dismiss();
+    // if(this.state.place.imageURL === this.props.location.image_url) {
+    // this.props.updateLocation(this.state.place);
+    // }
+    // this.props.dismiss();
+    this.updateLocation();
+  }
+
+  updateLocation = () => {
+    if(this.state.place.imageURL === this.props.location.image_url) {
+      this.updateLocationCall();
+    } else {
+      var img = new FormData();
+      img.append('file', {
+        uri: this.state.place.imageURL,
+        type: 'image/png',
+        name: 'lol'
+      });
+
+      axios.post('https://emploid.herokuapp.com/upload', img).then((response) => {
+        this.state.place.imageURL = response.data;
+        // this.setState({ place: { ...this.state.place, imageURL: imageURL }}, () => {
+
+          this.updateLocationCall();
+        // })
+      }).catch((e) => {
+        console.log(e);
+      })
+
+    }
+
+  }
+
+  updateLocationCall = () => {
+    API.updateLocation(this.state.place, (err, loc) => {
+      if(err) {
+        console.log(err);
+        // make this loading
+        this.setState({ isRefreshing: false });
+      } else {
+        this.props.dismiss();
+      }
+    });
+  }
+
+  getCameraPermission = async() => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+
+    this.setState({ cameraPermission: status === 'granted' });
+  }
+
+  takePicture = async() => {
+    if(this.camera) {
+      await this.camera.takePictureAsync()
+        .then((data) => { console.log(data); this.setState({ place: { ...this.state.place, imageURL: data.uri }, cameraPermission: false }) })
+        .catch(e => console.log(e))
+    }
   }
 
   textInputFactory(placeholder, onTextChange, value) {
@@ -52,49 +113,66 @@ class RestaurantFormEditOwner extends Component {
 
   render() {
     return(
-      <ScrollView style={styles.scrollContainer} >
-        <View style={styles.container} >
+      <View style={{ flex: 1 }}>
+        <ScrollView style={styles.scrollContainer} >
+          <View style={styles.container} >
 
-          <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/back.png')} />
+            <View style={styles.backButton} >
+              <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/back.png')} />
+            </View>
+
+            <Text style={styles.textHeader} >Restaurant Name</Text>
+            <View style={styles.inputView} >
+              {
+                this.textInputFactory('Name', (text) => this.setState({ place: {...this.state.place, name: text}}), this.state.place.name)
+              }
+            </View>
+
+            <Text style={styles.textHeader} >Address</Text>
+            <View style={styles.inputView} >
+              {
+                this.textInputFactory('Address', (text) => this.setState({ place: {...this.state.place, address: text}}), this.state.place.address)
+              }
+            </View>
+
+            <Text style={styles.textHeader} >Email</Text>
+            <View style={styles.inputView} >
+              {this.textInputFactory('hello@restaurant.com', (text) => this.setState({ place: {...this.state.place, email: text}}), this.state.place.email)}
+            </View>
+
+            <Text style={styles.textHeader} >Phone Number</Text>
+            <View style={styles.inputView} >
+              {this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone)}
+            </View>
+
+            <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
+              {(this.state.place.imageURL == null)
+                ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
+                : <Image source={{ uri:this.state.place.imageURL }} style={styles.image} />
+              }
+            </TouchableOpacity>
+            <Text style={styles.imageText}>Upload Restaurant Image</Text>
+
+            <TouchableOpacity style={styles.submitContainer} >
+              <SubmitButton title={'UPDATE LOCATION'} onPress={() => this.submit()} />
+            </TouchableOpacity>
+
+            <View style={{height: 64}}/>
           </View>
+        </ScrollView>
+        {(this.state.cameraPermission)
+          ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
+              <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1}} >
+                <TouchableOpacity onPress={this.takePicture} style={{ height:40, width:40 }} >
+                  <Image source={require('../../assets/icons/camera.png')} />
+                </TouchableOpacity>
+              </Camera>
+            </View>
 
-          <Text style={styles.textHeader} >Restaurant Name</Text>
-          <View style={styles.inputView} >
-            {
-              this.textInputFactory('Name', (text) => this.setState({ place: {...this.state.place, name: text}}), this.state.place.name)
-            }
-          </View>
 
-          <Text style={styles.textHeader} >Address</Text>
-          <View style={styles.inputView} >
-            {
-              this.textInputFactory('Address', (text) => this.setState({ place: {...this.state.place, address: text}}), this.state.place.address)
-            }
-          </View>
-
-          <Text style={styles.textHeader} >Email</Text>
-          <View style={styles.inputView} >
-            {this.textInputFactory('hello@restaurant.com', (text) => this.setState({ place: {...this.state.place, email: text}}), this.state.place.email)}
-          </View>
-
-          <Text style={styles.textHeader} >Phone Number</Text>
-          <View style={styles.inputView} >
-            {this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone)}
-          </View>
-
-          <View style={styles.imageContainer} >
-            <Image style={styles.image} />
-          </View>
-          <Text style={styles.imageText}>Upload Restaurant Image</Text>
-
-          <TouchableOpacity style={styles.submitContainer} >
-            <SubmitButton title={'UPDATE LOCATION'} onPress={() => this.submit()} />
-          </TouchableOpacity>
-
-          <View style={{height: 64}}/>
-        </View>
-      </ScrollView>
+          : null
+        }
+      </View>
     )
   }
 }
@@ -118,10 +196,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  imageEmpty: {
+    width: 140, height: 140,
+    borderRadius: 70,
+    tintColor: Colors.BLUE
+  },
   image: {
-    width: 80, height: 80,
-    borderRadius: 40,
-    backgroundColor: 'yellow'
+    width: 140, height: 140,
+    borderRadius: 70
   },
   imageText: {
     textAlign: 'center',

@@ -263,14 +263,12 @@ class EmployeeForm extends Component {
       </ScrollView>
       {(this.state.cameraPermission)
         ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
-            <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1}} >
-              <TouchableOpacity onPress={this.takePicture} style={{ height:40, width:40 }} >
-                <Image source={require('../../assets/icons/camera.png')} />
+            <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'center'}} >
+              <TouchableOpacity onPress={this.takePicture} style={{ marginBottom: 64 }} >
+                <Image style={{height:32, width:32}} source={require('../../assets/icons/camera.png')} />
               </TouchableOpacity>
             </Camera>
           </View>
-
-
         : null
       }
     </View>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, RefreshControl, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, RefreshControl, Dimensions, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import EmployeeTabBar from '../ui-elements/employee-tab-bar.js';
 import RoundButton from '../ui-elements/round-button.js';
@@ -83,7 +83,7 @@ class ProfileScreen extends Component {
             for(let i = 0; i < places.length; i++) {
               for(let j = 0; j < this.props.employee.places.length; j++) {
                 if(places[i]._id === this.props.employee.places[j].place_id) {
-                  places[i].detailLocationRole = this.props.employee.places[j].role;
+                  places[i].employeeRoleAtLocation = this.props.employee.places[j].role;
                 }
               }
             }
@@ -99,23 +99,10 @@ class ProfileScreen extends Component {
   getDiscounts = () => {
     let count = 0;
     let discounts = []
-    // for testing START
-    // let locs = this.props.locations;
-    // for(let i = 0; i < locs.length; i++) {
-    //   for(let j = 0; j < this.props.employee.places.length; j++) {
-    //     if(this.props.employee.places[j].role == 1 || this.props.employee.places[j].role == 2) {
-    //       // discounts.push();
-    //       j = this.props.employee.places.length;
-    //     }
-    //   }
-    // }
-    // END
 
     for(let i = 0; i < this.props.locations.length; i++) {
       discounts.push(...this.props.locations[i].discounts);
     }
-
-
 
     for(let i = 0; i < discounts.length; i++) {
       API.getDiscount(discounts[i].discount_id, (err, disc) => {
@@ -136,7 +123,7 @@ class ProfileScreen extends Component {
                   if(discounts[l]._id === this.props.locations[i].discounts[j].discount_id) {
                     // if employee role for this place is manager or owner
                     // then add it outright, otherwise
-                    if(this.props.locations[i].detailLocationRole == 1 || this.props.locations[i].detailLocationRole == 2) {
+                    if(this.props.locations[i].employeeRoleAtLocation == 1 || this.props.locations[i].employeeRoleAtLocation == 2) {
                       cleanDiscounts.push(discounts[l]);
                     } else {
                       if(!discounts[l].exclusive) {
@@ -214,7 +201,28 @@ class ProfileScreen extends Component {
   }
 
   editProfileButton() {
-    if(this.props.role === 1 || this.props.role === 2 || this.props.role === 3) {
+    // if the user (me) is a manager or owner at one of the locations of the employee,
+    // then user (me) can edit
+    let similarPlaces = [];
+    for(let i = 0; i < this.props.user.places.length; i++) {
+      for(let j = 0; j < this.props.employee.places.length; j++) {
+        if(this.props.user.places[i].place_id === this.props.employee.places[j].place_id) {
+          similarPlaces.push(this.props.user.places[i]);
+          j = this.props.employee.places.length;
+        }
+      }
+    }
+
+    let canEdit = false;
+    for(let i = 0; i < similarPlaces.length; i++) {
+      if(similarPlaces[i].role === 2 || similarPlaces[i].role === 1) {
+        canEdit = true;
+        break;
+      }
+    }
+    // let similarPlaces = this.user.places.filter(p => p.place_id )
+    // if(this.props.role === 1 || this.props.role === 2 || this.props.role === 3) {
+    if(canEdit) {
       return (
         <View style={styles.optionsButton}>
             <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
@@ -226,8 +234,13 @@ class ProfileScreen extends Component {
   }
 
   _presentUserPermissionModal = (model) => {
-    if(this.props.user.role === 1 || this.props.user.role === 2) {
+    //
+    let myPlaces = this.props.user.places;
+    let presentedPlace = myPlaces.find(d => d.place_id === model._id);
+    if(presentedPlace.role === 1 || presentedPlace.role === 2) {
       this.setState({ userPermissionModalPresented: true, userPermissionModel: model });
+    } else {
+      Alert.alert('You do not have permission to edit this user!');
     }
   }
 

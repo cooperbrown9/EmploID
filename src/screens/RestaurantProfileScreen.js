@@ -223,7 +223,7 @@ class RestaurantProfileScreen extends Component {
         </View>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.formModal} >
-          <RestaurantFormEditOwner updateLocation={(place) => this._updateLocation(place)} dismiss={this._dismissFormModal}/>
+          <RestaurantFormEditOwner updateLocation={(place) => this._updateLocation(place)} dismiss={() => this.setState({ formModal: false}, () => { this.getUpdatedLocation()})} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} >
