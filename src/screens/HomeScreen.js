@@ -333,6 +333,7 @@ class HomeScreen extends Component {
   }
 
   clearKeys() {
+    return;
     AsyncStorage.removeItem(Keys.SESSION_ID, () => {
       AsyncStorage.removeItem(Keys.USER_ID);
     });
