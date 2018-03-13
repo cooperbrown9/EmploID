@@ -32,6 +32,7 @@ import { Camera, Permissions } from 'expo';
 
 class HomeScreen extends Component {
 
+// people upgraded to owners cant create employees
   constructor() {
     super();
 
@@ -314,8 +315,11 @@ class HomeScreen extends Component {
   }
 
   presentMyProfile = () => {
+    debugger;
     this.props.dispatch({ type: DetailActions.SET_USER, user: this.props.user });
-    this.setState({ myProfilePresented: true });
+    // this.setState({ myProfilePresented: true });
+    this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
+
   }
 
   _dismissMyProfile = () => {

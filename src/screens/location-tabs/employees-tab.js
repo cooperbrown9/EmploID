@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView, ListView, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
+
+import * as Colors from '../../constants/colors';
+
 const EmployeesTab = (props) => (
 
 
@@ -63,7 +66,7 @@ const styles = StyleSheet.create({
       marginTop: 4, marginBottom: 4,
       backgroundColor: 'white',
       overflow: 'hidden',
-      borderRightWidth: 8, borderColor: 'orange'
+      borderRightWidth: 16, borderColor: Colors.BLUE
   },
   employeeItemOwner: {
       flex: 1,
@@ -75,7 +78,7 @@ const styles = StyleSheet.create({
       marginTop: 4, marginBottom: 4,
       backgroundColor: 'white',
       overflow: 'hidden',
-      borderRightWidth: 8, borderColor: 'yellow'
+      borderRightWidth: 16, borderColor: Colors.BLUE
   },
   employeeInfo: {
     flex:3,

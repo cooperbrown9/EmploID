@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView, ListView, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 
+import * as Colors from '../../constants/colors';
+
 const LocationsTab = (props) => (
 
 
@@ -12,7 +14,7 @@ const LocationsTab = (props) => (
             style={
               (model.employeeRoleAtLocation === 0)
                 ? styles.restaurantItem
-                : (model.employeeRoleAtLocation === 1) 
+                : (model.employeeRoleAtLocation === 1)
                   ? styles.restaurantItemManager
                   : styles.restaurantItemOwner}
               key={model._id}
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     overflow: 'hidden',
     borderRadius: 4,
-    borderRightWidth: 16, borderColor: 'orange'
+    borderRightWidth: 16, borderColor: Colors.BLUE
   },
   restaurantItemOwner: {
     flex: 1,
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     overflow: 'hidden',
     borderRadius: 4,
-    borderRightWidth: 16, borderColor: 'yellow'
+    borderRightWidth: 16, borderColor: Colors.BLUE
   },
   restaurantImage: {
   height: 100,

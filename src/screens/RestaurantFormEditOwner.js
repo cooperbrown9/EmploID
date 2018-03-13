@@ -95,7 +95,10 @@ class RestaurantFormEditOwner extends Component {
     if(this.camera) {
       await this.camera.takePictureAsync()
         .then((data) => { console.log(data); this.setState({ place: { ...this.state.place, imageURL: data.uri }, cameraPermission: false }) })
-        .catch(e => console.log(e))
+        .catch(e => {
+          console.log(e);
+          this.setState({ cameraPermission: false });
+        })
     }
   }
 
