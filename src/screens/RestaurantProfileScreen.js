@@ -35,6 +35,7 @@ class RestaurantProfileScreen extends Component {
     this.getUsers();
   }
 
+
   getUsers() {
     let users = [];
     let userCount = 0;
@@ -47,9 +48,10 @@ class RestaurantProfileScreen extends Component {
           debugger;
         } else {
           userCount++;
-          // for(let i = 0; i < user.places.length; )
           users.push(user);
-
+          // pull the employee's role off its places [], and put it on a shallower
+          // object.
+          // Basically just expose the employee's role for this restaurant
           if(userCount === this.props.location.employees.length) {
             for(let i = 0; i < users.length; i++) {
               for(let j = 0; j < users[i].places.length; j++) {
@@ -58,7 +60,6 @@ class RestaurantProfileScreen extends Component {
                 }
               }
             }
-            // debugger;
             this.props.dispatch({ type: DetailActions.SET_EMPLOYEES, employees: users });
             this.getDiscounts();
           }
@@ -76,12 +77,11 @@ class RestaurantProfileScreen extends Component {
         if(err) {
           console.log(err);
           this.setState({ isRefreshing: false });
-          debugger;
         } else {
           count++;
 
           if(disc.exclusive) {
-            if(this.props.role === 2 || this.props.role === 1) {
+            if(this.props.myRole === 2 || this.props.myRole === 1) {
               discounts.push(disc);
             }
           } else {
@@ -97,6 +97,7 @@ class RestaurantProfileScreen extends Component {
     }
   }
 
+  // called after restaurant is edited
   _updateLocation = (place) => {
     API.updateLocation(place, (err, loc) => {
       if(err) {
@@ -104,27 +105,18 @@ class RestaurantProfileScreen extends Component {
         this.setState({ isRefreshing: false });
       } else {
         this.getUpdatedLocation();
-        // this.props.dispatch({ type: LocationDetailActions.SET_LOCATION, location: loc });
-        // this.loadEmployees();
-        // this.loadDiscounts();
       }
     });
   }
 
+  // just gets location
   getUpdatedLocation = () => {
     API.getPlace(this.props.location._id, (err, loc) => {
       if(err) {
         console.log(err);
         this.setState({ isRefreshing: false });
       } else {
-        let role = 0;
-        for(let i = 0; i < this.props.user.places.length; i++) {
-          if(this.props.user.places[i].place_id === loc._id) {
-            role = this.props.user.places[i].role;
-            break;
-          }
-        }
-        this.props.dispatch({ type: DetailActions.SET_LOCATION, location: loc, role: role });
+        this.props.dispatch({ type: DetailActions.SET_LOCATION, location: loc, myRole: this.props.myRole });
         this.loadEmployees();
         this.loadDiscounts();
       }
@@ -159,7 +151,7 @@ class RestaurantProfileScreen extends Component {
   }
 
   editProfileButton() {
-    if(this.props.role === 2 || this.props.role === 1) {
+    if(this.props.myRole === 2 || this.props.myRole === 1) {
       return (
         <View style={styles.optionsButton}>
           <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
@@ -287,7 +279,8 @@ var mapStateToProps = state => {
     location: state.detail.location,
     indexOn: state.locationTab.indexOn,
     role: state.user.role,
-    user: state.user.user
+    user: state.user.user,
+    myRole: state.detail.myRole
   }
 }
 

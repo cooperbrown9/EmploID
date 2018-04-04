@@ -43,6 +43,7 @@ class HomeScreen extends Component {
       myProfilePresented: false,
       places: [],
       employees: [],
+      employeeMatches: [],
       isRefreshing: false
     }
   }
@@ -114,32 +115,6 @@ class HomeScreen extends Component {
       match = false;
     }
 
-    // for(let i = 0; i < employees.length; i++) {
-    //   delete employees[i]._id;
-    // }
-
-    // remove current user from employees
-    // for(let i = 0; i < employees.length; i++) {
-    //   if(employees[i].user_id === this.props.user._id) {
-    //     employees.pop(i);
-    //   }
-    // }
-
-    // let arrCopy = employees;
-    // remove duplicates
-    // for(let i = 0; i < employees.length - 1; i++) {
-    //   for(let j = i + 1; j < employees.length; j++) {
-    //     if(employees[i].user_id === employees[j].user_id) {
-    //       employees.pop(j);
-    //     }
-    //   }
-    // }
-
-    // _.uniqBy(employees, 'user_id');
-
-
-    // employees = employees.filter(this.uniqueArray);
-
     let employeeCount = 0;
     for(let i = 0; i < employees.length; i++) {
       API.getUser(employees[i].user_id, (err, response) => {
@@ -198,7 +173,7 @@ class HomeScreen extends Component {
         break;
       }
     }
-    this.props.dispatch({ type: DetailActions.SET_LOCATION, location: place, role: role });
+    this.props.dispatch({ type: DetailActions.SET_LOCATION, location: place, myRole: role });
     this.props.dispatch({ type: NavActions.LOCATION_PROFILE });
   }
 
@@ -315,7 +290,7 @@ class HomeScreen extends Component {
   }
 
   presentMyProfile = () => {
-    debugger;
+    // debugger;
     this.props.dispatch({ type: DetailActions.SET_USER, user: this.props.user });
     // this.setState({ myProfilePresented: true });
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
@@ -346,6 +321,15 @@ class HomeScreen extends Component {
     )
   }
 
+  _searchEmployees = (text) => {
+    for(let i = 0; i < this.props.employees.length; i++) {
+      if((this.props.employees[i].first_name + this.props.employees[i].last_name).includes(text)) {
+        this.state.employeeMatches.push(this.props.employees[i]);
+      }
+    }
+    this.setState({ employeeMatches: this.state.employeeMatches });
+  }
+
   render() {
     return (
       <View style={styles.container} >
@@ -359,10 +343,10 @@ class HomeScreen extends Component {
                 <Text style={{ textAlign:'center', fontSize: 20, fontFamily: 'roboto-bold', color: Colors.MID_GREY}}>Add a Restaurant before you add employees!</Text>
               </View>
             : <RestaurantScreen isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
-          : <EmployeeScreen isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
+          : <EmployeeScreen search={(text) => this._searchEmployees(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
         }
 
-        {(this.props.role === 2)
+        {(this.props.role === 1)
           ? <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
               <Image style={{height:64,width:64}} source={require('../../assets/icons/plus.png')} />
             </TouchableOpacity>

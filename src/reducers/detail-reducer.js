@@ -24,7 +24,7 @@ function detail(state = initialState, action) {
       return {
         ...state,
         location: action.location,
-        employeeRole: action.role
+        myRole: action.myRole
       }
 
     case DetailActions.SET_LOCATIONS:

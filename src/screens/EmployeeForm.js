@@ -35,17 +35,16 @@ class EmployeeForm extends Component {
         { value: 'Other', selected: false, index: 5}
       ],
       roleOptions: [
-        { value: 'Employee', selected: true, index: 0 },
-        { value: 'Manager', selected: false, index: 1 },
-        { value: 'Owner', selected: false, index: 2 }
+        { value: 'No', selected: true, index: 0 },
+        { value: 'Yes', selected: false, index: 1 },
       ],
       employee: {
-        firstName: "Dat",
-        lastName: "Boi",
-        password: "abc123",
-        position: "Head Chef",
-        phone: "5094449999",
-        email: "bruh@yahoo.com",
+        firstName: "",
+        lastName: "",
+        password: "",
+        position: "",
+        phone: "",
+        email: "",
         places: [],
         groupID: "",
         role: 0,
@@ -81,15 +80,19 @@ class EmployeeForm extends Component {
     if(this.state.employee.places.length < 1) {
       Alert.alert('You need to assign the employee to a restaurant!');
     } else {
-      this.setState({ employee: { ...this.state.employee, groupID: this.props.user.group_id }}, () => {
-        for(let i = 0; i < this.state.employee.places.length; i++) {
-          // make the user an employee at all restaurants by default
-          // must go to their profile to set if their real role of a restaurant
-          this.state.employee.places[i].role = 0;// this.state.employee.role;
+      this.checkFields((complete) => {
+        if(complete) {
+          this.setState({ employee: { ...this.state.employee, groupID: this.props.user.group_id }}, () => {
+            for(let i = 0; i < this.state.employee.places.length; i++) {
+              // make the user an employee at all restaurants by default
+              // must go to their profile to set if their real role of a restaurant
+              this.state.employee.places[i].role = 0;// this.state.employee.role;
+            }
+            this.props.submitForm(this.state.employee);
+            this.props.dismiss();
+          });
         }
-        this.props.submitForm(this.state.employee);
-        this.props.dismiss();
-      });
+      })
     }
   }
 
@@ -111,6 +114,74 @@ class EmployeeForm extends Component {
     });
   }
 
+  checkFields = (callback) => {
+    let isGood = false;
+
+    if(this.state.firstName === "") {
+      Alert.alert('You need to fill out the First Name field!');
+      callback(false);
+      console.log('penis');
+      return;
+    }
+    if(this.state.lastName === "") {
+      Alert.alert('You need to fill out the Last Name field!');
+      callback(false);
+      return;
+    }
+    if(this.state.position === "") {
+      Alert.alert('You need to fill out the Position field!');
+      callback(false);
+      return;
+    }
+
+    this.checkPhone((status1) => {
+      if(status1) {
+        isGood = true;
+        this.checkEmail((status2) => {
+          if(status2) {
+            callback(true);
+          } else {
+            callback(false);
+          }
+        })
+      } else {
+        callback(false);
+        return;
+      }
+    });
+  }
+
+  checkPhone = (callback) => {
+    let num = this.state.employee.phone;
+    num.replace('(', '');
+    num.replace(')', '');
+    num.replace('.', '');
+    num.replace('-', '');
+    if(num.length !== 10) {
+      Alert.alert('Phone must be 10 digits');
+      console.log('phone' + this.state.employee.phone);
+      console.log('num' + num);
+      callback(false);
+    } else {
+      this.setState({ employee: { ...this.state.employee, phone: num }}, () => {
+        callback(true);
+      });
+    }
+  }
+
+  checkEmail = (callback) => {
+    let email = this.state.employee.email;
+    if(!email.includes('@')) {
+      callback(false);
+    } else {
+      callback(true);
+    }
+  }
+
+  phoneTextChanged = (text) => {
+
+  }
+
   textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default', canEdit) {
     return (
       <TextInput
@@ -124,18 +195,18 @@ class EmployeeForm extends Component {
     )
   }
 
-  bdayTextInputFactory(placeholder, onTextChange, value) {
-    return (
-      <TextInput
-        placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
-        selectionColor={Colors.BLUE} style={styles.birthdayInput}
-        autoCorrect={false} autoCapitalize={'none'}
-        onChangeText={(text) => onTextChange(text)}
-        value={(this.props.edit) ? value : null}
-        editable={!this.props.isOwner} keyboardType={'numeric'}
-      />
-    )
-  }
+  // bdayTextInputFactory(placeholder, onTextChange, value) {
+  //   return (
+  //     <TextInput
+  //       placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
+  //       selectionColor={Colors.BLUE} style={styles.birthdayInput}
+  //       autoCorrect={false} autoCapitalize={'none'}
+  //       onChangeText={(text) => onTextChange(text)}
+  //       value={(this.props.edit) ? value : null}
+  //       editable={!this.props.isOwner} keyboardType={'numeric'}
+  //     />
+  //   )
+  // }
 
   getCameraPermission = async() => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -155,8 +226,6 @@ class EmployeeForm extends Component {
   }
 
   render() {
-
-    console.log(this.state);
     return(
       <View style={{flex: 1}}>
       <ScrollView style={styles.scrollContainer} >
@@ -234,7 +303,7 @@ class EmployeeForm extends Component {
             <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
           </View>
 
-          <Text style={styles.textHeader}>Role</Text>
+          <Text style={styles.textHeader}>Can create restaurants?</Text>
           <View style={styles.optionContainer} >
             <OptionView options={this.state.roleOptions} selectOption={(index) => this.roleSelected(index)} />
           </View>
