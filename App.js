@@ -34,13 +34,6 @@ export default class App extends React.Component {
       'roboto-bold': require('./assets/fonts/Roboto-Bold.ttf')
     });
     this.setState({ fontLoaded: true });
-    // this.store.dispatch({ type: FONT_LOADED });
-    // const isOwner = await AsyncStorage.getItem(Keys.IS_OWNER);
-    //
-    // if(isOwner == null) {
-    //   this.store.dispatch({ type: NavActions.LOGIN });
-    // }
-
   }
 
   async clearKeys() {
@@ -64,18 +57,11 @@ export default class App extends React.Component {
     });
   }
 
-  // check if owner or employee...if employee, load Profile page, otherwise
-  // start from home
   render() {
     return (
-
-
       <Provider store={this.store} >
         {(this.state.fontLoaded) ? <AppNavigatorWithState /> : <View><ActivityIndicator/></View> }
       </Provider>
-
-
-
     );
   }
 }

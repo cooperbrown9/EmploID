@@ -96,6 +96,7 @@ class ProfileScreen extends Component {
     }
   }
 
+  // DOCUMENT THIS HOLY CHRIST
   getDiscounts = () => {
     let count = 0;
     let discounts = []
@@ -258,7 +259,12 @@ class ProfileScreen extends Component {
           <View style={{flex: 1}}>
             <View style={styles.profilePicContainer} >
 
-              <Image style={styles.profilePic} source={{ uri: this.props.employee.image_url }} />
+              {(this.props.employee.image_url)
+                ? <Image style={styles.profilePic} source={{ uri: this.props.employee.image_url }} />
+                : <View style={styles.profilePicEmpty}>
+                    <Text style={{fontSize:32,fontFamily:'roboto-bold',textAlign:'center', color:'gray'}}>No Image</Text>
+                  </View>
+              }
 
               <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.3)',zIndex:1000}}></View>
 
@@ -346,13 +352,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column'
   },
   profilePicContainer: {
-    flex: 4,
+    flex: 4
   },
   profilePic: {
     flex: 1, zIndex: 4,
-    height: FRAME.height / 8 * 5,
-    width: FRAME.width,
+    height: FRAME.height / 8 * 5, width: FRAME.width,
     resizeMode: 'cover'
+  },
+  profilePicEmpty: {
+    flex: 1, zIndex: 4,
+    height: FRAME.height / 8 * 5, width: FRAME.width,
+    resizeMode: 'cover',
+    fontSize: 32, fontFamily: 'roboto-bold', textAlign: 'center', justifyContent: 'center', alignItems: 'center'
   },
   backButton: {
     position: 'absolute', left: 20, top: 32,

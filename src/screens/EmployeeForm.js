@@ -80,7 +80,7 @@ class EmployeeForm extends Component {
     if(this.state.employee.places.length < 1) {
       Alert.alert('You need to assign the employee to a restaurant!');
     } else {
-      this.checkFields((complete) => {
+      this.checkEmail((complete) => {
         if(complete) {
           this.setState({ employee: { ...this.state.employee, groupID: this.props.user.group_id }}, () => {
             for(let i = 0; i < this.state.employee.places.length; i++) {
@@ -113,74 +113,104 @@ class EmployeeForm extends Component {
       this.setState({ roleOptions: arr, employee: {...this.state.employee, role: index } });
     });
   }
+  //
+  // checkFields = (callback) => {
+  //   checkFields(true);
+  //   console.log('if it hits this, callbacks dont return the function');
+  //   return;
+  //   console.log('if this hits, fuck bruh');
+  //   let isGood = false;
+  //
+  //   if(this.state.firstName === "") {
+  //     Alert.alert('You need to fill out the First Name field!');
+  //     callback(false);
+  //     console.log('penis');
+  //     return;
+  //   }
+  //   if(this.state.lastName === "") {
+  //     Alert.alert('You need to fill out the Last Name field!');
+  //     callback(false);
+  //     return;
+  //   }
+  //   if(this.state.position === "") {
+  //     Alert.alert('You need to fill out the Position field!');
+  //     callback(false);
+  //     return;
+  //   }
+  //
+  //   this.checkPhone((status1) => {
+  //     if(status1) {
+  //       isGood = true;
+  //       this.checkEmail((status2) => {
+  //         if(status2) {
+  //           callback(true);
+  //         } else {
+  //           callback(false);
+  //         }
+  //       })
+  //     } else {
+  //       callback(false);
+  //       return;
+  //     }
+  //   });
+  // }
 
-  checkFields = (callback) => {
-    let isGood = false;
-
-    if(this.state.firstName === "") {
-      Alert.alert('You need to fill out the First Name field!');
-      callback(false);
-      console.log('penis');
-      return;
-    }
-    if(this.state.lastName === "") {
-      Alert.alert('You need to fill out the Last Name field!');
-      callback(false);
-      return;
-    }
-    if(this.state.position === "") {
-      Alert.alert('You need to fill out the Position field!');
-      callback(false);
-      return;
-    }
-
-    this.checkPhone((status1) => {
-      if(status1) {
-        isGood = true;
-        this.checkEmail((status2) => {
-          if(status2) {
-            callback(true);
-          } else {
-            callback(false);
-          }
-        })
-      } else {
-        callback(false);
-        return;
-      }
-    });
-  }
-
-  checkPhone = (callback) => {
+  cleanPhone = (callback) => {
     let num = this.state.employee.phone;
-    num.replace('(', '');
-    num.replace(')', '');
-    num.replace('.', '');
-    num.replace('-', '');
-    if(num.length !== 10) {
-      Alert.alert('Phone must be 10 digits');
-      console.log('phone' + this.state.employee.phone);
-      console.log('num' + num);
-      callback(false);
-    } else {
-      this.setState({ employee: { ...this.state.employee, phone: num }}, () => {
-        callback(true);
-      });
+    for(let i = 0; i < 4; i++) {
+      num = num.replace('(', '');
+      num = num.replace(')', '');
+      num = num.replace('.', '');
+      num = num.replace('-', '');
+      num = num.replace(' ', '');
     }
+    this.setState({ employee: { ...this.state.employee, phone: num }}, () => {
+      callback();
+    });
+    // if(num.length !== 10) {
+    //   callback(false);
+    // } else {
+    //     callback(true);
+    //   });
+    // }
   }
 
   checkEmail = (callback) => {
     let email = this.state.employee.email;
     if(!email.includes('@')) {
-      callback(false);
+      this.cleanPhone(() => callback(false));
     } else {
-      callback(true);
+      this.cleanPhone(() => callback(true));
     }
   }
 
-  phoneTextChanged = (text) => {
-
-  }
+  // phoneTextChanged = (text) => {
+  //   let num = text;
+  //   num = num.replace('(', '');
+  //   num = num.replace(')', '');
+  //   num = num.replace('.', '');
+  //   num = num.replace('-', '');
+  //   num = num.replace(' ', '');
+  //
+  //   if(num.length === 3) {
+  //     num = '(' + text + ')';
+  //     return num;
+  //     // this.setState({ employee: { ...this.state.employee, phone: num }});
+  //   } else if(num.length === 7) {
+  //     num = '(' + num.substr(0, 3) + ')';
+  //     num += num.substr(3, 3);
+  //     return num;
+  //     // this.setState({ employee: { ...this.state.employee, phone: num }});
+  //   } else if(num.length === 10) {
+  //     num = '(' + num.substr(0, 3) + ') ';
+  //     num += num.substr(3, 3) + '-';
+  //     num += num.substr(6, 4);
+  //     return num;
+  //     // this.setState({ employee: { ...this.state.employee, phone: num }});
+  //   }
+  //   return num;
+  //   // this.setState({ employee: { ...this.state.employee, phone: num }});
+  // }
 
   textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default', canEdit) {
     return (
@@ -272,7 +302,7 @@ class EmployeeForm extends Component {
 
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text}}), this.state.employee.phone, true)}
+            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text }}), this.state.employee.phone, true)}
           </View>
 
           <Text style={styles.textHeader} >Birthday</Text>
@@ -335,10 +365,15 @@ class EmployeeForm extends Component {
       </ScrollView>
       {(this.state.cameraPermission)
         ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
-            <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'center'}} >
-              <TouchableOpacity onPress={this.takePicture} style={{ marginBottom: 64 }} >
-                <Image style={{height:32, width:32}} source={require('../../assets/icons/camera.png')} />
-              </TouchableOpacity>
+            <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
+              <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
+                <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:64, borderRadius:16, backgroundColor:'white', justifyContent:'center',alignItems:'center'}} >
+                  <Image style={{height:32, width:32}} source={require('../../assets/icons/back.png')} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.takePicture} style={{height:64,width:64,borderRadius:16, backgroundColor:'white',justifyContent:'center',alignItems:'center' }} >
+                  <Image style={{height:32, width:32, tintColor:'black'}} source={require('../../assets/icons/camera.png')} />
+                </TouchableOpacity>
+              </View>
             </Camera>
           </View>
         : null
@@ -347,6 +382,8 @@ class EmployeeForm extends Component {
     )
   }
 }
+
+
 
 const styles = StyleSheet.create({
   scrollContainer: {

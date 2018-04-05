@@ -8,15 +8,11 @@ import * as TabActions from '../action-types/tab-action-types';
 import * as NavActions from '../action-types/nav-action-types';
 import * as AuthActions from '../action-types/auth-action-types';
 import * as ProfileActions from '../action-types/employee-profile-action-types';
-// import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
-// import * as LocDetailActions from '../action-types/location-detail-action-types';
 import * as DetailActions from '../action-types/detail-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
-// import * as LoadingActions from '../action-types/loading-action-types';
 import * as Keys from '../constants/keys';
-// import * as _ from 'lodash';
 
 import axios from 'axios';
 
@@ -77,12 +73,6 @@ class HomeScreen extends Component {
 
           if(placeCount === this.props.user.places.length) {
             this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
-
-            // if owner (2)
-            if(this.props.user.role === 2) {
-              console.log('yuh');
-            }
-
             this.loadEmployees(places);
           }
         }
@@ -194,40 +184,103 @@ class HomeScreen extends Component {
   }
 
   _submitEmployeeForm(data) {
-    var img = new FormData();
-    img.append('file', {
-      uri: data.imageURI,
-      type: 'image/png',
-      name: 'testpic'
-    });
-    axios.post('https://emploid.herokuapp.com/upload', img).then((response) => {
-        let newImage = response.data;
+    data = {
+      ...data,
+      "imageURL": data.imageURI,
+      "sessionID": this.props.sessionID,
+      "userID": this.props.user._id
+    }
 
-        data = {
-          ...data,
-          "imageURL": newImage,
-          "sessionID": this.props.sessionID,
-          "userID": this.props.user._id
+    if(data.imageURI == null) {
+      debugger;
+      this.__submitEmployeeHelper(data);
+      // DataBuilder.buildEmployeeForm(data, (obj) => {
+      //   API.createUser(obj, (err, emp) => {
+      //     if(err) {
+      //       Alert.alert(err.message);
+      //     } else {
+      //       console.log(emp);
+      //       Alert.alert('Success!');
+      //
+      //       // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
+      //       this.refreshUser(data, () => {
+      //         this.loadPlaces();
+      //       });
+      //     }
+      //   });
+      // });
+    } else {
+      debugger;
+      var img = new FormData();
+      img.append('file', {
+        uri: data.imageURI,
+        type: 'image/png',
+        name: 'testpic'
+      });
+      API.uploadImage(img, (err, newImage) => {
+        if(err) {
+          console.log(err);
+        } else {
+          data.imageURL = newImage;
+          this.__submitEmployeeHelper(data);
         }
-
-        DataBuilder.buildEmployeeForm(data, (obj) => {
-          API.createUser(obj, (err, emp) => {
-            if(err) {
-              Alert.alert(err.message);
-            } else {
-              console.log(emp);
-              Alert.alert('Success!');
-
-              // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
-              this.refreshUser(data, () => {
-                this.loadPlaces();
-              });
-            }
-          });
-        });
-      }).catch((e) => {
-
       })
+    }
+    // var img = new FormData();
+    // img.append('file', {
+    //   uri: data.imageURI,
+    //   type: 'image/png',
+    //   name: 'testpic'
+    // });
+
+
+
+    // axios.post('https://emploid.herokuapp.com/upload', img).then((response) => {
+    //     let newImage = response.data;
+    //
+    //     data = {
+    //       ...data,
+    //       "imageURL": newImage,
+    //       "sessionID": this.props.sessionID,
+    //       "userID": this.props.user._id
+    //     }
+    //
+    //     DataBuilder.buildEmployeeForm(data, (obj) => {
+    //       API.createUser(obj, (err, emp) => {
+    //         if(err) {
+    //           Alert.alert(err.message);
+    //         } else {
+    //           console.log(emp);
+    //           Alert.alert('Success!');
+    //
+    //           // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
+    //           this.refreshUser(data, () => {
+    //             this.loadPlaces();
+    //           });
+    //         }
+    //       });
+    //     });
+    //   }).catch((e) => {
+    //
+    //   })
+  }
+
+  __submitEmployeeHelper = (data) => {
+    DataBuilder.buildEmployeeForm(data, (obj) => {
+      API.createUser(obj, (err, emp) => {
+        if(err) {
+          Alert.alert(err.message);
+        } else {
+          console.log(emp);
+          Alert.alert('Success!');
+
+          // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
+          this.refreshUser(data, () => {
+            this.loadPlaces();
+          });
+        }
+      });
+    });
   }
 
   _submitPlaceForm(data) {
@@ -266,7 +319,7 @@ class HomeScreen extends Component {
         });
       })
       .catch((e) => {
-        debugger;
+        console.log(e);
       })
   }
 
@@ -290,11 +343,8 @@ class HomeScreen extends Component {
   }
 
   presentMyProfile = () => {
-    // debugger;
     this.props.dispatch({ type: DetailActions.SET_USER, user: this.props.user });
-    // this.setState({ myProfilePresented: true });
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
-
   }
 
   _dismissMyProfile = () => {

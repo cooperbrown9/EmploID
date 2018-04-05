@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as ImageAPI from './image-handler';
 
 const BASE = 'https://emploid.herokuapp.com/api';
 
@@ -77,6 +78,12 @@ export function getLocationsInGroup(groupID, callback) {
     .catch(e => callback(e))
 }
 
+
+// --------------------- IMAGES ----------------------
+export function uploadImage(img, callback) {
+  ImageAPI.uploadImage(img, callback);
+}
+// ---------------------- END IMAGES ----------------------
 
 
 
