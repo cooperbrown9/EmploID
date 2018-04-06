@@ -250,7 +250,7 @@ class EmployeeForm extends Component {
           </Modal>
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/back.png')} />
+            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/down.png')} />
           </View>
 
           <Text style={styles.textHeader} >First Name</Text>
@@ -321,7 +321,7 @@ class EmployeeForm extends Component {
 
           <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
             {(this.state.employee.imageURI == null)
-              ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'stretch'} style={styles.imageEmpty} />
+              ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
               : <Image source={{uri:this.state.employee.imageURI}} style={styles.image} />
             }
           </TouchableOpacity>
@@ -348,11 +348,11 @@ class EmployeeForm extends Component {
         ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
             <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
               <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
-                <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:64, borderRadius:16, backgroundColor:'white', justifyContent:'center',alignItems:'center'}} >
-                  <Image style={{height:32, width:32}} source={require('../../assets/icons/cancel.png')} />
+                <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >
+                  <Image style={{height:32, width:32,tintColor:'white'}} source={require('../../assets/icons/cancel.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.takePicture} style={{height:64,width:64,borderRadius:16, backgroundColor:'white',justifyContent:'center',alignItems:'center' }} >
-                  <Image style={{height:32, width:32, tintColor:'black'}} source={require('../../assets/icons/camera.png')} />
+                <TouchableOpacity onPress={this.takePicture} style={{height:64,width:128,borderRadius:16, backgroundColor:Colors.BLUE,justifyContent:'center',alignItems:'center' }} >
+                  <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../assets/icons/camera.png')} />
                 </TouchableOpacity>
               </View>
             </Camera>

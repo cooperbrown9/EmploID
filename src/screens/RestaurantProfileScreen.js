@@ -177,7 +177,14 @@ class RestaurantProfileScreen extends Component {
         refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshLocation} />}
       >
         <View style={styles.picContainer} >
-          <Image style={styles.profilePic} source={{ uri: this.props.location.image_url }} />
+
+          {(this.props.location.image_url)
+            ? <Image style={styles.profilePic} source={{ uri: this.props.location.image_url }} />
+            : <View style={styles.profilePicEmpty}>
+                <Text style={{fontSize:32,fontFamily:'roboto-bold',textAlign:'center', color:'gray'}}>No Image</Text>
+              </View>
+          }
+
           <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.3)',zIndex:1000}}></View>
 
           <View style={styles.backButton}>
@@ -255,6 +262,12 @@ const styles = StyleSheet.create({
     height: FRAME.height / 8 * 5,
     width: FRAME.width,
     resizeMode: 'cover'
+  },
+  profilePicEmpty: {
+    flex: 1, zIndex: 4,
+    height: FRAME.height / 8 * 5, width: FRAME.width,
+    resizeMode: 'cover',
+    fontSize: 32, fontFamily: 'roboto-bold', textAlign: 'center', justifyContent: 'center', alignItems: 'center'
   },
   backButton: {
     position: 'absolute', left: 20, top: 20,

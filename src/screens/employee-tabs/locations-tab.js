@@ -23,8 +23,8 @@ const LocationsTab = (props) => (
               <Image style={styles.restaurantImage} source={{ uri: model.image_url }}/>
 
             <View style={styles.restaurantInfo}>
-              <Text style={{fontSize: 20, marginBottom: 12, fontFamily: 'roboto-bold'}}>{model.name} </Text>
-              <Text style={{fontSize: 16, color: 'gray', fontFamily: 'roboto-regular'}}>{model.address}</Text>
+              <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.name} </Text>
+              <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}}>{model.address}</Text>
             </View>
           </TouchableOpacity>
         )}

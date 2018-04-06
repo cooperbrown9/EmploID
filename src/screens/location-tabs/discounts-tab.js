@@ -18,8 +18,8 @@ const DiscountsTab = (props) => (
       {props.discounts.map(model =>
         <TouchableOpacity style={styles.discountItem} key={model._id} >
           <View style={styles.discountInfo}>
-            <Text style={{fontSize: 22, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.name} </Text>
-            <Text style={{fontSize: 16, color: 'gray', fontFamily: 'roboto-bold'}}>{model.offer}</Text>
+            <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.name} </Text>
+            <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}}>{model.offer}</Text>
         </View>
         </TouchableOpacity>
       )}
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
 });
 
 var mapStateToProps = state => {
-  
+
   return {
     discounts: state.detail.discounts,
     myRole: state.detail.myRole

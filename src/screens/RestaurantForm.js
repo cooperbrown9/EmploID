@@ -9,12 +9,13 @@ import * as Colors from '../constants/colors';
 
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
-
-// import LocationFormAddEmployee from './EmployeeFormAddLocation';
+import { checkEmail } from '../util';
 
 class RestaurantForm extends Component {
   constructor() {
     super();
+
+    this.checkEmail = checkEmail.bind(this);
 
     this.state = {
       place: {
@@ -25,6 +26,7 @@ class RestaurantForm extends Component {
         employees: [],
         imageURI: null
       },
+      incomplete: false,
       cameraPermission: false,
       cameraType: Camera.Constants.Type.back,
       addEmployeeFormPresented: false
@@ -49,9 +51,14 @@ class RestaurantForm extends Component {
 
   submit = () => {
     console.log(this.state.place);
-
-    this.props.submitForm(this.state.place);
-    this.props.dismiss();
+    this.checkEmail(this.state.place.email, (complete) => {
+      if(complete) {
+        this.props.submitForm(this.state.place);
+        this.props.dismiss();
+      } else {
+        this.setState({ incomplete: true });
+      }
+    })
   }
 
   textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default') {
@@ -60,7 +67,7 @@ class RestaurantForm extends Component {
         placeholder={placeholder}
         placeholderTextColor={Colors.DARK_GREY}
         selectionColor={Colors.BLUE}
-        style={styles.input} keyboardType={keyboard}
+        style={styles.input} keyboardType={keyboard} returnKeyType={'done'}
         autoCorrect={false} autoCapitalize={(capitalize) ? 'words' : 'none'}
         onChangeText={(text) => onTextChange(text)}
         value={(this.props.edit) ? value : null}
@@ -75,13 +82,10 @@ class RestaurantForm extends Component {
   }
 
   takePicture = async() => {
-    // debugger;
-    console.log(this.camera);
     if(this.camera) {
       await this.camera.takePictureAsync()
         .then((data) => { console.log(data); this.setState({ place: { ...this.state.place, imageURI: data.uri }, cameraPermission: false }) })
         .catch(e => {
-          console.log(e);
           this.setState({ cameraPermission: false });
         })
     }
@@ -124,7 +128,7 @@ class RestaurantForm extends Component {
 
           <Text style={styles.textHeader} >Email</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('hello@restaurant.com', (text) => this.setState({ place: {...this.state.place, email: text}}), this.state.place.email, false, 'email-address')}
+            {this.textInputFactory('hello@restaurant.com', (text) => this.setState({ place: {...this.state.place, email: text}, incomplete: false}), this.state.place.email, false, 'email-address')}
           </View>
 
           <Text style={styles.textHeader} >Phone Number</Text>
@@ -148,7 +152,12 @@ class RestaurantForm extends Component {
           */}
 
           <TouchableOpacity style={styles.submitContainer} >
-            <SubmitButton title={'CREATE LOCATION'} onPress={() => this.submit()} />
+            <SubmitButton
+              title={(!this.state.incomplete) ? 'CREATE LOCATION' : 'Must be valid email address'}
+              onPress={() => this.submit()}
+              hasBGColor={true}
+              bgColor={(this.state.incomplete) ? 'red' : Colors.BLUE}
+            />
           </TouchableOpacity>
 
           <View style={{height: 64}}/>
@@ -158,11 +167,11 @@ class RestaurantForm extends Component {
         ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
             <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
               <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
-                <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:64, borderRadius:16, backgroundColor:'white', justifyContent:'center',alignItems:'center'}} >
-                  <Image style={{height:32, width:32}} source={require('../../assets/icons/cancel.png')} />
+                <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >
+                  <Image style={{height:32, width:32,tintColor:'white'}} source={require('../../assets/icons/cancel.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.takePicture} style={{height:64,width:64,borderRadius:16, backgroundColor:'white',justifyContent:'center',alignItems:'center' }} >
-                  <Image style={{height:32, width:32, tintColor:'black'}} source={require('../../assets/icons/camera.png')} />
+                <TouchableOpacity onPress={this.takePicture} style={{height:64,width:128,borderRadius:16, backgroundColor:Colors.BLUE,justifyContent:'center',alignItems:'center' }} >
+                  <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../assets/icons/camera.png')} />
                 </TouchableOpacity>
               </View>
             </Camera>

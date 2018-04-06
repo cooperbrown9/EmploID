@@ -17,7 +17,15 @@ export function cleanPhoneNumber(num, callback) {
     num = num.replace('-', '');
     num = num.replace(' ', '');
   }
-  callback(num);
+  if(callback != null) {
+    callback(num);
+  } else {
+    return num;
+  }
+}
+
+export function checkEmail(email, callback) {
+  callback(email.includes('@'));
 }
 
 export function toPhoneNumber(num) {

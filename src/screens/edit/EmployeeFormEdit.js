@@ -12,6 +12,7 @@ import * as Colors from '../../constants/colors';
 import * as API from '../../api/api';
 import * as DataBuilder from '../../api/data-builder';
 import * as DetailActions from '../../action-types/detail-action-types';
+import * as util from '../../util';
 
 import axios from 'axios';
 import SubmitButton from '../../ui-elements/submit-button';
@@ -68,6 +69,9 @@ class EmployeeFormEdit extends Component {
     this.genderSelected(this.state.employee.gender);
     this.hairSelected(this.state.employee.hair);
     this.roleSelected(this.state.employee.role);
+    if(this.props.employee.image_url != null) {
+      this.setState({ employee: { ...this.state.employee, imageURL: this.state.employee.image_url }});
+    }
   }
 
   submit = () => {
@@ -75,6 +79,7 @@ class EmployeeFormEdit extends Component {
       "userID": this.props.userID,
       ...this.state.employee
     }
+    data.phone = util.cleanPhoneNumber(this.state.employee.phone);
 
     // if images arent the same, image was changed
     if(this.state.employee.imageURL != this.state.employee.image_url) {
@@ -196,7 +201,7 @@ class EmployeeFormEdit extends Component {
             </Modal>
 
             <View style={styles.backButton} >
-              <RoundButton imagePath={require('../../../assets/icons/back.png')} onPress={this.props.dismiss} />
+              <RoundButton imagePath={require('../../../assets/icons/down.png')} onPress={this.props.dismiss} />
             </View>
 
             <Text style={styles.textHeader} >First Name</Text>
@@ -260,7 +265,7 @@ class EmployeeFormEdit extends Component {
               <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
             </View>
 
-            <Text style={styles.textHeader}>Role</Text>
+            <Text style={styles.textHeader}>Can create restaurants?</Text>
             <View style={styles.optionContainer} >
               <OptionView options={this.state.roleOptions} selectOption={(index) => this.roleSelected(index)} />
             </View>
@@ -268,7 +273,7 @@ class EmployeeFormEdit extends Component {
             <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
               {(this.state.employee.imageURL == null)
                 ? <Image source={require('../../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
-                : <Image source={{uri:this.state.employee.imageURL}} style={styles.image} />
+              : <Image source={{uri:this.state.employee.imageURL}} style={styles.image} />
               }
             </TouchableOpacity>
             <Text style={styles.imageText}>Upload Employee Image</Text>
@@ -288,11 +293,11 @@ class EmployeeFormEdit extends Component {
           ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
               <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
                 <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
-                  <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:64, borderRadius:16, backgroundColor:'white', justifyContent:'center',alignItems:'center'}} >
-                    <Image style={{height:32, width:32}} source={require('../../../assets/icons/cancel.png')} />
+                  <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >
+                    <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../../assets/icons/cancel.png')} />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={this.takePicture} style={{height:64,width:64,borderRadius:16, backgroundColor:'white',justifyContent:'center',alignItems:'center' }} >
-                    <Image style={{height:32, width:32, tintColor:'black'}} source={require('../../../assets/icons/camera.png')} />
+                  <TouchableOpacity onPress={this.takePicture} style={{height:64,width:128,borderRadius:16, backgroundColor:Colors.BLUE,justifyContent:'center',alignItems:'center' }} >
+                    <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../../assets/icons/camera.png')} />
                   </TouchableOpacity>
                 </View>
               </Camera>

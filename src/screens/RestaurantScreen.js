@@ -18,13 +18,22 @@ const RestaurantScreen = (props) => (
 
         {props.places.map((place) => (
           <TouchableOpacity style={styles.restaurantItem} key={place._id} onPress={() => props.openProfile(place)} >
-            <Image
-              style={{
-                height: 100, width: 100,
-                flex: 1,
-                resizeMode: 'cover'}}
-                source={{ uri: place.image_url }}
-            />
+            {(place.image_url == null)
+              ? <Image
+                style={{
+                  height: 100, width: 100,
+                  flex: 1
+                }}
+                />
+              : <Image
+                style={{
+                  height: 100, width: 100,
+                  flex: 1,
+                  resizeMode: 'cover'}}
+                  source={{ uri: place.image_url || null }}
+              />
+            }
+
 
             <View style={styles.restaurantInfo}>
               <Text style={styles.nameText}>{place.name}</Text>
@@ -43,10 +52,6 @@ RestaurantScreen.propTypes = {
   openProfile: PropTypes.func,
   isRefreshing: PropTypes.bool,
   onRefresh: PropTypes.func
-};
-
-RestaurantScreen.defaultPropTypes = {
-
 };
 
 const styles = StyleSheet.create({

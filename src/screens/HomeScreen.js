@@ -184,6 +184,7 @@ class HomeScreen extends Component {
   }
 
   _submitEmployeeForm(data) {
+    debugger;
     data = {
       ...data,
       "imageURL": data.imageURI,
@@ -194,21 +195,6 @@ class HomeScreen extends Component {
     if(data.imageURI == null) {
       debugger;
       this.__submitEmployeeHelper(data);
-      // DataBuilder.buildEmployeeForm(data, (obj) => {
-      //   API.createUser(obj, (err, emp) => {
-      //     if(err) {
-      //       Alert.alert(err.message);
-      //     } else {
-      //       console.log(emp);
-      //       Alert.alert('Success!');
-      //
-      //       // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
-      //       this.refreshUser(data, () => {
-      //         this.loadPlaces();
-      //       });
-      //     }
-      //   });
-      // });
     } else {
       debugger;
       var img = new FormData();
@@ -265,6 +251,76 @@ class HomeScreen extends Component {
     //   })
   }
 
+
+    _submitPlaceForm(data) {
+      debugger;
+      data = {
+        ...data,
+        "imageURL": data.imageURI,
+        "sessionID": this.props.sessionID,
+        "userID": this.props.user._id
+      }
+
+      if(data.imageURI == null) {
+        debugger;
+        this.__submitPlaceHelper(data);
+      } else {
+        debugger;
+        var img = new FormData();
+        img.append('file', {
+          uri: data.imageURI,
+          type: 'image/png',
+          name: 'testpic'
+        });
+        API.uploadImage(img, (err, newImage) => {
+          if(err) {
+            console.log(err);
+          } else {
+            data.imageURL = newImage;
+            this.__submitPlaceHelper(data);
+          }
+        })
+      }
+
+      // var img = new FormData();
+      // img.append('file', {
+      //   uri: data.imageURI,
+      //   type: 'image/png',
+      //   name: 'testpic'
+      // });
+      // axios.post('https://emploid.herokuapp.com/upload', img)
+      //   .then((response) => {
+      //     let newImage = response.data;
+      //
+      //     data = {
+      //       ...data,
+      //       "imageURL": newImage,
+      //       "sessionID": this.props.sessionID,
+      //       "userID": this.props.user._id
+      //     }
+      //
+      //     DataBuilder.buildPlaceForm(data, (obj) => {
+      //       API.createPlace(obj, (err, emp) => {
+      //         if(err) {
+      //           Alert.alert(err.message);
+      //         } else {
+      //           var sessionData = {
+      //             "sessionID": this.props.sessionID,
+      //             "userID": this.props.user._id
+      //           }
+      //
+      //           this.refreshUser(sessionData, () => {
+      //             this.loadPlaces();
+      //           });
+      //         }
+      //       });
+      //     });
+      //   })
+      //   .catch((e) => {
+      //     console.log(e);
+      //   })
+    }
+
   __submitEmployeeHelper = (data) => {
     DataBuilder.buildEmployeeForm(data, (obj) => {
       API.createUser(obj, (err, emp) => {
@@ -283,44 +339,22 @@ class HomeScreen extends Component {
     });
   }
 
-  _submitPlaceForm(data) {
-    var img = new FormData();
-    img.append('file', {
-      uri: data.imageURI,
-      type: 'image/png',
-      name: 'testpic'
-    });
-    axios.post('https://emploid.herokuapp.com/upload', img)
-      .then((response) => {
-        let newImage = response.data;
+  __submitPlaceHelper = (data) => {
+    DataBuilder.buildPlaceForm(data, (obj) => {
+      API.createPlace(obj, (err, emp) => {
+        if(err) {
+          Alert.alert(err.message);
+        } else {
+          console.log(emp);
+          Alert.alert('Success!');
 
-        data = {
-          ...data,
-          "imageURL": newImage,
-          "sessionID": this.props.sessionID,
-          "userID": this.props.user._id
-        }
-
-        DataBuilder.buildPlaceForm(data, (obj) => {
-          API.createPlace(obj, (err, emp) => {
-            if(err) {
-              Alert.alert(err.message);
-            } else {
-              var sessionData = {
-                "sessionID": this.props.sessionID,
-                "userID": this.props.user._id
-              }
-
-              this.refreshUser(sessionData, () => {
-                this.loadPlaces();
-              });
-            }
+          // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
+          this.refreshUser(data, () => {
+            this.loadPlaces();
           });
-        });
-      })
-      .catch((e) => {
-        console.log(e);
-      })
+        }
+      });
+    });
   }
 
   // USE THIS AFTER YOU CREATE AN EMPLOYEE OR LOCATION
