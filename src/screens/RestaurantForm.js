@@ -54,14 +54,14 @@ class RestaurantForm extends Component {
     this.props.dismiss();
   }
 
-  textInputFactory(placeholder, onTextChange, value) {
+  textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default') {
     return (
       <TextInput
         placeholder={placeholder}
         placeholderTextColor={Colors.DARK_GREY}
         selectionColor={Colors.BLUE}
-        style={styles.input}
-        autoCorrect={false}
+        style={styles.input} keyboardType={keyboard}
+        autoCorrect={false} autoCapitalize={(capitalize) ? 'words' : 'none'}
         onChangeText={(text) => onTextChange(text)}
         value={(this.props.edit) ? value : null}
       />
@@ -124,12 +124,12 @@ class RestaurantForm extends Component {
 
           <Text style={styles.textHeader} >Email</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('hello@restaurant.com', (text) => this.setState({ place: {...this.state.place, email: text}}), this.state.place.email)}
+            {this.textInputFactory('hello@restaurant.com', (text) => this.setState({ place: {...this.state.place, email: text}}), this.state.place.email, false, 'email-address')}
           </View>
 
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone)}
+            {this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone, true, 'numeric')}
           </View>
 
           <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
@@ -159,7 +159,7 @@ class RestaurantForm extends Component {
             <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
               <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
                 <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:64, borderRadius:16, backgroundColor:'white', justifyContent:'center',alignItems:'center'}} >
-                  <Image style={{height:32, width:32}} source={require('../../assets/icons/back.png')} />
+                  <Image style={{height:32, width:32}} source={require('../../assets/icons/cancel.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this.takePicture} style={{height:64,width:64,borderRadius:16, backgroundColor:'white',justifyContent:'center',alignItems:'center' }} >
                   <Image style={{height:32, width:32, tintColor:'black'}} source={require('../../assets/icons/camera.png')} />
@@ -197,6 +197,11 @@ const styles = StyleSheet.create({
     width: 80, height: 80,
     borderRadius: 40,
     backgroundColor: 'yellow'
+  },
+  imageEmpty: {
+    width: 140, height: 140,
+    borderRadius: 70,
+    tintColor: Colors.BLUE
   },
   imageText: {
     textAlign: 'center',

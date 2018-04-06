@@ -13,7 +13,7 @@ import OptionView from '../ui-elements/option-view';
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 
-class RestaurantFormEditOwner extends Component {
+class RestaurantFormEdit extends Component {
   constructor() {
     super();
 
@@ -165,14 +165,17 @@ class RestaurantFormEditOwner extends Component {
         </ScrollView>
         {(this.state.cameraPermission)
           ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
-              <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1}} >
-                <TouchableOpacity onPress={this.takePicture} style={{ height:40, width:40 }} >
-                  <Image source={require('../../assets/icons/camera.png')} />
-                </TouchableOpacity>
+              <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
+                <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
+                  <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:64, borderRadius:16, backgroundColor:'white', justifyContent:'center',alignItems:'center'}} >
+                    <Image style={{height:32, width:32}} source={require('../../assets/icons/cancel.png')} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={this.takePicture} style={{height:64,width:64,borderRadius:16, backgroundColor:'white',justifyContent:'center',alignItems:'center' }} >
+                    <Image style={{height:32, width:32, tintColor:'black'}} source={require('../../assets/icons/camera.png')} />
+                  </TouchableOpacity>
+                </View>
               </Camera>
             </View>
-
-
           : null
         }
       </View>
@@ -243,4 +246,4 @@ var mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(RestaurantFormEditOwner);
+export default connect(mapStateToProps)(RestaurantFormEdit);

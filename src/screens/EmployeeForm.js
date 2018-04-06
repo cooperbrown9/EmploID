@@ -167,12 +167,6 @@ class EmployeeForm extends Component {
     this.setState({ employee: { ...this.state.employee, phone: num }}, () => {
       callback();
     });
-    // if(num.length !== 10) {
-    //   callback(false);
-    // } else {
-    //     callback(true);
-    //   });
-    // }
   }
 
   checkEmail = (callback) => {
@@ -212,7 +206,7 @@ class EmployeeForm extends Component {
   //   // this.setState({ employee: { ...this.state.employee, phone: num }});
   // }
 
-  textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default', canEdit) {
+  textInputFactory(placeholder, onTextChange, value, canEdit, capitalize = true, keyboard = 'default') {
     return (
       <TextInput
         placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
@@ -220,23 +214,10 @@ class EmployeeForm extends Component {
         autoCorrect={false} autoCapitalize={(capitalize ? 'words' : 'none')}
         onChangeText={(text) => onTextChange(text)}
         value={(this.props.edit) ? value : null}
-        editable={canEdit} keyboardType={keyboard}
+        editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
       />
     )
   }
-
-  // bdayTextInputFactory(placeholder, onTextChange, value) {
-  //   return (
-  //     <TextInput
-  //       placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
-  //       selectionColor={Colors.BLUE} style={styles.birthdayInput}
-  //       autoCorrect={false} autoCapitalize={'none'}
-  //       onChangeText={(text) => onTextChange(text)}
-  //       value={(this.props.edit) ? value : null}
-  //       editable={!this.props.isOwner} keyboardType={'numeric'}
-  //     />
-  //   )
-  // }
 
   getCameraPermission = async() => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -289,20 +270,20 @@ class EmployeeForm extends Component {
           <Text style={styles.textHeader} >Email</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text}}), this.state.employee.email, false, 'email-address', true)
+              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text}}), this.state.employee.email, true, false, 'email-address')
             }
           </View>
 
           <Text style={styles.textHeader} >Position</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('Job Title', (text) => this.setState({ employee: {...this.state.employee, position: text}}), this.state.employee.position, this.props.isOwner)}
+            {this.textInputFactory('Job Title', (text) => this.setState({ employee: {...this.state.employee, position: text}}), this.state.employee.position, true)}
           </View>
 
 
 
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text }}), this.state.employee.phone, true)}
+            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text }}), this.state.employee.phone, true, false, 'phone-pad')}
           </View>
 
           <Text style={styles.textHeader} >Birthday</Text>
@@ -340,7 +321,7 @@ class EmployeeForm extends Component {
 
           <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
             {(this.state.employee.imageURI == null)
-              ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
+              ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'stretch'} style={styles.imageEmpty} />
               : <Image source={{uri:this.state.employee.imageURI}} style={styles.image} />
             }
           </TouchableOpacity>
@@ -368,7 +349,7 @@ class EmployeeForm extends Component {
             <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
               <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
                 <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:64, borderRadius:16, backgroundColor:'white', justifyContent:'center',alignItems:'center'}} >
-                  <Image style={{height:32, width:32}} source={require('../../assets/icons/back.png')} />
+                  <Image style={{height:32, width:32}} source={require('../../assets/icons/cancel.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this.takePicture} style={{height:64,width:64,borderRadius:16, backgroundColor:'white',justifyContent:'center',alignItems:'center' }} >
                   <Image style={{height:32, width:32, tintColor:'black'}} source={require('../../assets/icons/camera.png')} />

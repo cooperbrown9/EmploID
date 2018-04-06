@@ -11,13 +11,11 @@ import DiscountsTab from './employee-tabs/discounts-tab.js';
 import LocationsTab from './employee-tabs/locations-tab.js';
 import NotesTab from './employee-tabs/notes-tab.js';
 import ProfileTab from './employee-tabs/profile-tab.js';
-import EmployeeFormEditOwner from './edit/EmployeeFormEditOwner';
+import EmployeeFormEdit from './edit/EmployeeFormEdit';
 import DiscountModal from './DiscountModal';
 import UserPermissionModal from './UserPermissionModal';
 
 import * as NavActions from '../action-types/nav-action-types';
-// import * as ProfileActions from '../action-types/employee-profile-action-types';
-// import * as EmployeeDetailActions from '../action-types/employee-detail-action-types';
 import * as DetailActions from '../action-types/detail-action-types';
 
 import * as util from '../util';
@@ -305,7 +303,7 @@ class ProfileScreen extends Component {
             </View>
 
             <Modal animationType={'slide'} transparent={false} visible={this.state.editModalPresented} styles={{marginTop: 0}}>
-              <EmployeeFormEditOwner dismiss={this._dismissFormModal} />
+              <EmployeeFormEdit dismiss={this._dismissFormModal} />
             </Modal>
 
             <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal}>

@@ -8,7 +8,7 @@ import RoundButton from '../ui-elements/round-button.js';
 import EmployeesTab from './location-tabs/employees-tab.js';
 import DiscountsTab from './location-tabs/discounts-tab.js';
 import NotesTab from './location-tabs/notes-tab.js';
-import RestaurantFormEditOwner from './RestaurantFormEditOwner.js';
+import RestaurantFormEdit from './RestaurantFormEdit.js';
 import CreateDiscountForm from './CreateDiscountForm';
 
 import * as API from '../api/api';
@@ -30,8 +30,6 @@ class RestaurantProfileScreen extends Component {
   }
 
   componentDidMount() {
-    // this.loadEmployees();
-    // this.loadDiscounts();
     this.getUsers();
   }
 
@@ -215,7 +213,7 @@ class RestaurantProfileScreen extends Component {
         </View>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.formModal} >
-          <RestaurantFormEditOwner updateLocation={(place) => this._updateLocation(place)} dismiss={() => this.setState({ formModal: false}, () => { this.getUpdatedLocation()})} />
+          <RestaurantFormEdit updateLocation={(place) => this._updateLocation(place)} dismiss={() => this.setState({ formModal: false}, () => { this.getUpdatedLocation()})} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} >
