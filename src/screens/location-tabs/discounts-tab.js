@@ -74,7 +74,7 @@ var mapStateToProps = state => {
 
   return {
     discounts: state.detail.discounts,
-    myRole: state.detail.myRole
+    myRole: state.detail.location.relation.role
   }
 }
 

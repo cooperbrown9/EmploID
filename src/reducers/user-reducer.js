@@ -4,6 +4,7 @@ const initialState = {
   isLoggedIn: false, isOwner : true,
   sessionID: null, userID: null,
   myEmployees: [], myLocations: [], myDiscounts: [],
+  employeeRelations: [], placeRelations: [],
   role: null
 };
 

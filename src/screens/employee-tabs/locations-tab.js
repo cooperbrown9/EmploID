@@ -12,9 +12,9 @@ const LocationsTab = (props) => (
         {props.locations.map(model =>
           <TouchableOpacity
             style={
-              (model.employeeRoleAtLocation === 0)
+              (model.relation.role === 0)
                 ? styles.restaurantItem
-                : (model.employeeRoleAtLocation === 1)
+                : (model.relation.role === 1)
                   ? styles.restaurantItemManager
                   : styles.restaurantItemOwner}
               key={model._id}

@@ -55,73 +55,71 @@ class HomeScreen extends Component {
   }
 
   loadData() {
-    this.loadPlaces();
+    this.getPlaces();
   }
 
-  loadPlaces() {
-    let placeCount = 0;
-    let places = [];
-    for(let i = 0; i < this.props.user.places.length; i++) {
+  getPlaces() {
+    // this gets all location IDs of user (me)
+    API.getRelationsByUser(this.props.userID, (e1, relations) => {
+      if(e1) {
+        console.log(e1);
+      } else {
+        let places = [];
+        for(let i = 0; i < relations.length; i++) {
+          places.push({ 'placeID': relations[i].place_id });
+        }
 
-      API.getPlace(this.props.user.places[i].place_id, (err, place) => {
-        if(err) {
-          Alert.alert('ERROR LOADPLACES' + err.message);
-          this.setState({ isRefreshing: false });
-        } else {
-          placeCount++;
-          places.push(place);
+        let sender = {
+          "places": places
+        }
 
-          if(placeCount === this.props.user.places.length) {
-            this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
-            this.loadEmployees(places);
+        API.getPlaces(sender, (e2, locations) => {
+          if(e2) {
+            console.log(e2);
+          } else {
+            DataBuilder.assignRelationsToPlaces(relations, locations, (locationsWithRelations) => {
+              this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: locationsWithRelations });
+              this.getUsers();
+            })
           }
-        }
-      })
-    }
+        })
+      }
+    })
   }
 
-  // LEFT OFF...MAKE SURE YOU CAN ADD EMPLOYEES TO LOCATIONS AND LOCATIONS TO EMPLOYEES, THEN MAKE SURE THHEY SHOW UP ON RESPECTIVE PROFILES
-  loadEmployees(locations) {
-    let dirty_employees = [];
-
-    for(let i = 0; i < locations.length; i++) {
-      dirty_employees.push(...locations[i].employees);
+  getUsers() {
+    let places = [];
+    for(let i = 0; i < this.props.places.length; i++) {
+      places.push({ 'placeID': this.props.places[i]._id });
     }
-
-    // fuck this, had to remove duplicates, janky ass way no normal sorting works
-    let employees = [];
-    let match = false;
-    employees.push(dirty_employees[0]);
-    for(let i = 0; i < dirty_employees.length; i++) {
-      for(let j = 0; j < employees.length; j++) {
-        if(dirty_employees[i].user_id == employees[j].user_id) {
-          match = true;
-          continue;
+    const sender = {
+      'places': places
+    }
+    // gets relations of all employees who are at my locations
+    API.getRelationsByPlaces(sender, (err, relations) => {
+      if(err) {
+        console.log(err);
+        this.setState({ isRefreshing: false });
+      } else {
+        console.log('yesssss');
+        let userIDs = [];
+        for(let i = 0; i < relations.length; i++) {
+          userIDs.push({ 'userID': relations[i].user_id });
         }
-      }
-      if(!match) {
-        employees.push(dirty_employees[i]);
-      }
-      match = false;
-    }
-
-    let employeeCount = 0;
-    for(let i = 0; i < employees.length; i++) {
-      API.getUser(employees[i].user_id, (err, response) => {
-        if(err) {
-          Alert.alert('ERROR LOAD EMPLOYEES' + err.message);
-          this.setState({ isRefreshing: false });
-        } else {
-          employees[i] = response;
-          employeeCount++;
-
-          if(employeeCount === employees.length) {
-            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: employees });
+        const sender = {
+          'users': userIDs
+        }
+        API.getUsers(sender, (err, users) => {
+          if(err) {
+            console.log(err);
+            this.setState({ isRefreshing: false });
+          } else {
+            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
             this.setState({ isRefreshing: false });
           }
-        }
-      })
-    }
+        })
+      }
+    })
   }
 
   uniqueArray(val, index, self) {
@@ -156,15 +154,15 @@ class HomeScreen extends Component {
 
   // role based on user (me)'s role for that location
   _openLocationProfile = (place) => {
-    let role = 0;
-    for(let i = 0; i < this.props.user.places.length; i++) {
-      if(this.props.user.places[i].place_id === place._id) {
-        role = this.props.user.places[i].role;
+    // TODO get full relation object with full user and location
+
+    for(let i = 0; i < this.props.places.length; i++) {
+      if(this.props.places[i].relation.place_id === place._id) {
+        this.props.dispatch({ type: DetailActions.SET_LOCATION, location: place, myRole: this.props.places[i].relation.role });
+        this.props.dispatch({ type: NavActions.LOCATION_PROFILE });
         break;
       }
     }
-    this.props.dispatch({ type: DetailActions.SET_LOCATION, location: place, myRole: role });
-    this.props.dispatch({ type: NavActions.LOCATION_PROFILE });
   }
 
   _dismissEmployeeModal = () => {
@@ -184,19 +182,16 @@ class HomeScreen extends Component {
   }
 
   _submitEmployeeForm(data) {
-    debugger;
     data = {
       ...data,
       "imageURL": data.imageURI,
       "sessionID": this.props.sessionID,
-      "userID": this.props.user._id
+      "userID": this.props.me._id
     }
 
     if(data.imageURI == null) {
-      debugger;
       this.__submitEmployeeHelper(data);
     } else {
-      debugger;
       var img = new FormData();
       img.append('file', {
         uri: data.imageURI,
@@ -212,128 +207,64 @@ class HomeScreen extends Component {
         }
       })
     }
-    // var img = new FormData();
-    // img.append('file', {
-    //   uri: data.imageURI,
-    //   type: 'image/png',
-    //   name: 'testpic'
-    // });
-
-
-
-    // axios.post('https://emploid.herokuapp.com/upload', img).then((response) => {
-    //     let newImage = response.data;
-    //
-    //     data = {
-    //       ...data,
-    //       "imageURL": newImage,
-    //       "sessionID": this.props.sessionID,
-    //       "userID": this.props.user._id
-    //     }
-    //
-    //     DataBuilder.buildEmployeeForm(data, (obj) => {
-    //       API.createUser(obj, (err, emp) => {
-    //         if(err) {
-    //           Alert.alert(err.message);
-    //         } else {
-    //           console.log(emp);
-    //           Alert.alert('Success!');
-    //
-    //           // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
-    //           this.refreshUser(data, () => {
-    //             this.loadPlaces();
-    //           });
-    //         }
-    //       });
-    //     });
-    //   }).catch((e) => {
-    //
-    //   })
   }
 
-
-    _submitPlaceForm(data) {
-      debugger;
-      data = {
-        ...data,
-        "imageURL": data.imageURI,
-        "sessionID": this.props.sessionID,
-        "userID": this.props.user._id
-      }
-
-      if(data.imageURI == null) {
-        debugger;
-        this.__submitPlaceHelper(data);
-      } else {
-        debugger;
-        var img = new FormData();
-        img.append('file', {
-          uri: data.imageURI,
-          type: 'image/png',
-          name: 'testpic'
-        });
-        API.uploadImage(img, (err, newImage) => {
-          if(err) {
-            console.log(err);
-          } else {
-            data.imageURL = newImage;
-            this.__submitPlaceHelper(data);
-          }
-        })
-      }
-
-      // var img = new FormData();
-      // img.append('file', {
-      //   uri: data.imageURI,
-      //   type: 'image/png',
-      //   name: 'testpic'
-      // });
-      // axios.post('https://emploid.herokuapp.com/upload', img)
-      //   .then((response) => {
-      //     let newImage = response.data;
-      //
-      //     data = {
-      //       ...data,
-      //       "imageURL": newImage,
-      //       "sessionID": this.props.sessionID,
-      //       "userID": this.props.user._id
-      //     }
-      //
-      //     DataBuilder.buildPlaceForm(data, (obj) => {
-      //       API.createPlace(obj, (err, emp) => {
-      //         if(err) {
-      //           Alert.alert(err.message);
-      //         } else {
-      //           var sessionData = {
-      //             "sessionID": this.props.sessionID,
-      //             "userID": this.props.user._id
-      //           }
-      //
-      //           this.refreshUser(sessionData, () => {
-      //             this.loadPlaces();
-      //           });
-      //         }
-      //       });
-      //     });
-      //   })
-      //   .catch((e) => {
-      //     console.log(e);
-      //   })
+  _submitPlaceForm(data) {
+    data = {
+      ...data,
+      "imageURL": data.imageURI,
+      "sessionID": this.props.sessionID,
+      "userID": this.props.me._id
     }
 
-  __submitEmployeeHelper = (data) => {
-    DataBuilder.buildEmployeeForm(data, (obj) => {
-      API.createUser(obj, (err, emp) => {
+    if(data.imageURI == null) {
+      this.__submitPlaceHelper(data);
+    } else {
+      var img = new FormData();
+      img.append('file', {
+        uri: data.imageURI,
+        type: 'image/png',
+        name: 'testpic'
+      });
+      API.uploadImage(img, (err, newImage) => {
         if(err) {
-          Alert.alert(err.message);
+          console.log(err);
+        } else {
+          data.imageURL = newImage;
+          this.__submitPlaceHelper(data);
+        }
+      })
+    }
+  }
+
+  __submitEmployeeHelper = (employee) => {
+    DataBuilder.buildEmployeeForm(employee, (obj) => {
+      API.createUser(obj, (e1, emp) => {
+        if(e1) {
+          Alert.alert(e1.message);
         } else {
           console.log(emp);
-          Alert.alert('Success!');
 
-          // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
-          this.refreshUser(data, () => {
-            this.loadPlaces();
-          });
+          let relationsCreatedCount = 0;
+          for(let i = 0; i < employee.places.length; i++) {
+
+            let relation = { 'user_id': emp._id, 'place_id': employee.places[i]._id }
+            API.createRelation(relation, (e2, relation) => {
+              if(e2) {
+                console.log(e2);
+              } else {
+                relationsCreatedCount++;
+                if(relationsCreatedCount === employee.places.length) {
+                  Alert.alert('Success!');
+
+                  // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
+                  this.refreshUser(data, () => {
+                    this.loadPlaces();
+                  });
+                }
+              }
+            })
+          }
         }
       });
     });
@@ -377,7 +308,7 @@ class HomeScreen extends Component {
   }
 
   presentMyProfile = () => {
-    this.props.dispatch({ type: DetailActions.SET_USER, user: this.props.user });
+    this.props.dispatch({ type: DetailActions.SET_USER, user: this.props.me });
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
   }
 
@@ -392,7 +323,7 @@ class HomeScreen extends Component {
   }
 
   clearKeys() {
-    return;
+    // return;
     AsyncStorage.removeItem(Keys.SESSION_ID, () => {
       AsyncStorage.removeItem(Keys.USER_ID);
     });
@@ -500,7 +431,7 @@ const styles = StyleSheet.create({
 var mapStateToProps = state => {
   return {
     indexOn: state.tab.index,
-    user: state.user.user,
+    me: state.user.user,
     isOwner: state.user.isOwner,
     sessionID: state.user.sessionID,
     userID: state.user.userID,

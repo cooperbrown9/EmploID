@@ -15,6 +15,7 @@ import EmployeeFormEdit from './edit/EmployeeFormEdit';
 import DiscountModal from './DiscountModal';
 import UserPermissionModal from './UserPermissionModal';
 
+import * as Parser from '../api/data-builder';
 import * as NavActions from '../action-types/nav-action-types';
 import * as DetailActions from '../action-types/detail-action-types';
 
@@ -65,91 +66,116 @@ class ProfileScreen extends Component {
   }
 
   getPlaces() {
-    let placesCount = 0;
-    let places = [];
+    API.getRelationsByUser(this.props.employee._id, (e1, relations) => {
+      if(e1) {
+        console.log(e1);
+        this.setState({ isRefreshing: false });
+      } else {
+        console.log(relations);
 
-    for(let i = 0; i < this.props.employee.places.length; i++) {
-      API.getPlace(this.props.employee.places[i].place_id, (err, response) => {
-        if(err) {
-          console.log(err);
-          this.setState({ isRefreshing: false });
-        } else {
-          placesCount++;
-          places.push(response);
-
-          if(placesCount === this.props.employee.places.length) {
-            for(let i = 0; i < places.length; i++) {
-              for(let j = 0; j < this.props.employee.places.length; j++) {
-                if(places[i]._id === this.props.employee.places[j].place_id) {
-                  places[i].employeeRoleAtLocation = this.props.employee.places[j].role;
-                }
-              }
-            }
-            this.setState({ isRefreshing: false });
-            this.props.dispatch({ type: DetailActions.SET_LOCATIONS, locations: places });
-            this.getDiscounts();
-          }
+        let placeIDs = [];
+        relations.forEach(r => placeIDs.push({ 'placeID': r.place_id }));
+        let sender = {
+          'places': placeIDs
         }
-      })
+        API.getPlaces(sender, (e2, places) => {
+          if(e2) {
+            console.log(e2);
+            this.setState({ isRefreshing: false });
+          } else {
+            console.log(places);
+            this.setState({ isRefreshing: false });
+            Parser.assignRelationsToPlaces(relations, places, (placesWithRelations) => {
+              this.props.dispatch({ type: DetailActions.SET_LOCATIONS, locations: placesWithRelations });
+              this.getDiscounts();
+            })
+          }
+        })
+      }
+    })
+  }
+
+  // might change this to if owner or manager, you can see all discounts,
+  // if employee, only see ones you have
+  getDiscounts() {
+    let placeIDs = [];
+    this.props.locations.forEach(l => placeIDs.push({ 'placeID': l._id }));
+
+    let sender = {
+      'places': placeIDs
     }
+
+    API.getDiscountsByPlaces(sender, (e1, discounts) => {
+      if(e1) {
+        console.log(e1);
+        this.setState({ isRefreshing: false });
+      } else {
+        console.log(discounts);
+
+        Parser.assignRolesToDiscounts(this.props.locations, discounts, (discountsWithRoles) => {
+          this.setState({ isRefreshing: false });
+          this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: discountsWithRoles });
+        })
+      }
+    })
   }
 
   // DOCUMENT THIS HOLY CHRIST
-  getDiscounts = () => {
-    let count = 0;
-    let discounts = []
-
-    for(let i = 0; i < this.props.locations.length; i++) {
-      discounts.push(...this.props.locations[i].discounts);
-    }
-
-    for(let i = 0; i < discounts.length; i++) {
-      API.getDiscount(discounts[i].discount_id, (err, disc) => {
-        if(err) {
-          console.log(err);
-          this.setState({ isRefreshing: false });
-        } else {
-          count++;
-          discounts[i] = disc;
-
-          if(count === discounts.length) {
-            //START
-            let cleanDiscounts = [];
-
-            for(let i = 0; i < this.props.locations.length; i++) {
-              for(let j = 0; j < this.props.locations[i].discounts.length; j++) {
-                for(let l = 0; l < discounts.length; l++) {
-                  if(discounts[l]._id === this.props.locations[i].discounts[j].discount_id) {
-                    // if employee role for this place is manager or owner
-                    // then add it outright, otherwise
-                    if(this.props.locations[i].employeeRoleAtLocation == 1 || this.props.locations[i].employeeRoleAtLocation == 2) {
-                      cleanDiscounts.push(discounts[l]);
-                    } else {
-                      if(!discounts[l].exclusive) {
-                        cleanDiscounts.push(discounts[l]);
-                      }
-                    }
-                  } else {
-                    continue;
-                  }
-                }
-              }
-            }
-            //END
-
-            // if(this.props.role !== 2 && this.props.role !== 1) {
-            //
-            //   for(let i = 0; i < discounts.length; i++) {
-            //     discounts = discounts.filter(d => d.exclusive === false);
-            //   }
-            // }
-            this.setState({ isRefreshing: false });
-            this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: cleanDiscounts });
-          }
-        }
-      })
-    }
-  }
+  // getDiscounts0 = () => {
+  //   let count = 0;
+  //   let discounts = []
+  //
+  //   for(let i = 0; i < this.props.locations.length; i++) {
+  //     discounts.push(...this.props.locations[i].discounts);
+  //   }
+  //
+  //   for(let i = 0; i < discounts.length; i++) {
+  //     API.getDiscount(discounts[i].discount_id, (err, disc) => {
+  //       if(err) {
+  //         console.log(err);
+  //         this.setState({ isRefreshing: false });
+  //       } else {
+  //         count++;
+  //         discounts[i] = disc;
+  //
+  //         if(count === discounts.length) {
+  //           //START
+  //           let cleanDiscounts = [];
+  //
+  //           for(let i = 0; i < this.props.locations.length; i++) {
+  //             for(let j = 0; j < this.props.locations[i].discounts.length; j++) {
+  //               for(let l = 0; l < discounts.length; l++) {
+  //                 if(discounts[l]._id === this.props.locations[i].discounts[j].discount_id) {
+  //                   // if employee role for this place is manager or owner
+  //                   // then add it outright, otherwise
+  //                   if(this.props.locations[i].employeeRoleAtLocation == 1 || this.props.locations[i].employeeRoleAtLocation == 2) {
+  //                     cleanDiscounts.push(discounts[l]);
+  //                   } else {
+  //                     if(!discounts[l].exclusive) {
+  //                       cleanDiscounts.push(discounts[l]);
+  //                     }
+  //                   }
+  //                 } else {
+  //                   continue;
+  //                 }
+  //               }
+  //             }
+  //           }
+  //           //END
+  //
+  //           // if(this.props.role !== 2 && this.props.role !== 1) {
+  //           //
+  //           //   for(let i = 0; i < discounts.length; i++) {
+  //           //     discounts = discounts.filter(d => d.exclusive === false);
+  //           //   }
+  //           // }
+  //           this.setState({ isRefreshing: false });
+  //           this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: cleanDiscounts });
+  //         }
+  //       }
+  //     })
+  //   }
+  // }
 
   _dismissFormModal = () => {
     this.setState({editModalPresented: false});
@@ -164,7 +190,7 @@ class ProfileScreen extends Component {
   }
 
   _presentDiscountModal = () => {
-    if(this.props.employee._id === this.props.user._id) {
+    if(this.props.employee._id === this.props.me._id) {
       this.setState({ discountModalPresented: true });
     }
   }
@@ -200,24 +226,42 @@ class ProfileScreen extends Component {
   }
 
   editProfileButton() {
+    // FIXME fix THIS
+
+    let canEdit = true;
+
+    if(canEdit) {
+      return (
+        <View style={styles.optionsButton}>
+            <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
+        </View>
+      )
+    } else {
+      return null;
+    }
+    // OLD WAY
     // if the user (me) is a manager or owner at one of the locations of the employee,
     // then user (me) can edit
     let similarPlaces = [];
-    for(let i = 0; i < this.props.user.places.length; i++) {
+    for(let i = 0; i < this.props.me.places.length; i++) {
       for(let j = 0; j < this.props.employee.places.length; j++) {
-        if(this.props.user.places[i].place_id === this.props.employee.places[j].place_id) {
-          similarPlaces.push(this.props.user.places[i]);
+        if(this.props.me.places[i].place_id === this.props.employee.places[j].place_id) {
+          similarPlaces.push(this.props.me.places[i]);
           j = this.props.employee.places.length;
         }
       }
     }
 
-    let canEdit = false;
+    // let canEdit = false;
     for(let i = 0; i < similarPlaces.length; i++) {
       if(similarPlaces[i].role === 2 || similarPlaces[i].role === 1) {
         canEdit = true;
         break;
       }
+    }
+
+    if(this.props.me._id === this.props.employee._id) {
+      canEdit = true;
     }
     // let similarPlaces = this.user.places.filter(p => p.place_id )
     // if(this.props.role === 1 || this.props.role === 2 || this.props.role === 3) {
@@ -234,7 +278,7 @@ class ProfileScreen extends Component {
 
   _presentUserPermissionModal = (model) => {
     //
-    let myPlaces = this.props.user.places;
+    let myPlaces = this.props.me.places;
     let presentedPlace = myPlaces.find(d => d.place_id === model._id);
     if(presentedPlace.role === 1 || presentedPlace.role === 2) {
       this.setState({ userPermissionModalPresented: true, userPermissionModel: model });
@@ -384,7 +428,7 @@ var mapStateToProps = state => {
   return {
     indexOn: state.employeeTab.indexOn,
     employee: state.detail.user,
-    user: state.user.user,
+    me: state.user.user,
     role: state.user.role,
     employeeRole: state.detail.employeeRole,
     discounts: state.detail.discounts,

@@ -15,6 +15,7 @@ import * as API from '../api/api';
 import * as DetailActions from '../action-types/detail-action-types';
 import * as NavActions from '../action-types/nav-action-types';
 
+import * as DataBuilder from '../api/data-builder';
 import * as util from '../util';
 
 class RestaurantProfileScreen extends Component {
@@ -33,40 +34,85 @@ class RestaurantProfileScreen extends Component {
     this.getUsers();
   }
 
-
   getUsers() {
-    let users = [];
-    let userCount = 0;
+    API.getRelationsByPlace(this.props.location._id, (e1, relations) => {
+      if(e1) {
+        console.log(e1);
+      } else {
+        let userIDs = [];
+        relations.forEach(r => userIDs.push({ 'userID': r.user_id }) );
 
-    for(let i = 0; i < this.props.location.employees.length; i++) {
-      API.getUser(this.props.location.employees[i].user_id, (err, user) => {
-        if(err) {
-          console.log(err);
-          this.setState({ isRefreshing: false });
-          debugger;
-        } else {
-          userCount++;
-          users.push(user);
-          // pull the employee's role off its places [], and put it on a shallower
-          // object.
-          // Basically just expose the employee's role for this restaurant
-          if(userCount === this.props.location.employees.length) {
-            for(let i = 0; i < users.length; i++) {
-              for(let j = 0; j < users[i].places.length; j++) {
-                if(users[i].places[j].place_id === this.props.location._id) {
-                  users[i].detailLocationRole = users[i].places[j].role;
-                }
-              }
-            }
-            this.props.dispatch({ type: DetailActions.SET_EMPLOYEES, employees: users });
-            this.getDiscounts();
-          }
+        const sender = {
+          'users': userIDs
         }
-      });
-    }
+
+        API.getUsers(sender, (e2, users) => {
+          if(e2) {
+            console.log(e2);
+          } else {
+            console.log(users);
+            DataBuilder.assignRelationsToUsers(relations, users, (usersWithRelations) => {
+              this.props.dispatch({ type: DetailActions.SET_EMPLOYEES, employees: usersWithRelations });
+              this.getDiscounts();
+            })
+          }
+        })
+      }
+    })
   }
+  //
+  // getUsers0() {
+  //   let users = [];
+  //   let userCount = 0;
+  //
+  //   for(let i = 0; i < this.props.location.employees.length; i++) {
+  //     API.getUser(this.props.location.employees[i].user_id, (err, user) => {
+  //       if(err) {
+  //         console.log(err);
+  //         this.setState({ isRefreshing: false });
+  //         debugger;
+  //       } else {
+  //         userCount++;
+  //         users.push(user);
+  //         // pull the employee's role off its places [], and put it on a shallower
+  //         // object.
+  //         // Basically just expose the employee's role for this restaurant
+  //         if(userCount === this.props.location.employees.length) {
+  //           for(let i = 0; i < users.length; i++) {
+  //             for(let j = 0; j < users[i].places.length; j++) {
+  //               if(users[i].places[j].place_id === this.props.location._id) {
+  //                 users[i].detailLocationRole = users[i].places[j].role;
+  //               }
+  //             }
+  //           }
+  //           this.props.dispatch({ type: DetailActions.SET_EMPLOYEES, employees: users });
+  //           this.getDiscounts();
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
 
   getDiscounts() {
+    API.getDiscountsByPlace(this.props.location._id, (e1, discounts) => {
+      if(e1) {
+        console.log(e1);
+        this.setState({ isRefreshing: false });
+      } else {
+        console.log(discounts);
+
+        if(this.props.location.relation.role !== 1 && this.props.location.relation.role !== 2) {
+          let legalDiscounts = [];
+          discounts.forEach(d => (!d.exclusive) ? legalDiscounts.push(d) : console.log('lmao'));
+          discounts = legalDiscounts;
+        }
+        this.setState({ isRefreshing: false });
+        this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: discounts });
+      }
+    })
+  }
+
+  getDiscounts0() {
     let discounts = [];
     let count = 0;
 
@@ -136,6 +182,7 @@ class RestaurantProfileScreen extends Component {
     this.setState({ formModal: true });
   }
 
+  // make it able to present the discount thing
   _presentDiscountForm = () => {
     this.setState({ discountModalPresented: true });
   }
@@ -220,7 +267,7 @@ class RestaurantProfileScreen extends Component {
         </View>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.formModal} >
-          <RestaurantFormEdit updateLocation={(place) => this._updateLocation(place)} dismiss={() => this.setState({ formModal: false}, () => { this.getUpdatedLocation()})} />
+          <RestaurantFormEdit updateLocation={(place) => this._updateLocation(place)} dismiss={() => this.setState({ formModal: false }, () => { this.getUpdatedLocation()})} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} >
@@ -286,11 +333,9 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    employees: state.detail.employees,
     location: state.detail.location,
     indexOn: state.locationTab.indexOn,
-    role: state.user.role,
-    user: state.user.user,
+    me: state.user.user,
     myRole: state.detail.myRole
   }
 }

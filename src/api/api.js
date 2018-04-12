@@ -4,12 +4,23 @@ import * as ImageAPI from './image-handler';
 const BASE = 'https://emploid.herokuapp.com/api';
 
 const GET_USER = '/get-user/';
-const GET_PLACES = '/get-places/';
+const GET_USERS = '/get-users';
+// const GET_PLACES = '/get-places/';
+const GET_PLACES = '/get-places';
 const GET_DISCOUNT = '/get-discount/';
+const GET_DISCOUNTS_BY_PLACE = '/get-discounts-by-place/';
+const GET_DISCOUNTS_BY_PLACES = '/get-discounts-by-places';
+
 const GET_LOCATIONS_IN_GROUP = '/get-locations-in-group/';
+
+const GET_USER_RELATIONS = '/get-relations-by-user/';
+const GET_PLACE_RELATIONS = '/get-relations-by-place/';
+const GET_RELATIONS = '/get-relations';
+const GET_RELATIONS_BY_PLACES = '/get-relations-by-places';
 
 const CREATE_USER = '/create-user';
 const CREATE_PLACE = '/create-place';
+const CREATE_RELATION = '/create-relation';
 
 const UPDATE_USER = '/update-user';
 const UPDATE_USER_PLACES = '/update-user-places';
@@ -24,11 +35,23 @@ export function getUser(userID, callback) {
     .catch(e => callback(e))
 }
 
-export function getPlaces(userID, callback) {
-  axios.get(BASE + GET_PLACES + userID)
+export function getUsers(users, callback) {
+  axios.post(BASE + GET_USERS, users)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
+
+export function getPlaces(_places, callback) {
+  axios.post(BASE + GET_PLACES, _places)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e));
+}
+
+// export function getPlaces(userID, callback) {
+//   axios.get(BASE + GET_PLACES + userID)
+//     .then(response => callback(null, response.data))
+//     .catch(e => callback(e))
+// }
 
 export function createUser(data, callback) {
   axios.post(BASE + CREATE_USER, data)
@@ -60,6 +83,18 @@ export function getDiscount(discID, callback) {
     .catch(e => callback(e))
 }
 
+export function getDiscountsByPlace(placeID, callback) {
+  axios.get(BASE + GET_DISCOUNTS_BY_PLACE + placeID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getDiscountsByPlaces(places, callback) {
+  axios.post(BASE + GET_DISCOUNTS_BY_PLACES, places)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
 export function updateUser(data, callback) {
   axios.post(BASE + UPDATE_USER, data)
     .then(response => callback(null, response.data))
@@ -78,6 +113,31 @@ export function getLocationsInGroup(groupID, callback) {
     .catch(e => callback(e))
 }
 
+export function getRelationsByUser(userID, callback) {
+  axios.get(BASE + GET_USER_RELATIONS + userID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+// only finds 1 place
+export function getRelationsByPlace(placeID, callback) {
+  axios.get(BASE + GET_PLACE_RELATIONS + placeID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+// finds an array of places
+export function getRelationsByPlaces(places, callback) {
+  axios.post(BASE + GET_RELATIONS_BY_PLACES, places)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getRelations(relations, callback) {
+  axios.post(BASE + GET_RELATIONS, relations)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
 
 // --------------------- IMAGES ----------------------
 export function uploadImage(img, callback) {

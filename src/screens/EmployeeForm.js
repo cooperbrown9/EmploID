@@ -45,7 +45,6 @@ class EmployeeForm extends Component {
         position: "",
         phone: "",
         email: "",
-        places: [],
         groupID: "",
         role: 0,
         gender: 0,
@@ -54,6 +53,7 @@ class EmployeeForm extends Component {
         hireDate: new Date().toDateString(),
         imageURI: null
       },
+      selectedPlaces: [],
       placeSelected: false,
       cameraPermission: false,
       cameraType: Camera.Constants.Type.back
@@ -82,17 +82,11 @@ class EmployeeForm extends Component {
     } else {
       this.checkEmail((complete) => {
         if(complete) {
-          this.setState({ employee: { ...this.state.employee, groupID: this.props.user.group_id }}, () => {
-            for(let i = 0; i < this.state.employee.places.length; i++) {
-              // make the user an employee at all restaurants by default
-              // must go to their profile to set if their real role of a restaurant
-              this.state.employee.places[i].role = 0;// this.state.employee.role;
-            }
-            this.props.submitForm(this.state.employee);
-            this.props.dismiss();
-          });
+          this.setState({ employee: { ...this.state.employee, groupID: this.props.user.group_id }});
+          this.props.submitForm(this.state.employee);
+          this.props.dismiss();
         }
-      })
+      });
     }
   }
 
@@ -113,47 +107,6 @@ class EmployeeForm extends Component {
       this.setState({ roleOptions: arr, employee: {...this.state.employee, role: index } });
     });
   }
-  //
-  // checkFields = (callback) => {
-  //   checkFields(true);
-  //   console.log('if it hits this, callbacks dont return the function');
-  //   return;
-  //   console.log('if this hits, fuck bruh');
-  //   let isGood = false;
-  //
-  //   if(this.state.firstName === "") {
-  //     Alert.alert('You need to fill out the First Name field!');
-  //     callback(false);
-  //     console.log('penis');
-  //     return;
-  //   }
-  //   if(this.state.lastName === "") {
-  //     Alert.alert('You need to fill out the Last Name field!');
-  //     callback(false);
-  //     return;
-  //   }
-  //   if(this.state.position === "") {
-  //     Alert.alert('You need to fill out the Position field!');
-  //     callback(false);
-  //     return;
-  //   }
-  //
-  //   this.checkPhone((status1) => {
-  //     if(status1) {
-  //       isGood = true;
-  //       this.checkEmail((status2) => {
-  //         if(status2) {
-  //           callback(true);
-  //         } else {
-  //           callback(false);
-  //         }
-  //       })
-  //     } else {
-  //       callback(false);
-  //       return;
-  //     }
-  //   });
-  // }
 
   cleanPhone = (callback) => {
     let num = this.state.employee.phone;
@@ -177,34 +130,6 @@ class EmployeeForm extends Component {
       this.cleanPhone(() => callback(true));
     }
   }
-
-  // phoneTextChanged = (text) => {
-  //   let num = text;
-  //   num = num.replace('(', '');
-  //   num = num.replace(')', '');
-  //   num = num.replace('.', '');
-  //   num = num.replace('-', '');
-  //   num = num.replace(' ', '');
-  //
-  //   if(num.length === 3) {
-  //     num = '(' + text + ')';
-  //     return num;
-  //     // this.setState({ employee: { ...this.state.employee, phone: num }});
-  //   } else if(num.length === 7) {
-  //     num = '(' + num.substr(0, 3) + ')';
-  //     num += num.substr(3, 3);
-  //     return num;
-  //     // this.setState({ employee: { ...this.state.employee, phone: num }});
-  //   } else if(num.length === 10) {
-  //     num = '(' + num.substr(0, 3) + ') ';
-  //     num += num.substr(3, 3) + '-';
-  //     num += num.substr(6, 4);
-  //     return num;
-  //     // this.setState({ employee: { ...this.state.employee, phone: num }});
-  //   }
-  //   return num;
-  //   // this.setState({ employee: { ...this.state.employee, phone: num }});
-  // }
 
   textInputFactory(placeholder, onTextChange, value, canEdit, capitalize = true, keyboard = 'default') {
     return (
@@ -245,7 +170,7 @@ class EmployeeForm extends Component {
           <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
             <EmployeeFormAddLocation
               dismissModal={() => this.setState({ addLocationsPresented: false }) }
-              addLocations={(places) => this.setState({ employee: { ...this.state.employee, places: places }}) }
+              addLocations={(places) => this.setState({ employee: {...this.state.employee, places: places }}) }
             />
           </Modal>
 
