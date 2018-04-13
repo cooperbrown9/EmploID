@@ -26,11 +26,21 @@ class CreateDiscountForm extends Component {
   }
 
   static propTypes = {
-    dismiss: PropTypes.func
+    dismiss: PropTypes.func,
+    edit: PropTypes.func,
+    discount: PropTypes.object
+  }
+
+  static defaultProps = {
+    edit: false
   }
 
   componentDidMount() {
-
+    if(this.props.edit) {
+      this.setState({ name: this.props.discount.name, description: this.props.discount.offer }, () => {
+        this.optionSelected((this.props.discount.exclusive) ? 0 : 1);
+      })
+    }
   }
 
   createDiscount = () => {
@@ -55,8 +65,28 @@ class CreateDiscountForm extends Component {
     });
   }
 
+  editDiscount = () => {
+    let exclusive = this.state.exclusiveOptions[0].selected;
+    var data = {
+      "discountID": this.props.discount._id,
+      "name": this.state.name,
+      "offer": this.state.description,
+      "placeID": this.props.locationID,
+      "exclusive": exclusive
+    }
+
+    API.updateDiscount(data, (e1, discount) => {
+      if(e1) {
+        console.log(e1);
+      } else {
+        console.log(discount);
+        this.props.dismiss();
+      }
+    })
+  }
+
   optionSelected = (index) => {
-    OptionView.selected(this.state.exclusiveOptions, index, (arr) => {
+    OptionView.selectedExclusive(this.state.exclusiveOptions, index, (arr) => {
       this.setState({ exclusiveOptions: arr });
     });
   }
@@ -104,7 +134,10 @@ class CreateDiscountForm extends Component {
         </View>
 
         <View style={styles.submitButton} >
-          <SubmitButton title={'CREATE DISCOUNT'} onPress={() => this.createDiscount()} />
+          <SubmitButton
+            title={(this.props.edit) ? 'UPDATE DISCOUNT' : 'CREATE DISCOUNT'}
+            onPress={() => {(this.props.edit) ? this.editDiscount() : this.createDiscount()}}
+          />
         </View>
 
       </ScrollView>

@@ -10,6 +10,7 @@ import DiscountsTab from './location-tabs/discounts-tab.js';
 import NotesTab from './location-tabs/notes-tab.js';
 import RestaurantFormEdit from './RestaurantFormEdit.js';
 import CreateDiscountForm from './CreateDiscountForm';
+import DiscountModal from './DiscountModal';
 
 import * as API from '../api/api';
 import * as DetailActions from '../action-types/detail-action-types';
@@ -27,7 +28,9 @@ class RestaurantProfileScreen extends Component {
   state = {
     formModal: false,
     discountModalPresented: false,
-    isRefreshing: false
+    createDiscountModalPresented: false,
+    isRefreshing: false,
+    selectedDiscount: null
   }
 
   componentDidMount() {
@@ -160,9 +163,12 @@ class RestaurantProfileScreen extends Component {
         console.log(err);
         this.setState({ isRefreshing: false });
       } else {
+        // relation isnt got from server so just add the already existing one to it
+        // myRole is still the same also, its set on SET_LOCATION in HomeScreen
+        loc.relation = this.props.location.relation;
         this.props.dispatch({ type: DetailActions.SET_LOCATION, location: loc, myRole: this.props.myRole });
-        this.loadEmployees();
-        this.loadDiscounts();
+        this.getUsers();
+        this.getDiscounts();
       }
     })
   }
@@ -184,11 +190,19 @@ class RestaurantProfileScreen extends Component {
 
   // make it able to present the discount thing
   _presentDiscountForm = () => {
-    this.setState({ discountModalPresented: true });
+    this.setState({ createDiscountModalPresented: true });
+  }
+
+  _presentDiscountModal = (discount) => {
+    this.setState({ discountModalPresented: true, selectedDiscount: discount });
+  }
+
+  _dismissDiscountModal = () => {
+    this.setState({ discountModalPresented: false });
   }
 
   _dismissDiscountForm = () => {
-    this.setState({ discountModalPresented: false });
+    this.setState({ createDiscountModalPresented: false });
   }
 
   _goBack = () => {
@@ -196,7 +210,7 @@ class RestaurantProfileScreen extends Component {
   }
 
   editProfileButton() {
-    if(this.props.myRole === 2 || this.props.myRole === 1) {
+    if(this.props.location.relation.role === 2 || this.props.location.relation.role === 1) {
       return (
         <View style={styles.optionsButton}>
           <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
@@ -258,7 +272,7 @@ class RestaurantProfileScreen extends Component {
        {(this.props.indexOn === 0)
           ? <EmployeesTab />
           : (this.props.indexOn === 1)
-            ? <DiscountsTab presentForm={() => this._presentDiscountForm()}/>
+            ? <DiscountsTab presentForm={() => this._presentDiscountForm()} selectDiscount={(discount) => this._presentDiscountModal(discount)} />
             : (this.props.indexOn === 2)
               ? <NotesTab />
               : null
@@ -270,8 +284,12 @@ class RestaurantProfileScreen extends Component {
           <RestaurantFormEdit updateLocation={(place) => this._updateLocation(place)} dismiss={() => this.setState({ formModal: false }, () => { this.getUpdatedLocation()})} />
         </Modal>
 
-        <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} >
+        <Modal animationType={'slide'} transparent={false} visible={this.state.createDiscountModalPresented} >
           <CreateDiscountForm dismiss={() => this._dismissDiscountForm()} />
+        </Modal>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} >
+          <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} myRole={this.props.location.relation.role} />
         </Modal>
 
       </ScrollView>

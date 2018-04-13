@@ -23,6 +23,7 @@ const CREATE_PLACE = '/create-place';
 const CREATE_RELATION = '/create-relation';
 
 const UPDATE_USER = '/update-user';
+const UPDATE_DISCOUNT = '/update-discount';
 const UPDATE_USER_PLACES = '/update-user-places';
 
 const VERIFY_SESSION_GET_USER = '/verify-session-get-user';
@@ -91,6 +92,12 @@ export function getDiscountsByPlace(placeID, callback) {
 
 export function getDiscountsByPlaces(places, callback) {
   axios.post(BASE + GET_DISCOUNTS_BY_PLACES, places)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function updateDiscount(discount, callback) {
+  axios.post(BASE + UPDATE_DISCOUNT, discount)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

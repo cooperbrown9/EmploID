@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Modal } from 'react-native';
 import { connect } from 'react-redux';
+
+import CreateDiscountForm from './CreateDiscountForm';
 
 import RoundButton from '../ui-elements/round-button';
 import SubmitButton from '../ui-elements/submit-button';
+import RainbowButton from '../ui-elements/rainbow-button';
 
 import { BACKGROUND_GREY } from '../constants/colors';
+
+let red =255, blue=0, green=0, colorIndex=0;
 
 class DiscountModal extends Component {
 
@@ -16,105 +21,56 @@ class DiscountModal extends Component {
 
   static propTypes = {
     dismiss: PropTypes.func,
-    discount: PropTypes.object
+    discount: PropTypes.object,
+    editDiscountPresented: false,
+    myRole: PropTypes.number
   }
-
-
 
   constructor() {
     super();
 
     this.state = {
-      red: 255,
-      green: 0,
-      blue: 0,
-      colorIndex: 0,
-      color: 'rgb(100,100,100)'// 'rgb(' + this.red, + ',' + this.green + ',' + this.blue +')'
+      editDiscountPresented: false
     }
   }
 
   componentDidMount() {
-    // RED: 255, 0 , 0
-    // ORANGE: 255, 127, 0
-    // YELLOW: 255, 255, 0
-    // GREEN: 0, 255, 0
-    // BLUE: 0, 0, 255
-    // PURPLE: 148, 0, 211
-    setInterval(() => {
 
-      switch(this.state.colorIndex) {
-        case 0: // RED to ORANGE
-          if(this.state.green === 127) {
-            this.setState({ colorIndex: 1 })
-          } else {
-            this.setState({ green: ++this.state.green });
-          }
-          break;
+  }
 
-        case 1: // ORANGE to YELLOW
-          if(this.state.green === 255) {
-            this.setState({ colorIndex: 2 });
-          } else {
-            this.setState({ green: ++this.state.green });
-          }
-          break;
-
-        case 2: // YELLOW to GREEN
-          if(this.state.red === 0) {
-            this.setState({ colorIndex: 3 });
-          } else {
-            this.setState({ red: --this.state.red });
-          }
-          break;
-
-        case 3: // GREEN to BLUE
-          if(this.state.blue === 255) {
-            this.setState({ green: --this.state.green });
-            if(this.state.green === 0) {
-              this.setState({ colorIndex: 4 })
-            }
-          } else {
-            this.setState({ blue: ++this.state.blue })
-          }
-          break;
-
-        case 4: // BLUE to PURPLE
-          if(this.state.red === 148) {
-            this.setState({ blue: --this.state.blue });
-            if(this.state.blue === 211) {
-              this.setState({ colorIndex: 5 });
-            }
-          } else {
-            this.setState({ red: ++this.state.red });
-          }
-
-          case 5:
-            if(this.state.blue === 0) {
-              this.setState({ red: ++this.state.red });
-              if(this.state.red === 255) {
-                this.setState({ colorIndex: 0 });
-              }
-            } else {
-              this.setState({ blue: --this.state.blue });
-            }
-
-        default:
-          console.log('yuh');
-          break;
-      }
-      // this.setState({ red: ++this.state.red, green: ++this.state.green, blue: ++this.state.blue });
-    }, 10);
+  presentEditDiscount = () => {
+    this.setState({ editDiscountPresented: true });
   }
 
   makeColor() {
     return 'rgb(' + this.state.red + ',' + this.state.green + ',' + this.state.blue + ')';
   }
 
+  _dismissEditDiscountModal = () => {
+    this.setState({ editDiscountPresented: false }, () => {
+      this.props.dismiss();
+    })
+  }
+
+  canEdit = () => {
+
+    if(this.props.myRole === 1 || this.props.myRole === 2) {
+      return (
+        <RoundButton onPress={this.presentEditDiscount} imagePath={require('../../assets/icons/pencil.png')} />
+      )
+    }
+    return null;
+  }
+
   render() {
     return(
-      <View style={{ flex: 1, backgroundColor: 'rgb(' + this.state.red + ',' + this.state.green + ',' + this.state.blue +')' }} >
+      <View style={{ flex: 1, backgroundColor: BACKGROUND_GREY }} >
         <View style={styles.backButton} >
           <RoundButton onPress={() => this.props.dismiss()} imagePath={require('../../assets/icons/back.png')}/>
+        </View>
+
+        <View style={styles.editButton} >
+          {this.canEdit()}
         </View>
 
         <View style={styles.containerView} >
@@ -126,9 +82,14 @@ class DiscountModal extends Component {
 
         <View style={styles.buttonContainer}>
           <View style={{ height: 64 }}>
-            <SubmitButton title={'REDEEM'} onPress={this.props.dismiss} />
+            <RainbowButton title={'REDEEM'} onPress={this.props.dismiss} />
+            {/*<SubmitButton title={'REDEEM'} onPress={this.props.dismiss} hasBGColor={true} bgColor={'rgb(' + red + ',' + green + ',' + blue +')'}/>*/}
           </View>
         </View>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.editDiscountPresented} >
+          <CreateDiscountForm edit={true} discount={this.props.discount} dismiss={() => this._dismissEditDiscountModal()}/>
+        </Modal>
 
       </View>
     )
@@ -159,8 +120,14 @@ const styles = StyleSheet.create({
     marginLeft: 16, marginRight: 16,
     justifyContent: 'center'
   },
+  editButton: {
+    position: 'absolute',
+    right: 20, top: 20,
+    zIndex: 1001
+  },
   backButton: {
-    position: 'absolute', left: 20, top: 20,
+    position: 'absolute',
+    left: 20, top: 20,
     zIndex: 1001
   },
 });
