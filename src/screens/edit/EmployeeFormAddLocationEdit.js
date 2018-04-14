@@ -12,6 +12,9 @@ import RoundButton from '../../ui-elements/round-button';
 import LoadingOverlay from '../../ui-elements/loading-overlay';
 import OptionView from '../../ui-elements/option-view';
 
+// // COMBAK: cant get locations from API call to getLocationsInGroup
+
+
 
 // make this page when u add a place, its "type_of_add" is a -1,0,1, -1 is removed, 0 is the same, 1 is added
 //  then you send all the places to the db and sort the logic out there
@@ -47,31 +50,37 @@ class EmployeeFormAddLocationEdit extends Component {
     this.roleSelected(this.props.role);
 
     console.log(this.state.loading);
-    this.getGroupLocations((locs) => {
-      let groupPlaces = locs;
-      let places = [];
 
+    this.getGroupLocations((places) => {
+      console.log(places);
+      debugger;
+    })
 
-      // check which ones user is already at
-      groupPlaces.map((place, index) => {
-        place.index = index;
-        place.selected = false;
-        place.action = 0;
-        place.initialState = place.selected;
-
-        places.push(place);
-        for(let i = 0; i < this.props.employeePlaces.length; i++) {
-          if(place._id === this.props.employeePlaces[i].place_id) {
-            place.selected = true;
-            place.initialState = place.selected;
-          }
-          if(index === groupPlaces.length - 1) {
-            this.setState({ places: places });
-            this.forceUpdate();
-          }
-        }
-      });
-    });
+    // this.getGroupLocations((locs) => {
+    //   let groupPlaces = locs;
+    //   let places = [];
+    //
+    //
+    //   // check which ones user is already at
+    //   groupPlaces.map((place, index) => {
+    //     place.index = index;
+    //     place.selected = false;
+    //     place.action = 0;
+    //     place.initialState = place.selected;
+    //
+    //     places.push(place);
+    //     for(let i = 0; i < this.props.employeePlaces.length; i++) {
+    //       if(place._id === this.props.employeePlaces[i].place_id) {
+    //         place.selected = true;
+    //         place.initialState = place.selected;
+    //       }
+    //       if(index === groupPlaces.length - 1) {
+    //         this.setState({ places: places });
+    //         this.forceUpdate();
+    //       }
+    //     }
+    //   });
+    // });
   }
 
 
@@ -81,23 +90,65 @@ class EmployeeFormAddLocationEdit extends Component {
   }
 
   getGroupLocations = (callback) => {
-    API.getLocationsInGroup(this.props.user.group_id, (err, locs) => {
-      if(err) {
-        console.log(err);
-        this.props.dismissModal();
+    API.getLocationsInGroup(this.props.me.group_id, (e1, relations) => {
+      if(e1) {
+        console.log(e1);
       } else {
-        console.log(locs);
-        if(!locs) {
-          console.log(locs);
-        } else {
-          for(let i = 0; i < locs.length; i++) {
-            locs[i].selected = false;
-            locs[i].index = i;
-          }
-          callback(locs);
+        // COMBAK
+        let placeIDs = [];
+        relations.forEach(r => placeIDs.push({ 'placeID': r.place_id }));
+        const sender = {
+          places: placeIDs
         }
+        // TODO make this function only return groupid, name,_id and other basic shit, forget addy,phone,email,etc
+        API.getPlaces(sender, (e2, places) => {
+          if(e2) {
+            console.log(e2);
+          } else {
+            console.log(places);
+            // places are all eligible places
+            this.getSelectedPlaces(this.props.locations, places, (selectedPlaces) => {
+              // COMBAK
+
+            })
+          }
+        })
       }
     })
+    // API.getLocationsInGroup(this.props.me.group_id, (err, locs) => {
+    //   if(err) {
+    //     console.log(err);
+    //     this.props.dismissModal();
+    //   } else {
+    //     console.log(locs);
+    //     if(!locs) {
+    //       console.log(locs);
+    //     } else {
+    //       for(let i = 0; i < locs.length; i++) {
+    //         locs[i].selected = false;
+    //         locs[i].index = i;
+    //       }
+    //       callback(locs);
+    //     }
+    //   }
+    // })
+  }
+
+  getSelectedPlaces(myPlaces, groupPlaces, callback) {
+    let places = [];
+    groupPlaces.forEach(gPlace => {
+      gPlace.selected = false;
+      places.push(gPlace);
+    });
+    debugger;
+    places.forEach(p => {
+      myPlaces.forEach(myPlace => {
+        if(p._id === myPlace._id) {
+          p.selected = true;
+        }
+      })
+    })
+    callback(places);
   }
 
   // switcher, on -> off, off -> on
@@ -261,12 +312,13 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    user: state.user.user,
+    me: state.user.user,
     employeeID: state.detail.user._id,
     role: state.detail.user.role,
     sessionID: state.user.sessionID,
     places: state.user.myLocations,
-    employeePlaces: state.detail.user.places
+    employeePlaces: state.detail.user.places,
+    locations: state.detail.locations
   }
 }
 
