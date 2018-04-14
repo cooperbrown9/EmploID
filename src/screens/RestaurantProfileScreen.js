@@ -63,38 +63,6 @@ class RestaurantProfileScreen extends Component {
       }
     })
   }
-  //
-  // getUsers0() {
-  //   let users = [];
-  //   let userCount = 0;
-  //
-  //   for(let i = 0; i < this.props.location.employees.length; i++) {
-  //     API.getUser(this.props.location.employees[i].user_id, (err, user) => {
-  //       if(err) {
-  //         console.log(err);
-  //         this.setState({ isRefreshing: false });
-  //         debugger;
-  //       } else {
-  //         userCount++;
-  //         users.push(user);
-  //         // pull the employee's role off its places [], and put it on a shallower
-  //         // object.
-  //         // Basically just expose the employee's role for this restaurant
-  //         if(userCount === this.props.location.employees.length) {
-  //           for(let i = 0; i < users.length; i++) {
-  //             for(let j = 0; j < users[i].places.length; j++) {
-  //               if(users[i].places[j].place_id === this.props.location._id) {
-  //                 users[i].detailLocationRole = users[i].places[j].role;
-  //               }
-  //             }
-  //           }
-  //           this.props.dispatch({ type: DetailActions.SET_EMPLOYEES, employees: users });
-  //           this.getDiscounts();
-  //         }
-  //       }
-  //     });
-  //   }
-  // }
 
   getDiscounts() {
     API.getDiscountsByPlace(this.props.location._id, (e1, discounts) => {

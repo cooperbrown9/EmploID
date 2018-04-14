@@ -28,6 +28,12 @@ import { Camera, Permissions } from 'expo';
 
 class HomeScreen extends Component {
 
+
+// TODO
+// FIXME AddLocation
+// FIXME EditAddLocation
+// FIXME add employees from RestaurantForm
+// FIXME Delete Users, Discounts, Locations
 // people upgraded to owners cant create employees
   constructor() {
     super();
@@ -147,6 +153,7 @@ class HomeScreen extends Component {
     //this.setState({ employeeFormPresented: true });
   }
   _openEmployeeProfile = (employee) => {
+    // get my rank compared to employee
     this.props.dispatch({ type: DetailActions.SET_USER, user: employee });
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
     //this.setState({ employeeFormPresented: true });
@@ -155,7 +162,6 @@ class HomeScreen extends Component {
   // role based on user (me)'s role for that location
   _openLocationProfile = (place) => {
     // TODO get full relation object with full user and location
-
     for(let i = 0; i < this.props.places.length; i++) {
       if(this.props.places[i].relation.place_id === place._id) {
         this.props.dispatch({ type: DetailActions.SET_LOCATION, location: place, myRole: this.props.places[i].relation.role });
@@ -247,8 +253,7 @@ class HomeScreen extends Component {
 
           let relationsCreatedCount = 0;
           for(let i = 0; i < employee.places.length; i++) {
-
-            let relation = { 'user_id': emp._id, 'place_id': employee.places[i]._id }
+            let relation = { 'userID': emp.user_id, 'placeID': employee.places[i].place_id, 'role': 0 }
             API.createRelation(relation, (e2, relation) => {
               if(e2) {
                 console.log(e2);

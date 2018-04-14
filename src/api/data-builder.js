@@ -42,6 +42,89 @@ export function assignRolesToDiscounts(places, discounts, callback) {
   callback(discounts);
 }
 
+export function sortDiscountsForEmployeeView(relations, user) {
+
+}
+
+export function sortDiscountsForManagerView(relations, user, callback) {
+
+}
+
+export function checkPermissionForEmployeeEdit(myPlaces, empPlaces, callback) {
+  for(let i = 0; i < empPlaces.length; i++) {
+    for(let j = 0; j < myPlaces.length; j++) {
+      // if Im on my own profile, send back role
+      if(empPlaces[i].relation.user_id === myPlaces[j].relation.user_id) {
+        callback(empPlaces[i].relation.role);
+        return;
+      }
+    }
+  }
+
+  let similarPlaces = [];
+  for(let i = 0; i < empPlaces.length; i++) {
+    for(let j = 0; j < myPlaces.length; j++) {
+      if(empPlaces[i]._id === myPlaces[j]._id) {
+        similarPlaces.push({ employeePlace: empPlaces[i], myPlace: myPlaces[j] });
+      }
+    }
+  }
+  let highestRole = 0;
+  for(let i = 0; i < similarPlaces.length; i++) {
+    if(similarPlaces[i].myPlace.relation.role > similarPlaces[i].employeePlace.relation.role) {
+      if(similarPlaces[i].myPlace.relation.role > highestRole) {
+        highestRole = similarPlaces[i].myPlace.relation.role;
+      }
+    }
+  }
+  callback(highestRole);
+}
+
+// discounts are all of those from the employee
+// this is called after relations are assigned to the discounts
+export function sortDiscountPermissions(discounts, myPlaces, callback) {
+  let validDiscounts = [];
+  for(let i = 0; i < discounts.length; i++) {
+    for(let j = 0; j < myPlaces.length; j++) {
+      if(discounts[i].place_id === myPlaces[j]._id) {
+        // if exclusive, check rank, otherwise add it outright
+        if(discounts[i].exclusive) {
+          // if MY role for this place is 1 or 2, then Im management
+          if(myPlaces[j].relation.role >= 1) {
+            validDiscounts.push(discounts[i]);
+          }
+        } else {
+          validDiscounts.push(discounts[i]);
+        }
+      }
+    }
+  }
+  callback(validDiscounts);
+}
+
+export function getMyRankToEmployeeByPlaces(myPlaces, employeePlaces, callback) {
+  // find the location both me and employee work at.
+  // for each of our alike places, find my highest rank
+  let samePlaces = [];
+  myPlaces.forEach((myPlace) => {
+    employeePlaces.forEach((empPlace) => {
+      if(myPlace._id === empPlace._id) {
+        samePlaces.push({ myPlace: myPlace, employeePlace: empPlace });
+      }
+    })
+  });
+
+  let highestRank = 0;
+  for(let i = 0; i < samePlaces.length; i++) {
+    if(samePlaces[i].myPlace.relation.role > samePlaces[i].employeePlace.relation.role) {
+      if(samePlaces[i].myPlace.relation.role > highestRank) {
+        highestRank = samePlaces[i].myPlace.relation.role;
+      }
+    }
+  }
+  callback(highestRank);
+}
+
 export function buildEmployeeForm(data, callback) {
   var obj = {
     "firstName": data.firstName,

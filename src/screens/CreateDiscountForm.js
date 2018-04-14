@@ -51,10 +51,7 @@ class CreateDiscountForm extends Component {
       "placeID": this.props.locationID,
       "exclusive": exclusive
     };
-    // var data = {
-    //   ...discountData,
-    //   "sessionID": this.props.sessionID,
-    // }
+
     API.createDiscount(discountData, (err, response) => {
       if(err) {
         console.log(err);

@@ -25,6 +25,7 @@ const CREATE_RELATION = '/create-relation';
 const UPDATE_USER = '/update-user';
 const UPDATE_DISCOUNT = '/update-discount';
 const UPDATE_USER_PLACES = '/update-user-places';
+const UPDATE_ROLE = '/update-role';
 
 const VERIFY_SESSION_GET_USER = '/verify-session-get-user';
 
@@ -56,6 +57,12 @@ export function getPlaces(_places, callback) {
 
 export function createUser(data, callback) {
   axios.post(BASE + CREATE_USER, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function createRelation(data, callback) {
+  axios.post(BASE + CREATE_RELATION, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
@@ -104,6 +111,12 @@ export function updateDiscount(discount, callback) {
 
 export function updateUser(data, callback) {
   axios.post(BASE + UPDATE_USER, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function updateRole(data, callback) {
+  axios.post(BASE + UPDATE_ROLE, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

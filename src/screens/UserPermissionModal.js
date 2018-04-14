@@ -34,12 +34,14 @@ class UserPermissionModal extends Component {
   }
 
   componentDidMount() {
-    for(let i = 0; i < this.props.employee.places.length; i++) {
-      if(this.props.employee.places[i].place_id === this.props.location._id) {
-        this.roleSelected(this.props.employee.places[i].role);
-        break;
-      }
-    }
+
+    this.roleSelected(this.props.location.relation.role);
+    // for(let i = 0; i < this.props.employee.places.length; i++) {
+    //   if(this.props.employee.places[i].place_id === this.props.location._id) {
+    //     this.roleSelected(this.props.employee.places[i].role);
+    //     break;
+    //   }
+    // }
   }
 
   roleSelected = (index) => {
@@ -129,7 +131,8 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    employee: state.detail.user
+    employee: state.detail.user,
+
   }
 }
 

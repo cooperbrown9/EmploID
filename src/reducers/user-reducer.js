@@ -1,17 +1,17 @@
-import * as AuthActions from '../action-types/auth-action-types';
+import * as UserActions from '../action-types/auth-action-types';
 
 const initialState = {
   isLoggedIn: false, isOwner : true,
   sessionID: null, userID: null,
   myEmployees: [], myLocations: [], myDiscounts: [],
-  employeeRelations: [], placeRelations: [],
+  myLocationRelations: [],
   role: null
 };
 
 export default function user (state = initialState, action) {
   switch(action.type) {
 
-    case AuthActions.LOGIN_SUCCESS:
+    case UserActions.LOGIN_SUCCESS:
       return {
         ...state,
         user: action.user,
@@ -20,57 +20,57 @@ export default function user (state = initialState, action) {
         role: action.role
       }
 
-    case AuthActions.LOGIN_ERROR:
+    case UserActions.LOGIN_ERROR:
       return {
         ...state
       }
 
-    case AuthActions.LOGIN_OWNER_SUCCESS:
-      return {
-        ...state,
-        isLoggedIn: true,
-        isOwner: true,
-        user: action.user,
-        sessionID: action.sessionID,
-        userID: action.userID
-      }
+    // case UserActions.LOGIN_OWNER_SUCCESS:
+    //   return {
+    //     ...state,
+    //     isLoggedIn: true,
+    //     isOwner: true,
+    //     user: action.user,
+    //     sessionID: action.sessionID,
+    //     userID: action.userID
+    //   }
 
-    case AuthActions.LOGIN_OWNER_ERROR:
-      return {
-        ...state,
-        isLoggedIn: false,
-        isOwner: false
-      }
+    // case UserActions.LOGIN_OWNER_ERROR:
+    //   return {
+    //     ...state,
+    //     isLoggedIn: false,
+    //     isOwner: false
+    //   }
+    //
+    // case UserActions.LOGIN_EMPLOYEE_SUCCESS:
+    //   return {
+    //     ...state,
+    //     isLoggedIn: true,
+    //     isOwner: false,
+    //     user: action.user,
+    //     userID: action.userID
+    //   }
 
-    case AuthActions.LOGIN_EMPLOYEE_SUCCESS:
-      return {
-        ...state,
-        isLoggedIn: true,
-        isOwner: false,
-        user: action.user,
-        userID: action.userID
-      }
+    // case UserActions.LOGIN_EMPLOYEE_ERROR:
+    //   return {
+    //     ...state,
+    //     isLoggedIn: false,
+    //     isOwner: false
+    //   }
 
-    case AuthActions.LOGIN_EMPLOYEE_ERROR:
-      return {
-        ...state,
-        isLoggedIn: false,
-        isOwner: false
-      }
-
-    case AuthActions.SET_EMPLOYEES:
+    case UserActions.SET_EMPLOYEES:
       return {
         ...state,
         myEmployees: action.employees
       }
 
-    case AuthActions.SET_LOCATIONS:
+    case UserActions.SET_LOCATIONS:
       return {
         ...state,
         myLocations: action.locations
       }
 
-    case AuthActions.SET_DISCOUNTS:
+    case UserActions.SET_DISCOUNTS:
       return {
         ...state,
         myDiscounts: action.discounts

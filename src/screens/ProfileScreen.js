@@ -33,7 +33,8 @@ class ProfileScreen extends Component {
     userPermissionModalPresented: false,
     selectedDiscount: null,
     isRefreshing: false,
-    userPermissionModel: {}
+    userPermissionModel: {},
+    canEditProfile: false
   }
 
   static propTypes = {
@@ -71,8 +72,6 @@ class ProfileScreen extends Component {
         console.log(e1);
         this.setState({ isRefreshing: false });
       } else {
-        console.log(relations);
-
         let placeIDs = [];
         relations.forEach(r => placeIDs.push({ 'placeID': r.place_id }));
         let sender = {
@@ -83,11 +82,13 @@ class ProfileScreen extends Component {
             console.log(e2);
             this.setState({ isRefreshing: false });
           } else {
-            console.log(places);
             this.setState({ isRefreshing: false });
             Parser.assignRelationsToPlaces(relations, places, (placesWithRelations) => {
               this.props.dispatch({ type: DetailActions.SET_LOCATIONS, locations: placesWithRelations });
-              this.getDiscounts();
+              Parser.checkPermissionForEmployeeEdit(this.props.myLocations, this.props.locations, (role) => {
+                this.setState({ canEdit: (role >= 1) ? true : false });
+                this.getDiscounts();
+              });
             })
           }
         })
@@ -110,72 +111,17 @@ class ProfileScreen extends Component {
         console.log(e1);
         this.setState({ isRefreshing: false });
       } else {
-        console.log(discounts);
-
         Parser.assignRolesToDiscounts(this.props.locations, discounts, (discountsWithRoles) => {
-          this.setState({ isRefreshing: false });
-          this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: discountsWithRoles });
-        })
+          // compares employee discounts with my locations and assigns
+          // permission accordingly
+          Parser.sortDiscountPermissions(discountsWithRoles, this.props.myLocations, (validDiscounts) => {
+            this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: validDiscounts });
+          })
+        });
+        this.setState({ isRefreshing: false });
       }
     })
   }
-
-  // DOCUMENT THIS HOLY CHRIST
-  // getDiscounts0 = () => {
-  //   let count = 0;
-  //   let discounts = []
-  //
-  //   for(let i = 0; i < this.props.locations.length; i++) {
-  //     discounts.push(...this.props.locations[i].discounts);
-  //   }
-  //
-  //   for(let i = 0; i < discounts.length; i++) {
-  //     API.getDiscount(discounts[i].discount_id, (err, disc) => {
-  //       if(err) {
-  //         console.log(err);
-  //         this.setState({ isRefreshing: false });
-  //       } else {
-  //         count++;
-  //         discounts[i] = disc;
-  //
-  //         if(count === discounts.length) {
-  //           //START
-  //           let cleanDiscounts = [];
-  //
-  //           for(let i = 0; i < this.props.locations.length; i++) {
-  //             for(let j = 0; j < this.props.locations[i].discounts.length; j++) {
-  //               for(let l = 0; l < discounts.length; l++) {
-  //                 if(discounts[l]._id === this.props.locations[i].discounts[j].discount_id) {
-  //                   // if employee role for this place is manager or owner
-  //                   // then add it outright, otherwise
-  //                   if(this.props.locations[i].employeeRoleAtLocation == 1 || this.props.locations[i].employeeRoleAtLocation == 2) {
-  //                     cleanDiscounts.push(discounts[l]);
-  //                   } else {
-  //                     if(!discounts[l].exclusive) {
-  //                       cleanDiscounts.push(discounts[l]);
-  //                     }
-  //                   }
-  //                 } else {
-  //                   continue;
-  //                 }
-  //               }
-  //             }
-  //           }
-  //           //END
-  //
-  //           // if(this.props.role !== 2 && this.props.role !== 1) {
-  //           //
-  //           //   for(let i = 0; i < discounts.length; i++) {
-  //           //     discounts = discounts.filter(d => d.exclusive === false);
-  //           //   }
-  //           // }
-  //           this.setState({ isRefreshing: false });
-  //           this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: cleanDiscounts });
-  //         }
-  //       }
-  //     })
-  //   }
-  // }
 
   _dismissFormModal = () => {
     this.setState({editModalPresented: false});
@@ -203,84 +149,42 @@ class ProfileScreen extends Component {
     }
   }
 
-  updateUserPermissions = (role, location) => {
-    // update restaurant of that index for that user to the specified role
-    let employeePlaces = this.props.employee.places;
-    for(let i = 0; i < employeePlaces.length; i++) {
-      if(employeePlaces[i].place_id === location._id) {
-        employeePlaces[i].role = role;
-        break;
-      }
-    }
+  _updateUserPermissions = (role, location) => {
     var data = {
-      "userID": this.props.employee._id,
-      "places": employeePlaces
+      'relationID': location.relation._id,
+      'role': role
     }
-    API.updateUserPlaces(data, (err, user) => {
+    API.updateRole(data, (err, rel) => {
       if(err) {
-        console.log('couldnt update places');
+        console.log(err, 'coulnt update role');
       } else {
-        console.log(user);
+        console.log(rel);
       }
-    });
+    })
   }
 
   editProfileButton() {
     // FIXME fix THIS
 
-    let canEdit = true;
-
-    if(canEdit) {
-      return (
-        <View style={styles.optionsButton}>
+    // Parser.checkPermissionForEmployeeEdit(this.props.myLocations, this.props.locations, (role) => {
+      // if( === 1 || role === 2) {
+      if(this.state.canEdit) {
+        return (
+          <View style={styles.optionsButton}>
             <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
-        </View>
-      )
-    } else {
-      return null;
-    }
-    // OLD WAY
-    // if the user (me) is a manager or owner at one of the locations of the employee,
-    // then user (me) can edit
-    let similarPlaces = [];
-    for(let i = 0; i < this.props.me.places.length; i++) {
-      for(let j = 0; j < this.props.employee.places.length; j++) {
-        if(this.props.me.places[i].place_id === this.props.employee.places[j].place_id) {
-          similarPlaces.push(this.props.me.places[i]);
-          j = this.props.employee.places.length;
-        }
+          </View>
+        )
+      } else {
+        return null;
       }
-    }
-
-    // let canEdit = false;
-    for(let i = 0; i < similarPlaces.length; i++) {
-      if(similarPlaces[i].role === 2 || similarPlaces[i].role === 1) {
-        canEdit = true;
-        break;
-      }
-    }
-
-    if(this.props.me._id === this.props.employee._id) {
-      canEdit = true;
-    }
-    // let similarPlaces = this.user.places.filter(p => p.place_id )
-    // if(this.props.role === 1 || this.props.role === 2 || this.props.role === 3) {
-    if(canEdit) {
-      return (
-        <View style={styles.optionsButton}>
-            <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
-        </View>
-      )
-    } else {
-      return null;
-    }
+    // });
   }
 
   _presentUserPermissionModal = (model) => {
-    //
-    let myPlaces = this.props.me.places;
-    let presentedPlace = myPlaces.find(d => d.place_id === model._id);
-    if(presentedPlace.role === 1 || presentedPlace.role === 2) {
+    let myPlaces = this.props.myLocations;
+    let presentedPlace = myPlaces.find(d => d._id === model._id);
+
+    if(presentedPlace.relation.role === 1 || presentedPlace.relation.role === 2) {
       this.setState({ userPermissionModalPresented: true, userPermissionModel: model });
     } else {
       Alert.alert('You do not have permission to edit this user!');
@@ -356,7 +260,7 @@ class ProfileScreen extends Component {
 
             <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} style={styles.discountModal}>
               <View style={{height: 64, backgroundColor: 'transparent'}}></View>
-              <UserPermissionModal updatePermission={(role, location) => this.updateUserPermissions(role, location)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
+              <UserPermissionModal updatePermission={(role, location) => this._updateUserPermissions(role, location)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
             </Modal>
 
           </View>
@@ -370,7 +274,6 @@ const FRAME = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1
-
   },
   infoTextName: {
     backgroundColor: 'transparent',
@@ -427,11 +330,9 @@ const styles = StyleSheet.create({
 var mapStateToProps = state => {
   return {
     indexOn: state.employeeTab.indexOn,
-    employee: state.detail.user,
     me: state.user.user,
-    role: state.user.role,
-    employeeRole: state.detail.employeeRole,
-    discounts: state.detail.discounts,
+    employee: state.detail.user,
+    myLocations: state.user.myLocations,
     locations: state.detail.locations
   }
 }
