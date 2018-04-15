@@ -195,7 +195,7 @@ class EmployeeFormEdit extends Component {
 
             <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
               <EmployeeFormAddLocationEdit
-                dismissModal={(callback) => this.setState({ addLocationsPresented: false }) }
+                dismiss={(callback) => this.setState({ addLocationsPresented: false }) }
                 addLocations={(places) => this.setState({ employee: { ...this.state.employee, places: places }}) }
               />
             </Modal>

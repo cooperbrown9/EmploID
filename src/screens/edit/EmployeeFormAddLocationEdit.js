@@ -15,9 +15,6 @@ import OptionView from '../../ui-elements/option-view';
 // // COMBAK: cant get locations from API call to getLocationsInGroup
 
 
-
-// make this page when u add a place, its "type_of_add" is a -1,0,1, -1 is removed, 0 is the same, 1 is added
-//  then you send all the places to the db and sort the logic out there
 class EmployeeFormAddLocationEdit extends Component {
 
   constructor() {
@@ -39,7 +36,7 @@ class EmployeeFormAddLocationEdit extends Component {
   }
 
   static propTypes = {
-    dismissModal: PropTypes.func,
+    dismiss: PropTypes.func,
     addLocations: PropTypes.func,
     places: PropTypes.array
   }
@@ -49,40 +46,19 @@ class EmployeeFormAddLocationEdit extends Component {
   componentDidMount() {
     this.roleSelected(this.props.role);
 
-    console.log(this.state.loading);
-
     this.getGroupLocations((places) => {
-      console.log(places);
-      debugger;
-    })
 
-    // this.getGroupLocations((locs) => {
-    //   let groupPlaces = locs;
-    //   let places = [];
-    //
-    //
-    //   // check which ones user is already at
-    //   groupPlaces.map((place, index) => {
-    //     place.index = index;
-    //     place.selected = false;
-    //     place.action = 0;
-    //     place.initialState = place.selected;
-    //
-    //     places.push(place);
-    //     for(let i = 0; i < this.props.employeePlaces.length; i++) {
-    //       if(place._id === this.props.employeePlaces[i].place_id) {
-    //         place.selected = true;
-    //         place.initialState = place.selected;
-    //       }
-    //       if(index === groupPlaces.length - 1) {
-    //         this.setState({ places: places });
-    //         this.forceUpdate();
-    //       }
-    //     }
-    //   });
-    // });
+      this.props.locations.forEach(employeePlace => {
+        places.forEach(groupPlace => {
+          if(employeePlace._id === groupPlace._id) {
+            groupPlace.selected = true;
+            groupPlace.relation = employeePlace.relation;
+          }
+        })
+      });
+      this.setState({ places: places });
+    });
   }
-
 
   // not sure how this works but it works, gets unique array
   uniqueArray(val, index, self) {
@@ -90,81 +66,82 @@ class EmployeeFormAddLocationEdit extends Component {
   }
 
   getGroupLocations = (callback) => {
-    API.getLocationsInGroup(this.props.me.group_id, (e1, relations) => {
+    API.getLocationsInGroup(this.props.me.group_id, (e1, places) => {
       if(e1) {
         console.log(e1);
       } else {
-        // COMBAK
-        let placeIDs = [];
-        relations.forEach(r => placeIDs.push({ 'placeID': r.place_id }));
-        const sender = {
-          places: placeIDs
-        }
-        // TODO make this function only return groupid, name,_id and other basic shit, forget addy,phone,email,etc
-        API.getPlaces(sender, (e2, places) => {
-          if(e2) {
-            console.log(e2);
-          } else {
-            console.log(places);
-            // places are all eligible places
-            this.getSelectedPlaces(this.props.locations, places, (selectedPlaces) => {
-              // COMBAK
-
-            })
-          }
-        })
+        places.forEach((p, index) => {
+          p.selected = false
+          p.index = index;
+        });
+        callback(places);
       }
     })
-    // API.getLocationsInGroup(this.props.me.group_id, (err, locs) => {
-    //   if(err) {
-    //     console.log(err);
-    //     this.props.dismissModal();
-    //   } else {
-    //     console.log(locs);
-    //     if(!locs) {
-    //       console.log(locs);
-    //     } else {
-    //       for(let i = 0; i < locs.length; i++) {
-    //         locs[i].selected = false;
-    //         locs[i].index = i;
-    //       }
-    //       callback(locs);
-    //     }
-    //   }
-    // })
-  }
-
-  getSelectedPlaces(myPlaces, groupPlaces, callback) {
-    let places = [];
-    groupPlaces.forEach(gPlace => {
-      gPlace.selected = false;
-      places.push(gPlace);
-    });
-    debugger;
-    places.forEach(p => {
-      myPlaces.forEach(myPlace => {
-        if(p._id === myPlace._id) {
-          p.selected = true;
-        }
-      })
-    })
-    callback(places);
   }
 
   // switcher, on -> off, off -> on
   selectPlace = (place) => {
     this.state.places[place.index].selected = !this.state.places[place.index].selected;
-
-    if(this.state.places[place.index].selected) {
-      this.state.places[place.index].action++;
-    } else {
-      this.state.places[place.index].action--;
-    }
-
     this.setState({ places: this.state.places });
   }
 
   submit() {
+    this.setState({ loading: true });
+    // need to pass relations to delete
+    // need to pass relations to add
+    let placesToDelete = [];
+    let placesToAdd = [];
+    for(let i = 0; i < this.state.places.length; i++) {
+      // place was selected and didnt already have a relation so its been
+      // added to the user
+      if(this.state.places[i].selected && this.state.places[i].relation == null) {
+        placesToAdd.push({ 'placeID': this.state.places[i]._id, 'userID': this.props.employeeID, 'role': 0 });
+        continue;
+      }
+
+      // place was NOT selected, and had a relation, so it must be deleted
+      if(!this.state.places[i].selected && this.state.places[i].relation != null) {
+        placesToDelete.push({ 'relationID': this.state.places[i].relation._id });
+      }
+    }
+
+    if(placesToDelete.length > 0) {
+      const delSender = {
+        'relations': placesToDelete
+      }
+      API.deleteRelations(delSender, (err, results) => {
+        if(err) {
+          console.log(err);
+          this.setState({ loading: false });
+        } else {
+          console.log(results);
+          this.setState({ loading: false });
+        }
+      })
+    }
+
+    if(placesToAdd.length > 0) {
+      let count = 0;
+      for(let i = 0; i < placesToAdd.length; i++) {
+        API.createRelation(placesToAdd[i], (err, relation) => {
+          if(err) {
+            console.log(err);
+            this.setState({ loading: false })
+          } else {
+            console.log(relation);
+            count++;
+            if(count === placesToAdd.length) {
+              this.setState({ loading: false }, () => {
+                this.props.dismiss();
+              })
+            }
+          }
+        })
+      }
+    }
+
+
+    return;
     this.setState({ loading: true });
     let selectedPlaces = [];
     for(let i = 0; i < this.state.places.length; i++) {
@@ -181,7 +158,7 @@ class EmployeeFormAddLocationEdit extends Component {
     }
     // debugger;
 
-    // this.props.dismissModal()
+    // this.props.dismiss()
     // return;
     API.updateUserPlaces(data, (err, user) => {
       if(err) {
@@ -196,7 +173,7 @@ class EmployeeFormAddLocationEdit extends Component {
           } else {
             this.setState({ loading: false }, () => {
               this.props.dispatch({ type: DetailActions.SET_LOCATIONS, locations: places, role: this.state.role });
-              this.props.dismissModal();
+              this.props.dismiss();
             });
           }
         })
@@ -215,7 +192,7 @@ class EmployeeFormAddLocationEdit extends Component {
       <ScrollView style={styles.scrollContainer} >
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismissModal} />
+            <RoundButton onPress={this.props.dismiss} />
           </View>
 
           <View style={styles.buttonContainer} >

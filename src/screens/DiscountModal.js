@@ -22,8 +22,12 @@ class DiscountModal extends Component {
   static propTypes = {
     dismiss: PropTypes.func,
     discount: PropTypes.object,
-    editDiscountPresented: false,
+    editDiscountPresented: PropTypes.bool,
     myRole: PropTypes.number
+  }
+
+  static defaultProps = {
+    editDiscountPresented: false
   }
 
   constructor() {

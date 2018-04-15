@@ -24,7 +24,7 @@ class EmployeeFormAddLocation extends Component {
   }
 
   static propTypes = {
-    dismissModal: PropTypes.func,
+    dismiss: PropTypes.func,
     addLocations: PropTypes.func,
     places: PropTypes.array,
   }
@@ -77,7 +77,7 @@ class EmployeeFormAddLocation extends Component {
       }
     }
     this.props.addLocations(selectedPlaces);
-    this.props.dismissModal();
+    this.props.dismiss();
   }
 
   render() {
@@ -85,7 +85,7 @@ class EmployeeFormAddLocation extends Component {
       <ScrollView style={styles.scrollContainer} >
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismissModal} />
+            <RoundButton onPress={this.props.dismiss} />
           </View>
 
           <View style={styles.buttonContainer} >

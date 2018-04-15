@@ -27,6 +27,8 @@ const UPDATE_DISCOUNT = '/update-discount';
 const UPDATE_USER_PLACES = '/update-user-places';
 const UPDATE_ROLE = '/update-role';
 
+const DELETE_RELATIONS = '/delete-relations';
+
 const VERIFY_SESSION_GET_USER = '/verify-session-get-user';
 
 const LOGIN_USER = '/login';
@@ -155,6 +157,12 @@ export function getRelationsByPlaces(places, callback) {
 
 export function getRelations(relations, callback) {
   axios.post(BASE + GET_RELATIONS, relations)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function deleteRelations(relations, callback) {
+  axios.post(BASE + DELETE_RELATIONS, relations)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

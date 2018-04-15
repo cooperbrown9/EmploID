@@ -169,7 +169,7 @@ class EmployeeForm extends Component {
 
           <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
             <EmployeeFormAddLocation
-              dismissModal={() => this.setState({ addLocationsPresented: false }) }
+              dismiss={() => this.setState({ addLocationsPresented: false }) }
               addLocations={(places) => this.setState({ employee: {...this.state.employee, places: places }}) }
             />
           </Modal>
