@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import * as API from '../api/api';
 import * as Colors from '../constants/colors';
 
+import OptionViewSplit from '../ui-elements/option-view-split';
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 
@@ -17,6 +18,16 @@ class EmployeeFormAddLocation extends Component {
     this.state = {
       places: [
         { name: 'ABC', _id: '123', selected: false }
+      ],
+      positionOptions: [
+        { value: 'Server', selected: false, index: 0 },
+        { value: 'Bartender', selected: false, index: 1 },
+        { value: 'Host', selected: false, index: 2 },
+        { value: 'Busser', selected: false, index: 3 },
+        { value: 'Manager', selected: false, index: 4 },
+        { value: 'Chef', selected: false, index: 5 },
+        { value: 'Cook', selected: false, index: 6 },
+        { value: 'Dishwasher', selected: false, index: 7 }
       ],
       selectedPlaces: []
     }
@@ -30,38 +41,39 @@ class EmployeeFormAddLocation extends Component {
   }
 
   componentWillMount() {
-    // this.loadLocations();
-
-    let localPlaces = this.props.places;
-    let placesCount = 0;
-    for(let i = 0; i < localPlaces.length; i++) {
-      localPlaces[i].selected = false;
-      localPlaces[i].index = i;
-      placesCount++;
-      if(placesCount === localPlaces.length) {
-        this.setState({ places: localPlaces });
-      }
+    this.state.places = this.props.places;
+    for(let i = 0; i < this.state.places.length; i++) {
+      this.state.places[i].selected = false;
+      this.state.places[i].index = i;
     }
+
+    this.state.positionOptions = [];
+    this.state.places.forEach((place, index) => {
+      place.positions.forEach((position, indexPos) => {
+        place.positions[indexPos] = { value: place.positions[indexPos], selected: false, index: indexPos }
+      })
+    });
+    //
+    // for(let i = 0; i < this.state.place.positions.length; i++) {
+    //   for(let j = 0; j < this.state.positionOptions.length; j++) {
+    //     if(this.state.place.positions[i] === this.state.positionOptions[j].value) {
+    //       this.positionSelected(this.state.positionOptions[j].index);
+    //     }
+    //   }
+    // }
+
+    this.setState({ places: this.state.places });
   }
 
-  loadLocations = () => {
-    // DEPRECATED
-    var data = {
-      "sessionID": this.props.sessionID,
-      "ownerID": this.props.user._id
-    }
-
-    API.getPlacesFromOwner(data, (e, response) => {
-      if(e) {
-        console.log(e);
-      } else {
-        for(let i = 0; i < response.length; i++) {
-          response[i].selected = false;
-          response[i].index = i;
-          this.setState({ places: response });
-        }
+  positionSelected = (index, place) => {
+    place.positions[index].selected = !place.positions[index].selected;
+    for(let i = 0; i < this.state.places.length; i++) {
+      if(this.state.places[i]._id === place._id) {
+        this.state.places[i] = place;
+        break;
       }
-    })
+    }
+    this.setState({ places: this.state.places });
   }
 
   selectPlace = (place) => {
@@ -71,9 +83,18 @@ class EmployeeFormAddLocation extends Component {
 
   submit() {
     let selectedPlaces = [];
+    let position = '';
     for(let i = 0; i < this.state.places.length; i++) {
+
+      // if place is selected, find the position selected for it
       if(this.state.places[i].selected) {
-        selectedPlaces.push({ "place_id": this.state.places[i]._id });
+        // loop thru selected place's positions
+        this.state.places[i].positions.forEach((pos) => {
+          if(pos.selected) {
+            position = pos.value;
+          }
+        });
+        selectedPlaces.push({ 'place_id': this.state.places[i]._id, 'position': position });
       }
     }
     this.props.addLocations(selectedPlaces);
@@ -85,19 +106,27 @@ class EmployeeFormAddLocation extends Component {
       <ScrollView style={styles.scrollContainer} >
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} />
+            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/down.png')} />
           </View>
 
           <View style={styles.buttonContainer} >
             {(this.state) ? this.state.places.map((place) => (
-              <TouchableOpacity
-                onPress={() => this.selectPlace(place) }
-                style={ ((place.selected) ? styles.buttonOn : styles.buttonOff) }
-                key={place._id} >
-                <Text style={(place.selected) ? styles.textOn : styles.textOff} >
-                  {place.name}
-                </Text>
-              </TouchableOpacity>
+              <View style={(place.selected) ? styles.placeContainerOn : styles.placeContainerOff} key={place._id} >
+                <TouchableOpacity
+                  onPress={() => this.selectPlace(place) }
+                  style={ ((place.selected) ? styles.buttonOn : styles.buttonOff) }
+                  key={place._id} >
+                  <Text style={(place.selected) ? styles.textOn : styles.textOff} >
+                    {place.name}
+                  </Text>
+                </TouchableOpacity>
+                {(place.selected)
+                  ? <View style={styles.optionContainer} >
+                      <OptionViewSplit options={place.positions} selectOption={(index) => this.positionSelected(index, place)} />
+                    </View>
+                  : null
+                }
+              </View>
             )) : null}
           </View>
 
@@ -116,42 +145,63 @@ const FRAME = Dimensions.get('window');
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
-    backgroundColor: Colors.BACKGROUND_GREY
+    backgroundColor: 'white'//Colors.BACKGROUND_GREY
   },
   submitButton: {
-    marginLeft: 32, marginRight: 32, marginBottom: 64
+    marginLeft: 32, marginRight: 32, marginBottom: 32
   },
   container: {
     flex: 1
+  },
+  placeContainerOff: {
+    flex: 1, borderRadius: 8,
+    marginLeft: 12, marginRight: 12, marginBottom: 64,
+    backgroundColor: Colors.MID_GREY,
+    overflow: 'hidden'
+  },
+  placeContainerOn: {
+    flex: 1, borderRadius: 8,
+    marginLeft: 12, marginRight: 12, marginBottom: 64,
+    backgroundColor: Colors.BACKGROUND_GREY,
+    overflow: 'hidden'
+  },
+  optionContainer: {
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    marginBottom: 8, marginLeft: 4, marginRight: 4,
+    flex: 1,
+  },
+  textHeader: {
+    fontSize: 16, marginLeft: 16, marginBottom: 12,
+    color: 'black'
   },
   buttonContainer: {
     flex: 1
   },
   buttonOn: {
-    height: 64,
-    borderRadius: 24,
-    marginRight: 32, marginLeft: 32, marginBottom: 32,
-    backgroundColor: 'black',
+    height: 64, //borderRadius: 24,
+    marginRight: 0, marginLeft: 0, marginBottom: 16, marginTop: 0,
+    backgroundColor: Colors.BLUE,//'black',
     justifyContent: 'center'
   },
   buttonOff: {
     height: 64,
-    borderRadius: 24,
-    marginRight: 32, marginLeft: 32, marginBottom: 32,
-    backgroundColor: Colors.MID_GREY,
+    // borderRadius: 24,
+    marginRight: 32, marginLeft: 32, marginBottom: 32, marginTop: 8,
+    backgroundColor: 'transparent', //Colors.MID_GREY,
     justifyContent: 'center'
   },
   textOn: {
     fontSize: 28,
     marginLeft: 16, marginRight: 16,
     color: 'white', textAlign: 'center',
-    fontFamily: 'roboto-regular'
+    fontFamily: 'roboto-bold'
   },
   textOff: {
     fontSize: 28,
     marginLeft: 16, marginRight: 16,
     color: Colors.DARK_GREY, textAlign: 'center',
-    fontFamily: 'roboto-regular'
+    fontFamily: 'roboto-bold'
   },
   backButton: {
     marginLeft: 16, marginTop: 32, marginBottom: 32

@@ -42,14 +42,6 @@ export function assignRolesToDiscounts(places, discounts, callback) {
   callback(discounts);
 }
 
-export function sortDiscountsForEmployeeView(relations, user) {
-
-}
-
-export function sortDiscountsForManagerView(relations, user, callback) {
-
-}
-
 export function checkPermissionForEmployeeEdit(myPlaces, empPlaces, callback) {
   for(let i = 0; i < empPlaces.length; i++) {
     for(let j = 0; j < myPlaces.length; j++) {
@@ -153,8 +145,8 @@ export function buildPlaceForm(data, callback) {
     "email": data.email,
     "imageURL": data.imageURL,
     "phone": data.phone,
+    "positions": data.positions,
     "sessionID": data.sessionID,
-    "userID": data.userID,
     "groupID": data.groupID
   }
 

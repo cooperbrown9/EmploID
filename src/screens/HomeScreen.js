@@ -187,7 +187,7 @@ class HomeScreen extends Component {
     }
   }
 
-  _submitEmployeeForm(data) {
+  _submitEmployeeForm(data, places) {
     data = {
       ...data,
       "imageURL": data.imageURI,
@@ -196,7 +196,7 @@ class HomeScreen extends Component {
     }
 
     if(data.imageURI == null) {
-      this.__submitEmployeeHelper(data);
+      this.__submitEmployeeHelper(data, places);
     } else {
       var img = new FormData();
       img.append('file', {
@@ -209,7 +209,7 @@ class HomeScreen extends Component {
           console.log(err);
         } else {
           data.imageURL = newImage;
-          this.__submitEmployeeHelper(data);
+          this.__submitEmployeeHelper(data, places);
         }
       })
     }
@@ -220,7 +220,8 @@ class HomeScreen extends Component {
       ...data,
       "imageURL": data.imageURI,
       "sessionID": this.props.sessionID,
-      "userID": this.props.me._id
+      "userID": this.props.me._id,
+      "groupID": this.props.me.group_id
     }
 
     if(data.imageURI == null) {
@@ -243,7 +244,9 @@ class HomeScreen extends Component {
     }
   }
 
-  __submitEmployeeHelper = (employee) => {
+
+  // creates employee then creates relations based off employee _id
+  __submitEmployeeHelper = (employee, places) => {
     DataBuilder.buildEmployeeForm(employee, (obj) => {
       API.createUser(obj, (e1, emp) => {
         if(e1) {
@@ -252,19 +255,20 @@ class HomeScreen extends Component {
           console.log(emp);
 
           let relationsCreatedCount = 0;
-          for(let i = 0; i < employee.places.length; i++) {
-            let relation = { 'userID': emp.user_id, 'placeID': employee.places[i].place_id, 'role': 0 }
+
+          for(let i = 0; i < places.length; i++) {
+            let relation = { 'userID': emp.user_id, 'placeID': places[i].place_id, 'role': 0, position: places[i].position }
             API.createRelation(relation, (e2, relation) => {
               if(e2) {
                 console.log(e2);
               } else {
-                relationsCreatedCount++;
-                if(relationsCreatedCount === employee.places.length) {
+                // relationsCreatedCount++;
+                if(++relationsCreatedCount === places.length) {
                   Alert.alert('Success!');
 
                   // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
-                  this.refreshUser(data, () => {
-                    this.loadPlaces();
+                  this.refreshUser(employee, () => {
+                    this.getPlaces();
                   });
                 }
               }
@@ -277,16 +281,29 @@ class HomeScreen extends Component {
 
   __submitPlaceHelper = (data) => {
     DataBuilder.buildPlaceForm(data, (obj) => {
-      API.createPlace(obj, (err, emp) => {
+      API.createPlace(obj, (err, place) => {
         if(err) {
           Alert.alert(err.message);
         } else {
-          console.log(emp);
+          console.log(place);
           Alert.alert('Success!');
 
-          // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
-          this.refreshUser(data, () => {
-            this.loadPlaces();
+          const relationData = {
+            'placeID': place._id,
+            'userID': this.props.me._id,
+            'role': 2
+          }
+          API.createRelation(relationData, (err, relation) => {
+            if(err) {
+              console.log(err);
+            } else {
+              console.log(relation);
+
+              // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
+              this.refreshUser(data, () => {
+                this.getPlaces();
+              });
+            }
           });
         }
       });
@@ -295,7 +312,8 @@ class HomeScreen extends Component {
 
   // USE THIS AFTER YOU CREATE AN EMPLOYEE OR LOCATION
   refreshUser = (data, callback) => {
-    API.verifySession(data, async (err, response) => {
+    var sessionObj = { 'userID': data.userID, sessionID: this.props.sessionID };
+    API.verifySession(sessionObj, (err, response) => {
       if(err) {
         this.props.dispatch({ type: 'START_LOGIN' });
       } else {
@@ -384,7 +402,7 @@ class HomeScreen extends Component {
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.employeeFormPresented} >
-          <EmployeeForm isOwner={true} places={this.state.places} submitForm={(data) => this._submitEmployeeForm(data)} dismiss={() => this._dismissEmployeeModal()} />
+          <EmployeeForm isOwner={true} places={this.state.places} submitForm={(employee, places) => this._submitEmployeeForm(employee, places)} dismiss={() => this._dismissEmployeeModal()} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.placeFormPresented} >

@@ -29,7 +29,7 @@ const TabBar = props => (
       </View>
 
       <TouchableOpacity onPress={() => props.rightOnPress()} style={styles.rightIcon} >
-        <Image style={styles.image} source={require('../../assets/icons/profile.png')} />
+        <Image style={styles.image} source={require('../../assets/icons/profile-male.png')} />
       </TouchableOpacity>
     </View>
   </View>
@@ -78,22 +78,24 @@ const styles = StyleSheet.create({
     marginRight: 16, marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomColor: 'white', borderBottomWidth: 2
+    borderBottomColor: 'white', borderBottomWidth: 4
   },
   rightButtonOn: {
     flex: 1,
     marginLeft: 16, marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomColor: 'white', borderBottomWidth: 2
+    borderBottomColor: 'white', borderBottomWidth: 4
   },
   leftIcon: {
     position: 'absolute',
-    left: 16, top: 20, width: 32, height: 32
+    left: 16, width: 32, height: 32,
+    top: (FRAME.height === 812) ? 24 : 20
   },
   rightIcon: {
     position: 'absolute',
-    right: 16, top: 20, width: 32, height: 32
+    right: 16, width: 32, height: 32,
+    top: (FRAME.height === 812) ? 24 : 20
   },
   elementContainer: {
     flex: 1,

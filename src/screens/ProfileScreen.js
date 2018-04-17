@@ -250,15 +250,15 @@ class ProfileScreen extends Component {
 
             </View>
 
-            <Modal animationType={'slide'} transparent={false} visible={this.state.editModalPresented} styles={{marginTop: 0}}>
+            <Modal animationType={'slide'} transparent={false} visible={this.state.editModalPresented} styles={{marginTop: 0}} onDismiss={() => this.refreshUser()}>
               <EmployeeFormEdit dismiss={this._dismissFormModal} />
             </Modal>
 
-            <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal}>
+            <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal} onDismiss={() => this.refreshUser()}>
               <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} />
             </Modal>
 
-            <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} style={styles.discountModal}>
+            <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} style={styles.discountModal} onDismiss={() => this.refreshUser()}>
               <View style={{height: 64, backgroundColor: 'transparent'}}></View>
               <UserPermissionModal updatePermission={(role, location) => this._updateUserPermissions(role, location)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
             </Modal>

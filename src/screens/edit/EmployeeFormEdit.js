@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 
 import EmployeeFormAddLocationEdit from './EmployeeFormAddLocationEdit';
 import OptionView from '../../ui-elements/option-view';
+import OptionViewSplit from '../../ui-elements/option-view-split';
+
 import { Camera, Permissions } from 'expo';
 
 import * as Colors from '../../constants/colors';

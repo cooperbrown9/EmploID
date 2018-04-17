@@ -26,7 +26,7 @@ SubmitButton.defaultPropTypes = {
 let styleWithBG = function(color) {
   return {
     flex: 1,
-    height: 48,
+    height: 64,
     borderRadius: 16,
     backgroundColor: color,
     justifyContent: 'center'
@@ -36,14 +36,14 @@ let styleWithBG = function(color) {
 const styles =  StyleSheet.create({
   container: {
     flex: 1,
-    height: 48,
+    height: 64,
     borderRadius: 16,
     backgroundColor: BLUE,
     justifyContent: 'center'
   },
   text: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 24,
     color: 'white',
     fontFamily: 'roboto-bold'
   }

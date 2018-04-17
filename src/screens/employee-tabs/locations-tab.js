@@ -20,7 +20,7 @@ const LocationsTab = (props) => (
               key={model._id}
               onPress={() => props.presentModal(model)}
             >
-              <Image style={styles.restaurantImage} source={{ uri: model.image_url }}/>
+              <Image style={styles.restaurantImage} source={(model.image_url != null) ? { uri: model.image_url } : require('../../../assets/images/chef1.png')} />
 
             <View style={styles.restaurantInfo}>
               <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.name} </Text>

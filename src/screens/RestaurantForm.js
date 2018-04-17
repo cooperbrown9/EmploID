@@ -5,6 +5,8 @@ import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image,
 import { Camera, Permissions } from 'expo';
 import { connect } from 'react-redux';
 import OptionView from '../ui-elements/option-view';
+import OptionViewSplit from '../ui-elements/option-view-split';
+
 import * as Colors from '../constants/colors';
 
 import SubmitButton from '../ui-elements/submit-button';
@@ -24,8 +26,19 @@ class RestaurantForm extends Component {
         email: "hello@restaurant.com",
         phone: "555-555-5555",
         employees: [],
+        positions: [],
         imageURI: null
       },
+      positionOptions: [
+        { value: 'Server', selected: false, index: 0 },
+        { value: 'Bartender', selected: false, index: 1 },
+        { value: 'Host', selected: false, index: 2 },
+        { value: 'Busser', selected: false, index: 3 },
+        { value: 'Manager', selected: false, index: 4 },
+        { value: 'Chef', selected: false, index: 5 },
+        { value: 'Cook', selected: false, index: 6 },
+        { value: 'Dishwasher', selected: false, index: 7 }
+      ],
       incomplete: false,
       cameraPermission: false,
       cameraType: Camera.Constants.Type.back,
@@ -45,12 +58,15 @@ class RestaurantForm extends Component {
 
 
   componentWillMount() {
-    // await this.getCameraPermission();
-
   }
 
   submit = () => {
-    console.log(this.state.place);
+    this.state.positionOptions.forEach(p => {
+      if(p.selected) {
+        this.state.place.positions.push(p.value);
+      }
+    });
+
     this.checkEmail(this.state.place.email, (complete) => {
       if(complete) {
         this.props.submitForm(this.state.place);
@@ -59,6 +75,12 @@ class RestaurantForm extends Component {
         this.setState({ incomplete: true });
       }
     })
+  }
+
+  positionSelected = (index) => {
+    OptionViewSplit.selectedMultiple(this.state.positionOptions, index, (arr) => {
+      this.setState({ positionOptions: arr });
+    });
   }
 
   textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default') {
@@ -134,6 +156,11 @@ class RestaurantForm extends Component {
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
             {this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone, true, 'numeric')}
+          </View>
+
+          <Text style={styles.textHeader}>Choose Positions</Text>
+          <View style={styles.optionContainer} >
+            <OptionViewSplit options={this.state.positionOptions} selectOption={(index) => this.positionSelected(index)} />
           </View>
 
           <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >

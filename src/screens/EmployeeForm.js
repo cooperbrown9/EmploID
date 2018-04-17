@@ -7,6 +7,7 @@ import { Camera, Permissions } from 'expo';
 
 import EmployeeFormAddLocation from './EmployeeFormAddLocation';
 import OptionView from '../ui-elements/option-view';
+import OptionViewSplit from '../ui-elements/option-view-split';
 
 import * as Colors from '../constants/colors';
 import * as LoadingActions from '../action-types/loading-action-types';
@@ -77,13 +78,14 @@ class EmployeeForm extends Component {
   }
 
   submit = () => {
-    if(this.state.employee.places.length < 1) {
+    // if(this.state.employee.places.length < 1) {
+    if(this.state.selectedPlaces.length < 1) {
       Alert.alert('You need to assign the employee to a restaurant!');
     } else {
       this.checkEmail((complete) => {
         if(complete) {
           this.setState({ employee: { ...this.state.employee, groupID: this.props.user.group_id }});
-          this.props.submitForm(this.state.employee);
+          this.props.submitForm(this.state.employee, this.state.selectedPlaces);
           this.props.dismiss();
         }
       });
@@ -170,7 +172,7 @@ class EmployeeForm extends Component {
           <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
             <EmployeeFormAddLocation
               dismiss={() => this.setState({ addLocationsPresented: false }) }
-              addLocations={(places) => this.setState({ employee: {...this.state.employee, places: places }}) }
+              addLocations={(places) => this.setState({ selectedPlaces: places }) /*this.setState({ employee: {...this.state.employee, places: places }})*/ }
             />
           </Modal>
 
@@ -199,18 +201,6 @@ class EmployeeForm extends Component {
             }
           </View>
 
-          <Text style={styles.textHeader} >Position</Text>
-          <View style={styles.inputView} >
-            {this.textInputFactory('Job Title', (text) => this.setState({ employee: {...this.state.employee, position: text}}), this.state.employee.position, true)}
-          </View>
-
-
-
-          <Text style={styles.textHeader} >Phone Number</Text>
-          <View style={styles.inputView} >
-            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text }}), this.state.employee.phone, true, false, 'phone-pad')}
-          </View>
-
           <Text style={styles.textHeader} >Birthday</Text>
           <View style={styles.dateView} >
             <DatePickerIOS
@@ -218,6 +208,11 @@ class EmployeeForm extends Component {
               date={new Date(this.state.employee.birthday)}
               mode={'date'} maximumDate={new Date()}
             />
+          </View>
+
+          <Text style={styles.textHeader} >Phone Number</Text>
+          <View style={styles.inputView} >
+            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text }}), this.state.employee.phone, true, false, 'phone-pad')}
           </View>
 
           <Text style={styles.textHeader} >Hire Date</Text>

@@ -10,6 +10,7 @@ import * as API from '../api/api';
 
 import axios from 'axios';
 import OptionView from '../ui-elements/option-view';
+import OptionViewSplit from '../ui-elements/option-view-split';
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 
@@ -22,8 +23,19 @@ class RestaurantFormEdit extends Component {
         name: "Rusty Moose",
         address: "6969 E. Rockford Way",
         email: "hello@restaurant.com",
-        phone: "555-555-5555"
+        phone: "555-555-5555",
+        positions: []
       },
+      positionOptions: [
+        { value: 'Server', selected: false, index: 0 },
+        { value: 'Bartender', selected: false, index: 1 },
+        { value: 'Host', selected: false, index: 2 },
+        { value: 'Busser', selected: false, index: 3 },
+        { value: 'Manager', selected: false, index: 4 },
+        { value: 'Chef', selected: false, index: 5 },
+        { value: 'Cook', selected: false, index: 6 },
+        { value: 'Dishwasher', selected: false, index: 7 }
+      ],
       cameraPermission: false,
       cameraType: Camera.Constants.Type.back
     };
@@ -35,7 +47,15 @@ class RestaurantFormEdit extends Component {
   }
 
   componentWillMount() {
-    this.setState({ place: { ...this.props.location, imageURL: this.props.location.image_url } });
+    this.setState({ place: { ...this.props.location, imageURL: this.props.location.image_url } }, () => {
+      for(let i = 0; i < this.state.place.positions.length; i++) {
+        for(let j = 0; j < this.state.positionOptions.length; j++) {
+          if(this.state.place.positions[i] === this.state.positionOptions[j].value) {
+            this.positionSelected(this.state.positionOptions[j].index);
+          }
+        }
+      }
+    });
   }
 
   submit = () => {
@@ -46,6 +66,12 @@ class RestaurantFormEdit extends Component {
     // }
     // this.props.dismiss();
     this.updateLocation();
+  }
+
+  positionSelected = (index) => {
+    OptionViewSplit.selectedMultiple(this.state.positionOptions, index, (arr) => {
+      this.setState({ positionOptions: arr });
+    });
   }
 
   updateLocation = () => {
@@ -61,10 +87,7 @@ class RestaurantFormEdit extends Component {
 
       axios.post('https://emploid.herokuapp.com/upload', img).then((response) => {
         this.state.place.imageURL = response.data;
-        // this.setState({ place: { ...this.state.place, imageURL: imageURL }}, () => {
-
-          this.updateLocationCall();
-        // })
+        this.updateLocationCall();
       }).catch((e) => {
         console.log(e);
       })
@@ -74,6 +97,13 @@ class RestaurantFormEdit extends Component {
   }
 
   updateLocationCall = () => {
+    this.state.place.positions = [];
+    this.state.positionOptions.forEach(p => {
+      if(p.selected) {
+        this.state.place.positions.push(p.value);
+      }
+    })
+
     API.updateLocation(this.state.place, (err, loc) => {
       if(err) {
         console.log(err);
@@ -146,6 +176,11 @@ class RestaurantFormEdit extends Component {
             <Text style={styles.textHeader} >Phone Number</Text>
             <View style={styles.inputView} >
               {this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone)}
+            </View>
+
+            <Text style={styles.textHeader}>Choose Positions</Text>
+            <View style={styles.optionContainer} >
+              <OptionViewSplit options={this.state.positionOptions} selectOption={(index) => this.positionSelected(index)} />
             </View>
 
             <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
