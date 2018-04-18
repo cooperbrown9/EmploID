@@ -39,6 +39,16 @@ class EmployeeFormEdit extends Component {
         { value: 'Blonde', selected: false, index: 4},
         { value: 'Other', selected: false, index: 5}
       ],
+      positionOptions: [
+        { value: 'Server', selected: false, index: 0 },
+        { value: 'Bartender', selected: false, index: 1 },
+        { value: 'Host', selected: false, index: 2 },
+        { value: 'Busser', selected: false, index: 3 },
+        { value: 'Manager', selected: false, index: 4 },
+        { value: 'Chef', selected: false, index: 5 },
+        { value: 'Cook', selected: false, index: 6 },
+        { value: 'Dishwasher', selected: false, index: 7 }
+      ],
       roleOptions: [
         { value: 'No', selected: false, index: 0 },
         { value: 'Yes', selected: false, index: 1 }
@@ -227,17 +237,6 @@ class EmployeeFormEdit extends Component {
               }
             </View>
 
-            <Text style={styles.textHeader} >Position</Text>
-            <View style={styles.inputView} >
-              {this.textInputFactory('Job Title', (text) => this.setState({ employee: {...this.state.employee, position: text}}), this.state.employee.position, this.props.isOwner)}
-            </View>
-
-
-
-            <Text style={styles.textHeader} >Phone Number</Text>
-            <View style={styles.inputView} >
-              {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text}}), this.state.employee.phone, true)}
-            </View>
 
             <Text style={styles.textHeader} >Birthday</Text>
             <View style={styles.dateView} >
@@ -246,6 +245,11 @@ class EmployeeFormEdit extends Component {
                 date={new Date(this.state.employee.birthday)}
                 mode={'date'} maximumDate={new Date()}
               />
+            </View>
+            
+            <Text style={styles.textHeader} >Phone Number</Text>
+            <View style={styles.inputView} >
+              {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text}}), this.state.employee.phone, true)}
             </View>
 
             <Text style={styles.textHeader} >Hire Date</Text>

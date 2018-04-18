@@ -21,6 +21,7 @@ const GET_RELATIONS_BY_PLACES = '/get-relations-by-places';
 const CREATE_USER = '/create-user';
 const CREATE_PLACE = '/create-place';
 const CREATE_RELATION = '/create-relation';
+const CREATE_RELATIONS = '/create-relations';
 
 const UPDATE_USER = '/update-user';
 const UPDATE_DISCOUNT = '/update-discount';
@@ -65,6 +66,12 @@ export function createUser(data, callback) {
 
 export function createRelation(data, callback) {
   axios.post(BASE + CREATE_RELATION, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function createRelations(relations, callback) {
+  axios.post(BASE + CREATE_RELATIONS, relations)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

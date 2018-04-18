@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 
+import { assignSinglePlacePositionToUser } from '../util/permission-manager';
+
 import OptionView from '../ui-elements/option-view';
+import OptionViewSplit from '../ui-elements/option-view-split';
 import RoundButton from '../ui-elements/round-button';
 import SubmitButton from '../ui-elements/submit-button';
 
@@ -24,24 +27,25 @@ class UserPermissionModal extends Component {
   constructor() {
     super();
 
+    this.assignSinglePlacePositionToUser = assignSinglePlacePositionToUser.bind(this);
+
     this.state = {
       roleOptions: [
         { value: 'Employee', selected: false, index: 0 },
         { value: 'Manager', selected: false, index: 1 },
         { value: 'Owner', selected: false, index: 2 }
+      ],
+      positionOptions: [
+        { value: '', selected: false, index: 0 }
       ]
     }
   }
 
   componentDidMount() {
-
     this.roleSelected(this.props.location.relation.role);
-    // for(let i = 0; i < this.props.employee.places.length; i++) {
-    //   if(this.props.employee.places[i].place_id === this.props.location._id) {
-    //     this.roleSelected(this.props.employee.places[i].role);
-    //     break;
-    //   }
-    // }
+    this.assignSinglePlacePositionToUser(this.props.location, (place) => {
+      this.setState({ positionOptions: place.positions });
+    })
   }
 
   roleSelected = (index) => {
@@ -50,8 +54,15 @@ class UserPermissionModal extends Component {
     });
   }
 
+  positionSelected = (index) => {
+    OptionView.selected(this.state.positionOptions, index, (arr) => {
+      this.setState({ positionOptions: arr, positionSelected: this.state.positionOptions[index] });
+    })
+  }
+
   submit = () => {
-    this.props.updatePermission(this.state.roleSelected.index, this.props.location);
+    let position = this.state.positionOptions.find((option) => { return option.selected });
+    this.props.updatePermission(this.state.roleSelected.index, this.props.location, position.value);
     this.props.dismiss();
   }
 
@@ -77,11 +88,21 @@ class UserPermissionModal extends Component {
             <OptionView options={this.state.roleOptions} selectOption={(index) => this.roleSelected(index)} />
           </View>
 
-          <View style={styles.submitButton} >
-            <SubmitButton title={'UPDATE'} onPress={() => this.submit()} />
+          <Text style={styles.textHeader}>Position</Text>
+          <View style={styles.optionContainer} >
+            <OptionViewSplit
+              options={this.state.positionOptions}
+              selectOption={(index) => this.positionSelected(index)}
+            />
           </View>
 
+
         </ScrollView>
+
+        <View style={styles.submitButton} >
+          <SubmitButton title={'UPDATE'} onPress={() => this.submit()} />
+        </View>
+
       </View>
     )
   }
@@ -92,35 +113,36 @@ const styles = StyleSheet.create({
     flex: 1, backgroundColor: Colors.BACKGROUND_GREY
   },
   submitButton: {
-    marginBottom: 32, marginLeft: 32, marginRight: 32
+    position: 'absolute',
+    bottom: 32, left: 32, right: 32, height: 64
   },
   backButton: {
     marginLeft: 16, marginTop: 32, marginBottom: 32
   },
   headerBold: {
-    fontSize: 24, fontFamily: 'roboto-bold', marginBottom: 8,
+    fontSize: 24, fontFamily: 'roboto-bold', marginTop: 8, marginBottom: 8,
   },
   header: {
-    fontSize: 16, fontFamily: 'roboto-regular', marginBottom: 8
+    fontSize: 16, fontFamily: 'roboto-regular', marginBottom: 8, color: Colors.DARK_GREY
   },
   locationContainer: {
-    flex: 1, flexDirection: 'row', flexWrap: 'wrap',
+    flex: 1, flexDirection: 'column', flexWrap: 'wrap',
     marginTop: 64, marginBottom: 16, marginLeft: 16, marginRight: 16,
-    height: 64, justifyContent: 'center', alignItems: 'center',
+    justifyContent: 'center', alignItems: 'center',
     backgroundColor: Colors.MID_GREY, borderRadius: 8
   },
   locationHeader: {
     marginRight: 16, fontSize: 24,
-    fontFamily: 'roboto-bold', textAlign: 'right'
+    fontFamily: 'roboto-bold', textAlign: 'right',
   },
   nameHeader: {
-    fontSize: 24, marginTop: 40,
+    fontSize: 24, marginTop: 8,
     fontFamily: 'roboto-bold', textAlign: 'center'
   },
   optionContainer: {
     justifyContent: 'center',
     alignItems: 'stretch',
-    marginBottom: 16, marginRight: 16, marginLeft: 16,
+    marginBottom: 24, marginRight: 16, marginLeft: 16,
     flex: 1,
   },
   textHeader: {
@@ -131,8 +153,7 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    employee: state.detail.user,
-
+    employee: state.detail.user
   }
 }
 

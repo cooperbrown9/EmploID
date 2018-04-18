@@ -29,7 +29,8 @@ let styleWithBG = function(color) {
     height: 64,
     borderRadius: 16,
     backgroundColor: color,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    overflow: 'hidden'
   }
 }
 
@@ -39,7 +40,8 @@ const styles =  StyleSheet.create({
     height: 64,
     borderRadius: 16,
     backgroundColor: BLUE,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    overflow: 'hidden'
   },
   text: {
     textAlign: 'center',

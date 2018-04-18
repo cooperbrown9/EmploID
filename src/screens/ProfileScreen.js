@@ -149,10 +149,11 @@ class ProfileScreen extends Component {
     }
   }
 
-  _updateUserPermissions = (role, location) => {
+  _updateUserPermissions = (role, location, position) => {
     var data = {
       'relationID': location.relation._id,
-      'role': role
+      'role': role,
+      'position': position
     }
     API.updateRole(data, (err, rel) => {
       if(err) {
@@ -224,7 +225,7 @@ class ProfileScreen extends Component {
                 <Text style={styles.infoTextName}>
                   {this.props.employee.first_name} {this.props.employee.last_name}
                 </Text>
-                <Text style={styles.infoText}>{this.props.employee.position}</Text>
+                <Text style={styles.infoText}>{this.props.employee.email}</Text>
                 <TouchableOpacity onPress={() => util.callPhoneNumber(this.props.employee.phone)}>
                   <Text style={styles.infoText}>{util.toPhoneNumber(this.props.employee.phone)}</Text>
                 </TouchableOpacity>
@@ -258,9 +259,8 @@ class ProfileScreen extends Component {
               <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} />
             </Modal>
 
-            <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} style={styles.discountModal} onDismiss={() => this.refreshUser()}>
-              <View style={{height: 64, backgroundColor: 'transparent'}}></View>
-              <UserPermissionModal updatePermission={(role, location) => this._updateUserPermissions(role, location)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
+            <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} onDismiss={() => this.refreshUser()}>
+              <UserPermissionModal updatePermission={(role, location, position) => this._updateUserPermissions(role, location, position)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
             </Modal>
 
           </View>

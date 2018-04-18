@@ -1,4 +1,16 @@
 
+export function findSelectedPositions(place, positionOptions, callback) {
+  for(let i = 0; i < place.positions.length; i++) {
+    for(let j = 0; j < positionOptions.length; j++) {
+      if(place.positions[i] === positionOptions[j].value) {
+        callback(positionOptions[j].index);
+        // this.positionSelected(this.state.positionOptions[j].index);
+      }
+    }
+  }
+}
+
+
 export function assignRelationsToPlaces(relations, places, callback) {
   for(let i = 0; i < places.length; i++) {
     for(let j = 0; j < relations.length; j++) {

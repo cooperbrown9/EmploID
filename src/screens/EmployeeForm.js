@@ -4,6 +4,7 @@ import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, ActivityIndica
 
 import { connect } from 'react-redux';
 import { Camera, Permissions } from 'expo';
+import { checkEmail } from '../util';
 
 import EmployeeFormAddLocation from './EmployeeFormAddLocation';
 import OptionView from '../ui-elements/option-view';
@@ -19,6 +20,8 @@ import LoadingOverlay from '../ui-elements/loading-overlay';
 class EmployeeForm extends Component {
   constructor() {
     super();
+
+    this.checkEmail = checkEmail.bind(this);
 
     this.state = {
       addLocationsPresented: false,
@@ -50,6 +53,7 @@ class EmployeeForm extends Component {
         role: 0,
         gender: 0,
         hairColor: 0,
+        places: [],
         birthday: new Date(1997, 8, 3).toDateString(),
         hireDate: new Date().toDateString(),
         imageURI: null
@@ -57,6 +61,8 @@ class EmployeeForm extends Component {
       selectedPlaces: [],
       placeSelected: false,
       cameraPermission: false,
+      formIncomplete: false,
+      errorMessage: '',
       cameraType: Camera.Constants.Type.back
     };
   }
@@ -79,16 +85,46 @@ class EmployeeForm extends Component {
 
   submit = () => {
     // if(this.state.employee.places.length < 1) {
-    if(this.state.selectedPlaces.length < 1) {
-      Alert.alert('You need to assign the employee to a restaurant!');
-    } else {
-      this.checkEmail((complete) => {
-        if(complete) {
-          this.setState({ employee: { ...this.state.employee, groupID: this.props.user.group_id }});
-          this.props.submitForm(this.state.employee, this.state.selectedPlaces);
-          this.props.dismiss();
-        }
+    // if(this.state.selectedPlaces.length < 1) {
+    //   Alert.alert('You need to assign the employee to a restaurant!');
+    // } else {
+    //   this.checkEmail(this.state.employee.email, (complete) => {
+    //     if(complete) {
+    //       this.cleanPhone(() => {
+    //         this.setState({ formIncomplete: false, employee: { ...this.state.employee, groupID: this.props.user.group_id }});
+    //         this.props.submitForm(this.state.employee, this.state.selectedPlaces);
+    //         this.props.dismiss();
+    //       })
+    //     } else {
+    //       this.setState({ formIncomplete: true });
+    //     }
+    //   });
+    // }
+    this.checkForm(() => {
+      this.setState({ formIncomplete: false, employee: { ...this.state.employee, groupID: this.props.user.group_id }}, () => {
+        this.props.submitForm(this.state.employee, this.state.selectedPlaces);
+        this.props.dismiss();
       });
+    })
+  }
+
+  checkForm(callback) {
+    if(this.state.selectedPlaces.length < 1) {
+      this.setState({ formIncomplete: true, errorMessage: 'You Need to Add Restaurants!'});
+    } else {
+      if(this.state.employee.firstName.length == 0 || this.state.employee.lastName.length == 0) {
+        this.setState({ formIncomplete: true, errorMessage: 'Fields Incomplete' });
+      } else {
+        this.checkEmail(this.state.employee.email, (complete) => {
+          if(complete) {
+            this.cleanPhone(() => {
+              callback();
+            });
+          } else {
+            this.setState({ formIncomplete: true, errorMessage: 'Must be Valid Email' });
+          }
+        })
+      }
     }
   }
 
@@ -122,15 +158,6 @@ class EmployeeForm extends Component {
     this.setState({ employee: { ...this.state.employee, phone: num }}, () => {
       callback();
     });
-  }
-
-  checkEmail = (callback) => {
-    let email = this.state.employee.email;
-    if(!email.includes('@')) {
-      this.cleanPhone(() => callback(false));
-    } else {
-      this.cleanPhone(() => callback(true));
-    }
   }
 
   textInputFactory(placeholder, onTextChange, value, canEdit, capitalize = true, keyboard = 'default') {
@@ -172,7 +199,7 @@ class EmployeeForm extends Component {
           <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
             <EmployeeFormAddLocation
               dismiss={() => this.setState({ addLocationsPresented: false }) }
-              addLocations={(places) => this.setState({ selectedPlaces: places }) /*this.setState({ employee: {...this.state.employee, places: places }})*/ }
+              addLocations={(places) => this.setState({ selectedPlaces: places, formIncomplete: false }) /*this.setState({ employee: {...this.state.employee, places: places }})*/ }
             />
           </Modal>
 
@@ -183,21 +210,21 @@ class EmployeeForm extends Component {
           <Text style={styles.textHeader} >First Name</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('First Name', (text) => this.setState({ employee: {...this.state.employee, firstName: text}}), this.state.employee.firstName, true)
+              this.textInputFactory('First Name', (text) => this.setState({ employee: {...this.state.employee, firstName: text},formIncomplete:false}), this.state.employee.firstName, true)
             }
           </View>
 
           <Text style={styles.textHeader} >Last Name</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Last Name', (text) => this.setState({ employee: {...this.state.employee, lastName: text}}), this.state.employee.lastName, true)
+              this.textInputFactory('Last Name', (text) => this.setState({ employee: {...this.state.employee, lastName: text},formIncomplete:false}), this.state.employee.lastName, true)
             }
           </View>
 
           <Text style={styles.textHeader} >Email</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text}}), this.state.employee.email, true, false, 'email-address')
+              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text},formIncomplete:false}), this.state.employee.email, true, false, 'email-address')
             }
           </View>
 
@@ -252,7 +279,12 @@ class EmployeeForm extends Component {
             <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addLocationsPresented: true }) } />
           </View>
           <View style={styles.submitContainer} >
-            <SubmitButton title={'ADD EMPLOYEE'} onPress={() => this.submit()} />
+            <SubmitButton
+              title={this.state.formIncomplete ? this.state.errorMessage : 'ADD EMPLOYEE'}
+              onPress={() => this.submit()}
+              hasBGColor={true}
+              bgColor={this.state.formIncomplete ? 'red' : Colors.BLUE}
+            />
           </View>
 
 
