@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert, Dimensio
 import { connect } from 'react-redux';
 
 import TabBar from '../ui-elements/tab-bar';
+import * as LoadingActions from '../action-types/loading-action-types';
 import * as TabActions from '../action-types/tab-action-types';
 import * as NavActions from '../action-types/nav-action-types';
 import * as AuthActions from '../action-types/auth-action-types';
@@ -31,7 +32,6 @@ class HomeScreen extends Component {
 
 // TODO
 // FIXME add employees from RestaurantForm
-// FIXME Delete Users, Discounts, Locations
 // people upgraded to owners cant create employees
   constructor() {
     super();
@@ -55,10 +55,12 @@ class HomeScreen extends Component {
 
   // figure out why locations and employees dont update
   componentDidMount() {
+    // if(this.props.screenDepthReloaded > )
     this.loadData();
   }
 
   loadData() {
+    this.props.dispatch({ type: LoadingActions.START_LOADING });
     this.getPlaces();
   }
 
@@ -67,6 +69,7 @@ class HomeScreen extends Component {
     API.getRelationsByUser(this.props.userID, (e1, relations) => {
       if(e1) {
         console.log(e1);
+        this.props.dispatch({ type: LoadingActions.STOP_LOADING });
       } else {
         let places = [];
         for(let i = 0; i < relations.length; i++) {
@@ -80,6 +83,7 @@ class HomeScreen extends Component {
         API.getPlaces(sender, (e2, locations) => {
           if(e2) {
             console.log(e2);
+            this.props.dispatch({ type: LoadingActions.STOP_LOADING });
           } else {
             DataBuilder.assignRelationsToPlaces(relations, locations, (locationsWithRelations) => {
               this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: locationsWithRelations });
@@ -103,7 +107,9 @@ class HomeScreen extends Component {
     API.getRelationsByPlaces(sender, (err, relations) => {
       if(err) {
         console.log(err);
-        this.setState({ isRefreshing: false });
+        this.setState({ isRefreshing: false }, () => {
+          this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+        });
       } else {
         console.log('yesssss');
         let userIDs = [];
@@ -116,10 +122,14 @@ class HomeScreen extends Component {
         API.getUsers(sender, (err, users) => {
           if(err) {
             console.log(err);
-            this.setState({ isRefreshing: false });
+            this.setState({ isRefreshing: false }, () => {
+              this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+            });
           } else {
             this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
-            this.setState({ isRefreshing: false });
+            this.setState({ isRefreshing: false }, () => {
+              this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+            });
           }
         })
       }
@@ -348,7 +358,7 @@ class HomeScreen extends Component {
   }
 
   clearKeys() {
-    // return;
+    return;
     AsyncStorage.removeItem(Keys.SESSION_ID, () => {
       AsyncStorage.removeItem(Keys.USER_ID);
     });
@@ -462,7 +472,9 @@ var mapStateToProps = state => {
     userID: state.user.userID,
     role: state.user.role,
     places: state.user.myLocations,
-    employees: state.user.myEmployees
+    employees: state.user.myEmployees,
+    needToReload: state.loading.needToReload,
+    isLoading: state.loading.isLoading
   }
 }
 
