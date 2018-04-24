@@ -17,7 +17,8 @@ class EmployeeFormAddLocation extends Component {
 
     this.state = {
       places: [
-        { name: 'ABC', _id: '123', selected: false }
+        { name: 'ABC', _id: '123', selected: false, index: 0 },
+        { name: 'DEF', _id: '456', selected: false, index: 1 }
       ],
       positionOptions: [
         { value: 'Server', selected: false, index: 0 },

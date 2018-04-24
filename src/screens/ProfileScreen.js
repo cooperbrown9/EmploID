@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
   profilePicEmpty: {
     flex: 1, zIndex: 4,
     height: FRAME.height / 8 * 5, width: FRAME.width,
-    fontSize: 32, fontFamily: 'roboto-bold', textAlign: 'center', justifyContent: 'center', alignItems: 'center'
+    fontFamily: 'roboto-bold', textAlign: 'center', justifyContent: 'center', alignItems: 'center'
   },
   backButton: {
     position: 'absolute', left: 20, top: 32,

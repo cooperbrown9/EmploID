@@ -70,7 +70,7 @@ class DiscountModal extends Component {
     return(
       <View style={{ flex: 1, backgroundColor: BACKGROUND_GREY }} >
         <View style={styles.backButton} >
-          <RoundButton onPress={() => this.props.dismiss()} imagePath={require('../../assets/icons/back.png')}/>
+          <RoundButton onPress={() => this.props.dismiss()} imagePath={require('../../assets/icons/down.png')}/>
         </View>
 
         <View style={styles.editButton} >

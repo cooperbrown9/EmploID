@@ -30,8 +30,6 @@ class HomeScreen extends Component {
 
 
 // TODO
-// FIXME AddLocation
-// FIXME EditAddLocation
 // FIXME add employees from RestaurantForm
 // FIXME Delete Users, Discounts, Locations
 // people upgraded to owners cant create employees
@@ -250,7 +248,11 @@ class HomeScreen extends Component {
     DataBuilder.buildEmployeeForm(employee, (obj) => {
       API.createUser(obj, (e1, emp) => {
         if(e1) {
-          Alert.alert(e1.message);
+          if(e1.status === 401) {
+            Alert.alert('This email is already in use!');
+          } else {
+            Alert.alert('Employee could not be created at this time');
+          }
         } else {
           console.log(emp);
 

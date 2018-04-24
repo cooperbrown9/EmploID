@@ -45,7 +45,6 @@ class EmployeeForm extends Component {
       employee: {
         firstName: "",
         lastName: "",
-        password: "",
         position: "",
         phone: "",
         email: "",
@@ -53,13 +52,11 @@ class EmployeeForm extends Component {
         role: 0,
         gender: 0,
         hairColor: 0,
-        places: [],
         birthday: new Date(1997, 8, 3).toDateString(),
         hireDate: new Date().toDateString(),
         imageURI: null
       },
       selectedPlaces: [],
-      placeSelected: false,
       cameraPermission: false,
       formIncomplete: false,
       errorMessage: '',
@@ -84,22 +81,6 @@ class EmployeeForm extends Component {
   }
 
   submit = () => {
-    // if(this.state.employee.places.length < 1) {
-    // if(this.state.selectedPlaces.length < 1) {
-    //   Alert.alert('You need to assign the employee to a restaurant!');
-    // } else {
-    //   this.checkEmail(this.state.employee.email, (complete) => {
-    //     if(complete) {
-    //       this.cleanPhone(() => {
-    //         this.setState({ formIncomplete: false, employee: { ...this.state.employee, groupID: this.props.user.group_id }});
-    //         this.props.submitForm(this.state.employee, this.state.selectedPlaces);
-    //         this.props.dismiss();
-    //       })
-    //     } else {
-    //       this.setState({ formIncomplete: true });
-    //     }
-    //   });
-    // }
     this.checkForm(() => {
       this.setState({ formIncomplete: false, employee: { ...this.state.employee, groupID: this.props.user.group_id }}, () => {
         this.props.submitForm(this.state.employee, this.state.selectedPlaces);

@@ -7,33 +7,23 @@ const NotesTab = (props) => (
 
     <View style={styles.container}>
 
-        <Text>Notes Tabular</Text>
+        <Text></Text>
 
     </View>
 )
 
 NotesTab.propTypes = {
-  // arrayWithShape: React.PropTypes.arrayOf(React.PropTypes.shape({
-  //    name: React.PropTypes.string.isRequired,
-  //    image: React.PropTypes.string.isRequired,
-  //    address: React.PropTypes.string.isRequired
-  // })).isRequired,
-
 };
 
 NotesTab.defaultPropTypes = {
 
 };
 
-
-
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginRight: 8, marginLeft: 8
+    marginRight: 8, marginLeft: 8,
+    justifyContent: 'center'
   },
   restaurantItem: {
       flex: 1,

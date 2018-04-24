@@ -18,6 +18,8 @@ class CreateDiscountForm extends Component {
     this.state = {
       name: '',
       description: '',
+      deleteText: 'DELETE',
+      deleteCount: 0,
       exclusiveOptions: [
         { value: 'MANAGEMENT', selected: true, index: 0 },
         { value: 'EMPLOYEES', selected: false, index: 1 }
@@ -82,6 +84,20 @@ class CreateDiscountForm extends Component {
     })
   }
 
+  deleteDiscount() {
+    if(this.state.deleteCount === 0) {
+      this.setState({ deleteText: 'Click again to confirm', deleteCount: ++this.state.deleteCount });
+    } else {
+      API.deleteDiscount(this.props.discount._id, (err, res) => {
+        if(err) {
+          console.log(err)
+        } else {
+          this.props.dismiss();
+        }
+      })
+    }
+  }
+
   optionSelected = (index) => {
     OptionView.selectedExclusive(this.state.exclusiveOptions, index, (arr) => {
       this.setState({ exclusiveOptions: arr });
@@ -106,7 +122,7 @@ class CreateDiscountForm extends Component {
         <View style={styles.container} >
 
           <View style={styles.backButton} >
-            <RoundButton imagePath={require('../../assets/icons/back.png')} onPress={this.props.dismiss} />
+            <RoundButton imagePath={require('../../assets/icons/down.png')} onPress={this.props.dismiss} />
           </View>
 
           <Text style={styles.textHeader}>Name</Text>
@@ -136,6 +152,12 @@ class CreateDiscountForm extends Component {
             onPress={() => {(this.props.edit) ? this.editDiscount() : this.createDiscount()}}
           />
         </View>
+        {(this.props.edit)
+          ? <View style={styles.deleteButton}>
+              <SubmitButton title={this.state.deleteText} onPress={() => this.deleteDiscount()} hasBGColor={true} bgColor={'red'} />
+            </View>
+          : null
+        }
 
       </ScrollView>
     )
@@ -174,6 +196,9 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 64, marginLeft: 32, marginRight: 32
+  },
+  deleteButton: {
+    marginTop: 16, marginLeft: 32, marginRight: 32, marginBottom: 32
   },
   textHeader: {
     fontSize: 16, marginLeft: 16, marginBottom: 12,

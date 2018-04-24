@@ -52,6 +52,7 @@ class LoginScreen extends Component {
     }
     API.login(data, async(err, response) => {
       if(err) {
+        debugger;
         Alert.alert('LOGIN ERROR ' + err.message);
       } else {
         await AsyncStorage.setItem(Keys.USER_ID, response.user._id);
