@@ -86,7 +86,14 @@ class ProfileScreen extends Component {
             Parser.assignRelationsToPlaces(relations, places, (placesWithRelations) => {
               this.props.dispatch({ type: DetailActions.SET_LOCATIONS, locations: placesWithRelations });
               Parser.checkPermissionForEmployeeEdit(this.props.myLocations, this.props.locations, (role) => {
-                this.setState({ canEdit: (role >= 1) ? true : false });
+                this.setState({ canEdit: (role >= 1) ? true : false }, () => {
+                  // check this out, might redo role assignment
+                  if(!this.state.canEdit) {
+                    if(this.props.employee._id === this.props.me._id && this.props.me.can_create_places) {
+                      this.setState({ canEdit: true });
+                    }
+                  }
+                });
                 this.getDiscounts();
               });
             })

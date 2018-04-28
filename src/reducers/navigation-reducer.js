@@ -36,6 +36,14 @@ export default function nav(state = loadState, action) {
       const tempProfileState = AppNavigator.router.getStateForAction(tempProfile);
       return tempProfileState;
 
+    case NavActions.EMPLOYEE_FORM:
+      state.onBack = action.onBack;
+      newState = AppNavigator.router.getStateForAction(
+        NavigationActions.navigate({ routeName: 'EmployeeForm' }),
+        state
+      );
+      return newState;
+
     case NavActions.LOGIN:
     newState = AppNavigator.router.getStateForAction(
       NavigationActions.navigate({ routeName: 'Login'}),

@@ -14,6 +14,7 @@ import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
 import * as Keys from '../constants/keys';
+import * as ErrorManager from '../util/error-manager';
 
 import axios from 'axios';
 
@@ -33,6 +34,9 @@ class HomeScreen extends Component {
 // TODO
 // FIXME add employees from RestaurantForm
 // people upgraded to owners cant create employees
+
+// TODO if cant create, change Alert from clicking employee tab without
+// locations to say "you need to be added to restaurants"
   constructor() {
     super();
 
@@ -57,6 +61,7 @@ class HomeScreen extends Component {
   componentDidMount() {
     // if(this.props.screenDepthReloaded > )
     this.loadData();
+    console.log('yeeee')
   }
 
   loadData() {
@@ -69,7 +74,7 @@ class HomeScreen extends Component {
     API.getRelationsByUser(this.props.userID, (e1, relations) => {
       if(e1) {
         console.log(e1);
-        this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+        this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
       } else {
         let places = [];
         for(let i = 0; i < relations.length; i++) {
@@ -83,7 +88,7 @@ class HomeScreen extends Component {
         API.getPlaces(sender, (e2, locations) => {
           if(e2) {
             console.log(e2);
-            this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+            this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
           } else {
             DataBuilder.assignRelationsToPlaces(relations, locations, (locationsWithRelations) => {
               this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: locationsWithRelations });
@@ -108,7 +113,7 @@ class HomeScreen extends Component {
       if(err) {
         console.log(err);
         this.setState({ isRefreshing: false }, () => {
-          this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+          this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
         });
       } else {
         console.log('yesssss');
@@ -123,12 +128,12 @@ class HomeScreen extends Component {
           if(err) {
             console.log(err);
             this.setState({ isRefreshing: false }, () => {
-              this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+              this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
             this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
             this.setState({ isRefreshing: false }, () => {
-              this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+              this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           }
         })
@@ -191,35 +196,8 @@ class HomeScreen extends Component {
     if(this.props.indexOn === 0) {
       this.setState({ placeFormPresented: true });
     } else {
-      this.setState({ employeeFormPresented: true });
-    }
-  }
-
-  _submitEmployeeForm(data, places) {
-    data = {
-      ...data,
-      "imageURL": data.imageURI,
-      "sessionID": this.props.sessionID,
-      "userID": this.props.me._id
-    }
-
-    if(data.imageURI == null) {
-      this.__submitEmployeeHelper(data, places);
-    } else {
-      var img = new FormData();
-      img.append('file', {
-        uri: data.imageURI,
-        type: 'image/png',
-        name: 'testpic'
-      });
-      API.uploadImage(img, (err, newImage) => {
-        if(err) {
-          console.log(err);
-        } else {
-          data.imageURL = newImage;
-          this.__submitEmployeeHelper(data, places);
-        }
-      })
+      this.props.dispatch({ type: NavActions.EMPLOYEE_FORM, onBack: () => this.refreshData() });
+      // this.setState({ employeeFormPresented: true });
     }
   }
 
@@ -250,45 +228,6 @@ class HomeScreen extends Component {
         }
       })
     }
-  }
-
-
-  // creates employee then creates relations based off employee _id
-  __submitEmployeeHelper = (employee, places) => {
-    DataBuilder.buildEmployeeForm(employee, (obj) => {
-      API.createUser(obj, (e1, emp) => {
-        if(e1) {
-          if(e1.status === 401) {
-            Alert.alert('This email is already in use!');
-          } else {
-            Alert.alert('Employee could not be created at this time');
-          }
-        } else {
-          console.log(emp);
-
-          let relationsCreatedCount = 0;
-
-          for(let i = 0; i < places.length; i++) {
-            let relation = { 'userID': emp.user_id, 'placeID': places[i].place_id, 'role': 0, position: places[i].position }
-            API.createRelation(relation, (e2, relation) => {
-              if(e2) {
-                console.log(e2);
-              } else {
-                // relationsCreatedCount++;
-                if(++relationsCreatedCount === places.length) {
-                  Alert.alert('Success!');
-
-                  // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
-                  this.refreshUser(employee, () => {
-                    this.getPlaces();
-                  });
-                }
-              }
-            })
-          }
-        }
-      });
-    });
   }
 
   __submitPlaceHelper = (data) => {
@@ -323,8 +262,9 @@ class HomeScreen extends Component {
   }
 
   // USE THIS AFTER YOU CREATE AN EMPLOYEE OR LOCATION
-  refreshUser = (data, callback) => {
-    var sessionObj = { 'userID': data.userID, sessionID: this.props.sessionID };
+  // TODO deprecate this
+  refreshUser = (callback) => {
+    var sessionObj = { 'userID': this.props.userID, sessionID: this.props.sessionID };
     API.verifySession(sessionObj, (err, response) => {
       if(err) {
         this.props.dispatch({ type: 'START_LOGIN' });
@@ -358,7 +298,7 @@ class HomeScreen extends Component {
   }
 
   clearKeys() {
-    return;
+    // return;
     AsyncStorage.removeItem(Keys.SESSION_ID, () => {
       AsyncStorage.removeItem(Keys.USER_ID);
     });
@@ -473,7 +413,7 @@ var mapStateToProps = state => {
     role: state.user.role,
     places: state.user.myLocations,
     employees: state.user.myEmployees,
-    needToReload: state.loading.needToReload,
+    needReload: state.loading.needReload,
     isLoading: state.loading.isLoading
   }
 }

@@ -51,13 +51,13 @@ class LoadScreen extends Component {
           user: response.user,
           sessionID: response.session_id,
           userID: response.user._id,
-          role: response.user.role
+          role: response.user.can_create_places
         });
         return this.props.dispatch({ type: 'START_HOME' });
       }
     })
   }
-  
+
   async clearKeys() {
     await AsyncStorage.removeItem(Keys.IS_OWNER);
     await AsyncStorage.removeItem(Keys.USER_ID);

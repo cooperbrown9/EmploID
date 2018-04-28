@@ -63,7 +63,7 @@ class LoginScreen extends Component {
           user: response.user,
           sessionID: response.session_id,
           userID: response.user._id,
-          role: response.user.role
+          role: response.user.can_create_places
         });
         this.props.dispatch({ type: NavActions.HOME });
       }

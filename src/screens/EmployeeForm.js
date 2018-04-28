@@ -12,12 +12,20 @@ import OptionViewSplit from '../ui-elements/option-view-split';
 
 import * as Colors from '../constants/colors';
 import * as LoadingActions from '../action-types/loading-action-types';
+import * as NavActions from '../action-types/nav-action-types';
+import * as API from '../api/api';
+import * as DataBuilder from '../api/data-builder';
+import * as ErrorManager from '../util/error-manager';
 
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 import LoadingOverlay from '../ui-elements/loading-overlay';
 
 class EmployeeForm extends Component {
+  static navigationOptions = {
+    header: null
+  }
+
   constructor() {
     super();
 
@@ -65,7 +73,7 @@ class EmployeeForm extends Component {
   }
 
   static propTypes = {
-    dismiss: PropTypes.func,
+    // dismiss: PropTypes.func,
     submitForm: PropTypes.func,
     places: PropTypes.array,
     edit: PropTypes.bool,
@@ -81,10 +89,12 @@ class EmployeeForm extends Component {
   }
 
   submit = () => {
+    this.props.dispatch({ type: LoadingActions.START_LOADING });
     this.checkForm(() => {
-      this.setState({ formIncomplete: false, employee: { ...this.state.employee, groupID: this.props.user.group_id }}, () => {
-        this.props.submitForm(this.state.employee, this.state.selectedPlaces);
-        this.props.dismiss();
+      this.setState({ formIncomplete: false, employee: { ...this.state.employee, groupID: this.props.me.group_id }}, () => {
+        this.submitForm();
+        // this.props.submitForm(this.state.employee, this.state.selectedPlaces);
+        // this.props.dismiss();
       });
     })
   }
@@ -141,6 +151,73 @@ class EmployeeForm extends Component {
     });
   }
 
+  submitForm() {
+
+    let data = {
+      // ...data,
+      ...this.state.employee,
+      "imageURL": this.state.employee.imageURI,
+      "sessionID": this.props.sessionID,
+      "userID": this.props.me._id
+    }
+
+    if(data.imageURI == null) {
+      this.submitHelper(data);
+    } else {
+      var img = new FormData();
+      img.append('file', {
+        uri: data.imageURI,
+        type: 'image/png',
+        name: 'testpic'
+      });
+      API.uploadImage(img, (err, newImage) => {
+        if(err) {
+          console.log(err);
+        } else {
+          data.imageURL = newImage;
+          this.submitHelper(data);
+        }
+      })
+    }
+  }
+
+  // creates employee then creates relations based off employee _id
+  submitHelper = (employee) => {
+    DataBuilder.buildEmployeeForm(employee, (obj) => {
+      API.createUser(obj, (e1, emp) => {
+        if(e1) {
+          this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+
+          ErrorManager.handleCreateError(e1.response.status, (message) => {
+            Alert.alert(message);
+          })
+        } else {
+          let relationsCreatedCount = 0;
+
+          for(let i = 0; i < this.state.selectedPlaces.length; i++) {
+            let relation = { 'userID': emp.user_id, 'placeID': this.state.selectedPlaces[i].place_id, 'role': 0, position: this.state.selectedPlaces[i].position }
+            API.createRelation(relation, (e2, relation) => {
+              if(e2) {
+                console.log(e2);
+              } else {
+                if(++relationsCreatedCount === this.state.selectedPlaces.length) {
+                  this.setState({ employeeFormPresented: false });
+                  Alert.alert('Success!');
+
+                  this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: true });
+                  this.props.dispatch({ type: NavActions.BACK });
+
+                  // COMBAK still need to run HomeScreen.getPlaces()
+                  this.props.onBack();
+                }
+              }
+            })
+          }
+        }
+      });
+    });
+  }
+
   textInputFactory(placeholder, onTextChange, value, canEdit, capitalize = true, keyboard = 'default') {
     return (
       <TextInput
@@ -185,7 +262,7 @@ class EmployeeForm extends Component {
           </Modal>
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/down.png')} />
+            <RoundButton onPress={() => this.props.dispatch({type:NavActions.BACK})} imagePath={require('../../assets/icons/back.png')} />
           </View>
 
           <Text style={styles.textHeader} >First Name</Text>
@@ -273,7 +350,7 @@ class EmployeeForm extends Component {
           <View style={{height: 64}}/>
         </View>
         {(this.props.isLoading)
-          ? <LoadingOverlay />
+          ? <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',justifyContent:'flex-end',alignItems:'center'}}><View style={{marginBottom: 140,justifyContent:'flex-start',alignItems:'center'}}><ActivityIndicator size={'large'} color={'white'} /></View></View>
           : null
         }
       </ScrollView>
@@ -379,7 +456,8 @@ var mapStateToProps = state => {
     isOwner: state.user.isOwner,
     places: state.user.myLocations,
     isLoading: state.loading.isLoading,
-    user: state.user.user
+    me: state.user.user,
+    onBack: state.nav.onBack
   }
 }
 

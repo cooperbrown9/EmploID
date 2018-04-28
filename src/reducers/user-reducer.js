@@ -25,39 +25,6 @@ export default function user (state = initialState, action) {
         ...state
       }
 
-    // case UserActions.LOGIN_OWNER_SUCCESS:
-    //   return {
-    //     ...state,
-    //     isLoggedIn: true,
-    //     isOwner: true,
-    //     user: action.user,
-    //     sessionID: action.sessionID,
-    //     userID: action.userID
-    //   }
-
-    // case UserActions.LOGIN_OWNER_ERROR:
-    //   return {
-    //     ...state,
-    //     isLoggedIn: false,
-    //     isOwner: false
-    //   }
-    //
-    // case UserActions.LOGIN_EMPLOYEE_SUCCESS:
-    //   return {
-    //     ...state,
-    //     isLoggedIn: true,
-    //     isOwner: false,
-    //     user: action.user,
-    //     userID: action.userID
-    //   }
-
-    // case UserActions.LOGIN_EMPLOYEE_ERROR:
-    //   return {
-    //     ...state,
-    //     isLoggedIn: false,
-    //     isOwner: false
-    //   }
-
     case UserActions.SET_EMPLOYEES:
       return {
         ...state,

@@ -7,13 +7,15 @@ import ProfileScreen from '../screens/ProfileScreen';
 import LoginScreen from '../screens/LoginScreen';
 import LoadScreen from '../screens/LoadScreen';
 import RestaurantProfileScreen from '../screens/RestaurantProfileScreen.js';
+import EmployeeForm from '../screens/EmployeeForm';
 
 export const AppNavigator = StackNavigator({
   Home: { screen: HomeScreen },
   Load: { screen: LoadScreen },
-  Profile: { screen: ProfileScreen },
   Login: { screen: LoginScreen },
-  LocationProfile: { screen: RestaurantProfileScreen},
+  Profile: { screen: ProfileScreen },
+  LocationProfile: { screen: RestaurantProfileScreen },
+  EmployeeForm: { screen: EmployeeForm }
 });
 
 const AppNavigatorWithState = ({ dispatch, nav }) => (
