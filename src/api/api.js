@@ -18,13 +18,17 @@ const GET_USER_RELATIONS = '/get-relations-by-user/';
 const GET_PLACE_RELATIONS = '/get-relations-by-place/';
 const GET_RELATIONS = '/get-relations';
 const GET_RELATIONS_BY_PLACES = '/get-relations-by-places';
+const GET_USER_NOTES = '/get-user-notes/';
 
 const CREATE_USER = '/create-user';
 const CREATE_PLACE = '/create-place';
+const CREATE_DISCOUNT = '/create-discount';
 const CREATE_RELATION = '/create-relation';
 const CREATE_RELATIONS = '/create-relations';
+const CREATE_USER_NOTE = '/create-user-note';
 
 const UPDATE_USER = '/update-user';
+const UPDATE_LOCATION = '/update-place';
 const UPDATE_DISCOUNT = '/update-discount';
 const UPDATE_USER_PLACES = '/update-user-places';
 const UPDATE_ROLE = '/update-role';
@@ -84,6 +88,18 @@ export function createRelations(relations, callback) {
     .catch(e => callback(e))
 }
 
+export function createUserNote(data, callback) {
+  axios.post(BASE + CREATE_USER_NOTE, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getUserNotes(creatorID, employeeID, callback) {
+  axios.get(BASE + GET_USER_NOTES + creatorID + '/' + employeeID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
 export function login(data, callback) {
   axios.post(BASE + LOGIN_USER, data)
     .then(response => callback(null, response.data))
@@ -120,6 +136,12 @@ export function getDiscountsByPlaces(places, callback) {
     .catch(e => callback(e))
 }
 
+export function createDiscount(data, callback) {
+  axios.post(BASE + CREATE_DISCOUNT, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
 export function updateDiscount(discount, callback) {
   axios.post(BASE + UPDATE_DISCOUNT, discount)
     .then(response => callback(null, response.data))
@@ -128,6 +150,12 @@ export function updateDiscount(discount, callback) {
 
 export function updateUser(data, callback) {
   axios.post(BASE + UPDATE_USER, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function updateLocation(data, callback) {
+  axios.post(BASE + UPDATE_LOCATION, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

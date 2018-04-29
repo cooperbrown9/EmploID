@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image, Modal } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image, Modal, ActivityIndicator, Alert } from 'react-native';
 
 import { Camera, Permissions } from 'expo';
 import { connect } from 'react-redux';
@@ -8,12 +8,20 @@ import OptionView from '../ui-elements/option-view';
 import OptionViewSplit from '../ui-elements/option-view-split';
 
 import * as Colors from '../constants/colors';
+import * as LoadingActions from '../action-types/loading-action-types';
+import * as NavActions from '../action-types/nav-action-types';
+import * as DataBuilder from '../api/data-builder';
+import * as API from '../api/api';
 
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 import { checkEmail } from '../util';
 
 class RestaurantForm extends Component {
+  static navigationOptions = {
+    header: null
+  }
+
   constructor() {
     super();
 
@@ -69,12 +77,82 @@ class RestaurantForm extends Component {
 
     this.checkEmail(this.state.place.email, (complete) => {
       if(complete) {
-        this.props.submitForm(this.state.place);
-        this.props.dismiss();
+        this.props.dispatch({ type: LoadingActions.START_LOADING });
+        this.submitForm();
+        // this.props.dismiss();
       } else {
         this.setState({ incomplete: true });
       }
     })
+  }
+
+  submitForm() {
+    let data = {
+      // ...data,
+      ...this.state.place,
+      "imageURL": this.state.place.imageURI,
+      "sessionID": this.props.sessionID,
+      "userID": this.props.me._id,
+      "groupID": this.props.me.group_id
+    }
+
+    if(data.imageURI == null) {
+      this.submitHelper(data);
+    } else {
+      var img = new FormData();
+      img.append('file', {
+        uri: data.imageURI,
+        type: 'image/png',
+        name: 'testpic'
+      });
+      API.uploadImage(img, (err, newImage) => {
+        if(err) {
+          console.log(err);
+          this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+        } else {
+          data.imageURL = newImage;
+          this.submitHelper(data);
+        }
+      })
+    }
+  }
+
+  submitHelper = (data) => {
+    DataBuilder.buildPlaceForm(data, (obj) => {
+      API.createPlace(obj, (err, place) => {
+        if(err) {
+          Alert.alert(err.message);
+          this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+        } else {
+          console.log(place);
+
+          const relationData = {
+            'placeID': place._id,
+            'userID': this.props.me._id,
+            'role': 2
+          }
+          API.createRelation(relationData, (err, relation) => {
+            if(err) {
+              console.log(err);
+              this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+            } else {
+              console.log(relation);
+
+              this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: true });
+              this.props.dispatch({ type: NavActions.BACK });
+
+              Alert.alert('Success!');
+
+              this.props.onBack();
+              // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
+              // this.refreshUser(data, () => {
+              //   this.getPlaces();
+              // });
+            }
+          });
+        }
+      });
+    });
   }
 
   positionSelected = (index) => {
@@ -106,7 +184,7 @@ class RestaurantForm extends Component {
   takePicture = async() => {
     if(this.camera) {
       await this.camera.takePictureAsync()
-        .then((data) => { console.log(data); this.setState({ place: { ...this.state.place, imageURI: data.uri }, cameraPermission: false }) })
+        .then((data) => { this.setState({ place: { ...this.state.place, imageURI: data.uri }, cameraPermission: false }) })
         .catch(e => {
           this.setState({ cameraPermission: false });
         })
@@ -131,7 +209,7 @@ class RestaurantForm extends Component {
         <View style={styles.container} >
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/back.png')} />
+            <RoundButton onPress={() => this.props.dispatch({ type: NavActions.BACK })} imagePath={require('../../assets/icons/back.png')} />
           </View>
 
           <Text style={styles.textHeader} >Restaurant Name</Text>
@@ -189,6 +267,10 @@ class RestaurantForm extends Component {
 
           <View style={{height: 64}}/>
         </View>
+        {(this.props.isLoading)
+          ? <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',justifyContent:'flex-end',alignItems:'center'}}><View style={{marginBottom: 140,justifyContent:'flex-start',alignItems:'center'}}><ActivityIndicator size={'large'} color={'white'} /></View></View>
+          : null
+        }
       </ScrollView>
       {(this.state.cameraPermission)
         ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
@@ -268,4 +350,13 @@ const styles = StyleSheet.create({
   }
 });
 
-export default RestaurantForm;
+var mapStateToProps = state => {
+  return {
+    onBack: state.nav.onBack,
+    me: state.user.user,
+    isLoading: state.loading.isLoading,
+    sessionID: state.user.sessionID
+  }
+}
+
+export default connect(mapStateToProps)(RestaurantForm);

@@ -194,7 +194,8 @@ class HomeScreen extends Component {
 
   addPressed = () => {
     if(this.props.indexOn === 0) {
-      this.setState({ placeFormPresented: true });
+      // this.setState({ placeFormPresented: true });
+      this.props.dispatch({ type: NavActions.RESTAURANT_FORM, onBack: () => this.refreshData() });
     } else {
       this.props.dispatch({ type: NavActions.EMPLOYEE_FORM, onBack: () => this.refreshData() });
       // this.setState({ employeeFormPresented: true });
@@ -351,14 +352,6 @@ class HomeScreen extends Component {
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
           <FilterModal dismiss={() => this._dismissFilterModal()} />
-        </Modal>
-
-        <Modal animationType={'slide'} transparent={false} visible={this.state.employeeFormPresented} >
-          <EmployeeForm isOwner={true} places={this.state.places} submitForm={(employee, places) => this._submitEmployeeForm(employee, places)} dismiss={() => this._dismissEmployeeModal()} />
-        </Modal>
-
-        <Modal animationType={'slide'} transparent={false} visible={this.state.placeFormPresented} >
-          <PlaceForm submitForm={(data) => this._submitPlaceForm(data)} dismiss={() => this._dismissPlaceModal()} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.myProfilePresented} >

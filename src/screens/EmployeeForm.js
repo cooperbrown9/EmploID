@@ -89,30 +89,41 @@ class EmployeeForm extends Component {
   }
 
   submit = () => {
-    this.props.dispatch({ type: LoadingActions.START_LOADING });
-    this.checkForm(() => {
-      this.setState({ formIncomplete: false, employee: { ...this.state.employee, groupID: this.props.me.group_id }}, () => {
-        this.submitForm();
-        // this.props.submitForm(this.state.employee, this.state.selectedPlaces);
-        // this.props.dismiss();
-      });
+    this.checkForm((complete) => {
+      if(complete) {
+        this.props.dispatch({ type: LoadingActions.START_LOADING });
+        this.setState({ formIncomplete: false, employee: { ...this.state.employee, groupID: this.props.me.group_id }}, () => {
+          this.submitForm();
+          // this.props.submitForm(this.state.employee, this.state.selectedPlaces);
+          // this.props.dismiss();
+        });
+      }
     })
   }
 
   checkForm(callback) {
     if(this.state.selectedPlaces.length < 1) {
-      this.setState({ formIncomplete: true, errorMessage: 'You Need to Add Restaurants!'});
+      this.setState({ formIncomplete: true, errorMessage: 'You Need to Add Restaurants!'}, () => {
+        Alert.alert(this.state.errorMessage);
+        callback(false);
+      });
     } else {
       if(this.state.employee.firstName.length == 0 || this.state.employee.lastName.length == 0) {
-        this.setState({ formIncomplete: true, errorMessage: 'Fields Incomplete' });
+        this.setState({ formIncomplete: true, errorMessage: 'Fields Incomplete' }, () => {
+          Alert.alert(this.state.errorMessage);
+          callback(false);
+        });
       } else {
         this.checkEmail(this.state.employee.email, (complete) => {
           if(complete) {
             this.cleanPhone(() => {
-              callback();
+              callback(true);
             });
           } else {
-            this.setState({ formIncomplete: true, errorMessage: 'Must be Valid Email' });
+            this.setState({ formIncomplete: true, errorMessage: 'Must be Valid Email' }, () => {
+              Alert.alert(this.state.errorMessage);
+              callback(false);
+            });
           }
         })
       }

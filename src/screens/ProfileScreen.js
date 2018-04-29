@@ -14,6 +14,7 @@ import ProfileTab from './employee-tabs/profile-tab.js';
 import EmployeeFormEdit from './edit/EmployeeFormEdit';
 import DiscountModal from './DiscountModal';
 import UserPermissionModal from './UserPermissionModal';
+import CreateNoteForm from './CreateNoteForm';
 
 import * as Parser from '../api/data-builder';
 import * as NavActions from '../action-types/nav-action-types';
@@ -31,6 +32,7 @@ class ProfileScreen extends Component {
     editModalPresented: false,
     discountModalPresented: false,
     userPermissionModalPresented: false,
+    noteFormPresented: false,
     selectedDiscount: null,
     isRefreshing: false,
     userPermissionModel: {},
@@ -123,8 +125,23 @@ class ProfileScreen extends Component {
           // permission accordingly
           Parser.sortDiscountPermissions(discountsWithRoles, this.props.myLocations, (validDiscounts) => {
             this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: validDiscounts });
+            this.getNotes();
           })
         });
+        // this.setState({ isRefreshing: false });
+      }
+    })
+  }
+
+  getNotes() {
+    API.getUserNotes(this.props.me._id, this.props.employee._id, (err, notes) => {
+      if(err) {
+        console.log(err);
+        this.setState({ isRefreshing: false });
+      } else {
+        console.log(notes);
+
+        this.props.dispatch({ type: DetailActions.SET_NOTES, notes: notes });
         this.setState({ isRefreshing: false });
       }
     })
@@ -136,6 +153,20 @@ class ProfileScreen extends Component {
 
   _presentFormModal = () => {
     this.setState({editModalPresented: true});
+  }
+
+  _presentNoteForm = () => {
+    this.setState({ noteFormPresented: true });
+  }
+
+  _dismissNoteForm = () => {
+    this.setState({ noteFormPresented: false });
+  }
+
+  _selectNote = (note) => {
+    this.setState({ selectedNote: note }, () => {
+      this.setState({ noteFormPresented})
+    })
   }
 
   _dismissDiscountModal = () => {
@@ -252,7 +283,7 @@ class ProfileScreen extends Component {
                 : (this.props.indexOn === 2)
                   ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }, () => this._presentDiscountModal())} />
                 : (this.props.indexOn === 3)
-                    ? <NotesTab />
+                    ? <NotesTab presentForm={() => this._presentNoteForm()} />
                   : null
             }
 
@@ -260,6 +291,10 @@ class ProfileScreen extends Component {
 
             <Modal animationType={'slide'} transparent={false} visible={this.state.editModalPresented} styles={{marginTop: 0}} onDismiss={() => this.refreshUser()}>
               <EmployeeFormEdit dismiss={this._dismissFormModal} />
+            </Modal>
+
+            <Modal animationType={'slide'} transparent={false} visible={this.state.noteFormPresented} >
+              <CreateNoteForm dismiss={() => this._dismissNoteForm()} />
             </Modal>
 
             <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal} onDismiss={() => this.refreshUser()}>

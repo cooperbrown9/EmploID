@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 const initialState = {
   location: {},
-  employees: [], discounts: [], locations: [],
+  employees: [], discounts: [], locations: [], notes: [],
   user: {
     places: []
   }
@@ -43,6 +43,12 @@ function detail(state = initialState, action) {
       return {
         ...state,
         discounts: action.discounts
+      }
+
+    case DetailActions.SET_NOTES:
+      return {
+        ...state,
+        notes: action.notes
       }
 
     default:

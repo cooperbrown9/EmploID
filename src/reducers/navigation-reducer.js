@@ -44,6 +44,14 @@ export default function nav(state = loadState, action) {
       );
       return newState;
 
+    case NavActions.RESTAURANT_FORM:
+      state.onBack = action.onBack;
+      newState = AppNavigator.router.getStateForAction(
+        NavigationActions.navigate({ routeName: 'RestaurantForm' }),
+        state
+      );
+      return newState;
+
     case NavActions.LOGIN:
     newState = AppNavigator.router.getStateForAction(
       NavigationActions.navigate({ routeName: 'Login'}),

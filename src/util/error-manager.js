@@ -7,7 +7,7 @@
 export function handleCreateError(status, callback) {
   switch(status) {
     case 408:
-      callback('You must use a valid email!');
+      callback('It appears that this email is invalid!');
       break;
 
     case 401:
