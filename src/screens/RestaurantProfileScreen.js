@@ -11,6 +11,7 @@ import NotesTab from './location-tabs/notes-tab.js';
 import RestaurantFormEdit from './RestaurantFormEdit.js';
 import CreateDiscountForm from './CreateDiscountForm';
 import DiscountModal from './DiscountModal';
+import CreatePlaceNoteForm from './CreatePlaceNoteForm';
 
 import * as API from '../api/api';
 import * as DetailActions from '../action-types/detail-action-types';
@@ -28,6 +29,7 @@ class RestaurantProfileScreen extends Component {
   state = {
     formModal: false,
     discountModalPresented: false,
+    noteFormPresented: false,
     createDiscountModalPresented: false,
     isRefreshing: false,
     selectedDiscount: null
@@ -77,39 +79,22 @@ class RestaurantProfileScreen extends Component {
           discounts.forEach(d => (!d.exclusive) ? legalDiscounts.push(d) : console.log('lmao'));
           discounts = legalDiscounts;
         }
-        this.setState({ isRefreshing: false });
         this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: discounts });
+        this.getNotes();
       }
     })
   }
 
-  getDiscounts0() {
-    let discounts = [];
-    let count = 0;
-
-    for(let i = 0; i < this.props.location.discounts.length; i++) {
-      API.getDiscount(this.props.location.discounts[i].discount_id, (err, disc) => {
-        if(err) {
-          console.log(err);
-          this.setState({ isRefreshing: false });
-        } else {
-          count++;
-
-          if(disc.exclusive) {
-            if(this.props.myRole === 2 || this.props.myRole === 1) {
-              discounts.push(disc);
-            }
-          } else {
-            discounts.push(disc);
-          }
-
-          if(count === this.props.location.discounts.length) {
-            this.setState({ isRefreshing: false });
-            this.props.dispatch({ type: DetailActions.SET_DISCOUNTS, discounts: discounts });
-          }
-        }
-      });
-    }
+  getNotes() {
+    API.getPlaceNotes(this.props.me._id, this.props.location._id, (err, notes) => {
+      if(err) {
+        console.log(err);
+        this.setState({ isRefreshing: false });
+      } else {
+        this.props.dispatch({ type: DetailActions.SET_NOTES, notes: notes });
+        this.setState({ isRefreshing: false });
+      }
+    })
   }
 
   // called after restaurant is edited
@@ -136,7 +121,7 @@ class RestaurantProfileScreen extends Component {
         loc.relation = this.props.location.relation;
         this.props.dispatch({ type: DetailActions.SET_LOCATION, location: loc, myRole: this.props.myRole });
         this.getUsers();
-        this.getDiscounts();
+        // this.getDiscounts();
       }
     })
   }
@@ -148,12 +133,21 @@ class RestaurantProfileScreen extends Component {
     })
   }
 
-  _dismissFormModal = () => {
-    this.setState({ formModal: false });
+  _presentNoteForm = () => {
+    this.setState({ noteFormPresented: true });
   }
+  _dismissNoteForm = (needUpdate) => {
+    this.setState({ noteFormPresented: false, isRefreshing: true }, () => {
+      this.getUpdatedLocation();
+    })
+  }
+
 
   _presentFormModal = () => {
     this.setState({ formModal: true });
+  }
+  _dismissFormModal = () => {
+    this.setState({ formModal: false });
   }
 
   // make it able to present the discount thing
@@ -242,7 +236,7 @@ class RestaurantProfileScreen extends Component {
           : (this.props.indexOn === 1)
             ? <DiscountsTab presentForm={() => this._presentDiscountForm()} selectDiscount={(discount) => this._presentDiscountModal(discount)} />
             : (this.props.indexOn === 2)
-              ? <NotesTab />
+              ? <NotesTab presentForm={() => this._presentNoteForm()} />
               : null
         }
 
@@ -254,6 +248,10 @@ class RestaurantProfileScreen extends Component {
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.createDiscountModalPresented} >
           <CreateDiscountForm dismiss={() => this._dismissDiscountForm()} />
+        </Modal>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.noteFormPresented} >
+          <CreatePlaceNoteForm dismiss={(needsUpdate) => this._dismissNoteForm(needsUpdate)} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} >

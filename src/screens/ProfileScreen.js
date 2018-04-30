@@ -14,7 +14,7 @@ import ProfileTab from './employee-tabs/profile-tab.js';
 import EmployeeFormEdit from './edit/EmployeeFormEdit';
 import DiscountModal from './DiscountModal';
 import UserPermissionModal from './UserPermissionModal';
-import CreateNoteForm from './CreateNoteForm';
+import CreateUserNoteForm from './CreateUserNoteForm';
 
 import * as Parser from '../api/data-builder';
 import * as NavActions from '../action-types/nav-action-types';
@@ -128,7 +128,6 @@ class ProfileScreen extends Component {
             this.getNotes();
           })
         });
-        // this.setState({ isRefreshing: false });
       }
     })
   }
@@ -139,8 +138,6 @@ class ProfileScreen extends Component {
         console.log(err);
         this.setState({ isRefreshing: false });
       } else {
-        console.log(notes);
-
         this.props.dispatch({ type: DetailActions.SET_NOTES, notes: notes });
         this.setState({ isRefreshing: false });
       }
@@ -294,7 +291,7 @@ class ProfileScreen extends Component {
             </Modal>
 
             <Modal animationType={'slide'} transparent={false} visible={this.state.noteFormPresented} >
-              <CreateNoteForm dismiss={() => this._dismissNoteForm()} />
+              <CreateUserNoteForm dismiss={() => this._dismissNoteForm()} />
             </Modal>
 
             <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal} onDismiss={() => this.refreshUser()}>

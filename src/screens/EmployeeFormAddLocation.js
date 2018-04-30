@@ -30,7 +30,8 @@ class EmployeeFormAddLocation extends Component {
         { value: 'Cook', selected: false, index: 6 },
         { value: 'Dishwasher', selected: false, index: 7 }
       ],
-      selectedPlaces: []
+      selectedPlaces: [],
+      isFirstOpen: [true]
     }
 
   }
@@ -43,27 +44,27 @@ class EmployeeFormAddLocation extends Component {
 
   componentWillMount() {
     this.state.places = this.props.places;
-    for(let i = 0; i < this.state.places.length; i++) {
-      this.state.places[i].selected = false;
-      this.state.places[i].index = i;
+
+    // this is a fix because the state persists after closing the modal,
+    // so its a workaround for initializing the data.
+    // this initializing (i.e. building position objects) should be done elsewhere
+    if(this.state.places[0].positions[0].value == null) {
+      for(let i = 0; i < this.state.places.length; i++) {
+        this.state.places[i].selected = false;
+        this.state.places[i].index = i;
+      }
+
+      this.state.positionOptions = [];
+      this.state.places.forEach((place, index) => {
+        place.positions.forEach((position, indexPos) => {
+          place.positions[indexPos] = { value: place.positions[indexPos], selected: false, index: indexPos }
+        })
+      });
+
+      this.setState({ places: this.state.places, isFirstOpen: [false] });
+    } else {
+      this.setState({ places: this.state.places })
     }
-
-    this.state.positionOptions = [];
-    this.state.places.forEach((place, index) => {
-      place.positions.forEach((position, indexPos) => {
-        place.positions[indexPos] = { value: place.positions[indexPos], selected: false, index: indexPos }
-      })
-    });
-    //
-    // for(let i = 0; i < this.state.place.positions.length; i++) {
-    //   for(let j = 0; j < this.state.positionOptions.length; j++) {
-    //     if(this.state.place.positions[i] === this.state.positionOptions[j].value) {
-    //       this.positionSelected(this.state.positionOptions[j].index);
-    //     }
-    //   }
-    // }
-
-    this.setState({ places: this.state.places });
   }
 
   positionSelected = (index, place) => {
@@ -102,12 +103,21 @@ class EmployeeFormAddLocation extends Component {
     this.props.dismiss();
   }
 
+  // wrapper for props.dismiss() because this clears the state
+  dismiss = () => {
+    // this.setState({}, () => {
+    //   debugger;
+    //   this.props.dismiss();
+    // })
+    this.props.dismiss();
+  }
+
   render() {
     return(
       <ScrollView style={styles.scrollContainer} >
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/down.png')} />
+            <RoundButton onPress={() => this.dismiss()} imagePath={require('../../assets/icons/down.png')} />
           </View>
 
           <View style={styles.buttonContainer} >
@@ -134,7 +144,6 @@ class EmployeeFormAddLocation extends Component {
           <View style={styles.submitButton} >
             <SubmitButton onPress={() => this.submit() } title={'SUBMIT'} />
           </View>
-
 
       </ScrollView>
     )

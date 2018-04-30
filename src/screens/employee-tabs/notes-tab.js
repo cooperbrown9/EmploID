@@ -6,25 +6,21 @@ import { connect } from 'react-redux';
 import RoundButton from '../../ui-elements/round-button';
 
 const NotesTab = (props) => (
-
-
-    <View style={styles.container}>
-      <View style={styles.addNote} >
-        <RoundButton onPress={() => props.presentForm()} imagePath={require('../../../assets/icons/plus.png')} />
-      </View>
-
-      {props.notes.map(model =>
-        <TouchableOpacity style={styles.noteItem} onPress={() => props.selectNote(model)} key={model._id} >
-          <View style={styles.noteText}>
-            <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.title} </Text>
-            <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-regular'}}>{model.text}</Text>
-        </View>
-        </TouchableOpacity>
-      )}
-
-
-
+  <View style={styles.container}>
+    <View style={styles.addNote} >
+      <RoundButton onPress={() => props.presentForm()} imagePath={require('../../../assets/icons/plus.png')} />
     </View>
+
+    {props.notes.map(model =>
+      <TouchableOpacity style={styles.noteItem} onPress={() => props.selectNote(model)} key={model._id} >
+        <View style={styles.noteText}>
+          <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.title} </Text>
+          <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-regular'}}>{model.text}</Text>
+      </View>
+      </TouchableOpacity>
+    )}
+
+  </View>
 )
 
 NotesTab.propTypes = {

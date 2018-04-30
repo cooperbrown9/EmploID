@@ -88,7 +88,8 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    employees: state.user.myEmployees
+    employees: state.user.myEmployees,
+    myID: state.user.userID
   }
 }
 

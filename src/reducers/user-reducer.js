@@ -25,10 +25,19 @@ export default function user (state = initialState, action) {
         ...state
       }
 
+    // COMBAK if there's anything weird, check this out because maybe Im using
+    // current user off the employees array for something, so taking it out is
+    // causing it to break
     case UserActions.SET_EMPLOYEES:
+      let cleanEmployees = [];
+      for(let i = 0; i < action.employees.length; i++) {
+        if(action.employees[i]._id !== state.userID) {
+          cleanEmployees.push(action.employees[i]);
+        }
+      }
       return {
         ...state,
-        myEmployees: action.employees
+        myEmployees: cleanEmployees//action.employees
       }
 
     case UserActions.SET_LOCATIONS:

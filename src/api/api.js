@@ -19,6 +19,7 @@ const GET_PLACE_RELATIONS = '/get-relations-by-place/';
 const GET_RELATIONS = '/get-relations';
 const GET_RELATIONS_BY_PLACES = '/get-relations-by-places';
 const GET_USER_NOTES = '/get-user-notes/';
+const GET_PLACE_NOTES = '/get-place-notes/';
 
 const CREATE_USER = '/create-user';
 const CREATE_PLACE = '/create-place';
@@ -26,6 +27,7 @@ const CREATE_DISCOUNT = '/create-discount';
 const CREATE_RELATION = '/create-relation';
 const CREATE_RELATIONS = '/create-relations';
 const CREATE_USER_NOTE = '/create-user-note';
+const CREATE_PLACE_NOTE = '/create-place-note';
 
 const UPDATE_USER = '/update-user';
 const UPDATE_LOCATION = '/update-place';
@@ -94,8 +96,20 @@ export function createUserNote(data, callback) {
     .catch(e => callback(e))
 }
 
+export function createPlaceNote(data, callback) {
+  axios.post(BASE + CREATE_PLACE_NOTE, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
 export function getUserNotes(creatorID, employeeID, callback) {
   axios.get(BASE + GET_USER_NOTES + creatorID + '/' + employeeID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getPlaceNotes(creatorID, placeID, callback) {
+  axios.get(BASE + GET_PLACE_NOTES + creatorID + '/' + placeID)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

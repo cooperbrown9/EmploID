@@ -10,7 +10,7 @@ import OptionView from '../ui-elements/option-view';
 import * as API from '../api/api';
 import * as Colors from '../constants/colors';
 
-class CreateNoteForm extends Component {
+class CreateUserNoteForm extends Component {
 
   constructor(props) {
     super(props);
@@ -193,4 +193,4 @@ var mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(CreateNoteForm);
+export default connect(mapStateToProps)(CreateUserNoteForm);
