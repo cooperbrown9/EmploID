@@ -339,7 +339,7 @@ class HomeScreen extends Component {
 
         {(this.props.role === 1)
           ? <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
-              <Image style={{height:64,width:64}} source={require('../../assets/icons/plus.png')} />
+              <Image style={{height:64,width:64, tintColor:Colors.ORANGE}} source={require('../../assets/icons/plus.png')} />
             </TouchableOpacity>
           : null
         }

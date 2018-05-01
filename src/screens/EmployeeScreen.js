@@ -22,7 +22,10 @@ const EmployeeScreen = (props) => (
 
         {(props.employees.length > 0) ? props.employees.map((employee) => (
           <TouchableOpacity style={styles.employeeItem} key={employee._id} onPress={() => props.openProfile(employee)}>
-            <Image style={styles.employeeImage} source={{ uri: employee.image_url }}/>
+            <Image
+              style={styles.employeeImage}
+              source={(employee.image_url != null) ? require('../../assets/images/chef1.png') : { uri: employee.image_url }}
+            />
 
             <View style={styles.employeeInfo}>
               <Text style={styles.nameText}>{employee.first_name} {employee.last_name}</Text>

@@ -22,7 +22,8 @@ const RestaurantScreen = (props) => (
               ? <Image
                 style={{
                   height: 100, width: 100,
-                  flex: 1
+                  flex: 1,
+                  source={require('../../assets/images/chef1.png')}
                 }}
                 />
               : <Image

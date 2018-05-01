@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {TouchableOpacity, StyleSheet, Image, } from 'react-native';
+import { BLUE, ORANGE, YELLOW } from '../constants/colors';
 
 const RoundButton = (props) => (
     <TouchableOpacity onPress={props.onPress} style={styles.button}>
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     height: 64,
     width: 64,
     borderRadius: 32,
-    backgroundColor: '#155ade',
+    backgroundColor: ORANGE,    //'#155ade',
   //  shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
     alignItems: 'center',
     justifyContent: 'center',
