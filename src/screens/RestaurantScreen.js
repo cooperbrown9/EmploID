@@ -18,23 +18,13 @@ const RestaurantScreen = (props) => (
 
         {props.places.map((place) => (
           <TouchableOpacity style={styles.restaurantItem} key={place._id} onPress={() => props.openProfile(place)} >
-            {(place.image_url == null)
-              ? <Image
-                style={{
-                  height: 100, width: 100,
-                  flex: 1,
-                  source={require('../../assets/images/chef1.png')}
-                }}
-                />
-              : <Image
-                style={{
-                  height: 100, width: 100,
-                  flex: 1,
-                  resizeMode: 'cover'}}
-                  source={{ uri: place.image_url || null }}
-              />
-            }
-
+            <Image
+              style={{
+                height: 100, width: 100,
+                flex: 1,
+              }}
+              source={(place.image_url != null) ? {uri: place.image_url} : require('../../assets/images/chef1.png')}
+            />
 
             <View style={styles.restaurantInfo}>
               <Text style={styles.nameText}>{place.name}</Text>

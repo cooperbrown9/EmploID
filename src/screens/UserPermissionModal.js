@@ -96,12 +96,12 @@ class UserPermissionModal extends Component {
             />
           </View>
 
+          <View style={styles.submitButton} >
+            <SubmitButton title={'UPDATE'} onPress={() => this.submit()} />
+          </View>
 
         </ScrollView>
 
-        <View style={styles.submitButton} >
-          <SubmitButton title={'UPDATE'} onPress={() => this.submit()} />
-        </View>
 
       </View>
     )
@@ -113,8 +113,7 @@ const styles = StyleSheet.create({
     flex: 1, backgroundColor: Colors.BACKGROUND_GREY
   },
   submitButton: {
-    position: 'absolute',
-    bottom: 32, left: 32, right: 32, height: 64
+    marginBottom: 32, marginLeft: 32, marginRight: 32, height: 64
   },
   backButton: {
     marginLeft: 16, marginTop: 32, marginBottom: 32

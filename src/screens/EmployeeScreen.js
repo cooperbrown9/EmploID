@@ -24,12 +24,12 @@ const EmployeeScreen = (props) => (
           <TouchableOpacity style={styles.employeeItem} key={employee._id} onPress={() => props.openProfile(employee)}>
             <Image
               style={styles.employeeImage}
-              source={(employee.image_url != null) ? require('../../assets/images/chef1.png') : { uri: employee.image_url }}
+              source={(employee.image_url == null || employee.image_url == "") ? require('../../assets/images/chef1.png') : { uri: employee.image_url }}
             />
 
             <View style={styles.employeeInfo}>
               <Text style={styles.nameText}>{employee.first_name} {employee.last_name}</Text>
-              <Text style={styles.positionText}>{employee.position}</Text>
+              <Text style={styles.positionText}>{(employee.position === 0) ? 'Employee' : 'Manager'}</Text>
             </View>
           </TouchableOpacity>
         )) : null}
