@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl } from 'react-native';
 import {SearchBar} from 'react-native-elements';
+import { BLUE } from '../constants/colors';
 
 const RestaurantScreen = (props) => (
 
@@ -18,18 +19,14 @@ const RestaurantScreen = (props) => (
 
         {props.places.map((place) => (
           <TouchableOpacity style={styles.restaurantItem} key={place._id} onPress={() => props.openProfile(place)} >
-            <Image
-              style={{
-                height: 100, width: 100,
-                flex: 1,
-              }}
-              source={(place.image_url != null) ? {uri: place.image_url} : require('../../assets/images/chef1.png')}
-            />
 
             <View style={styles.restaurantInfo}>
               <Text style={styles.nameText}>{place.name}</Text>
               <Text style={styles.addyText}>{place.address}</Text>
             </View>
+            <TouchableOpacity style={styles.phoneContainer} >
+              <Image style={styles.phone} resizeMode={'containg'} source={require('../../assets/icons/phone-circle.png')} />
+            </TouchableOpacity>
           </TouchableOpacity>
         ))}
 
@@ -68,6 +65,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     overflow: 'hidden'
   },
+  phoneContainer: {
+    height: 64, width: 64, marginRight: 16
+  },
+  phone: {
+    height: 64, tintColor: BLUE
+  },
   restaurantImage: {
   height: 100, width: 100,
   // width: null,
@@ -80,7 +83,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     backgroundColor: 'transparent',
-    marginLeft: 20
+    marginLeft: 12, marginRight: 40
   }
 });
 

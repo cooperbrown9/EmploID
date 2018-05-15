@@ -14,6 +14,29 @@ import * as Keys from './src/constants/keys';
 import { FONT_LOADED } from './src/action-types/setup-action-types';
 import * as NavActions from './src/action-types/nav-action-types';
 
+// TODO PlaceForm: Break up address fields
+// TODO Phone number
+// TODO access camera roll for photos
+// TODO clear Detail USer/Location data so
+// TODO KeyboardAvoidingView on both forms
+// TODO close on update forms acts as a submit, instead of dismiss
+// TODO search
+// TODO add employees to restaurants from Employee Roster
+// TODO leave employees without image, without the image
+// TODO "upload restaurant logo" instead
+// TODO round corners on all boxes
+// TODO alphabetize restaurants and employees roster
+// add phone call to restaurant cell 
+// TODO navigate to employee profile from their box on restaurant profile
+// TODO swipe to navigate -- check it out
+// TODO delete employees
+// TODO if image is not selected, send it up as null
+// TODO basically remove all restaurant image stuff
+// TODO camera icon not showing up
+// TODO changing tabs reformats the screen -- make concrete height of scroll
+// TODO float all edit buttons
+// TODO on profile, fix image, scrollview with tabs over it
+
 export default class App extends React.Component {
 
   store = createStore(MainReducer, applyMiddleware(thunk));
