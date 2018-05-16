@@ -19,6 +19,7 @@ import * as NavActions from '../action-types/nav-action-types';
 
 import * as DataBuilder from '../api/data-builder';
 import * as util from '../util';
+import * as Colors from '../constants/colors';
 
 class RestaurantProfileScreen extends Component {
   static navigationOptions = {
@@ -171,6 +172,17 @@ class RestaurantProfileScreen extends Component {
     this.props.dispatch({ type: NavActions.BACK });
   }
 
+
+  toPhoneNumber(num) {
+    let number = '(';
+    number += num.slice(0,3);
+    number += ')';
+    number += num.slice(3,6);
+    number += '-';
+    number += num.slice(6,10);
+    return number;
+  }
+
   editProfileButton() {
     if(this.props.location.relation.role === 2 || this.props.location.relation.role === 1) {
       return (
@@ -183,38 +195,18 @@ class RestaurantProfileScreen extends Component {
     }
   }
 
-  toPhoneNumber(num) {
-    let number = '(';
-    number += num.slice(0,3);
-    number += ')';
-    number += num.slice(3,6);
-    number += '-';
-    number += num.slice(6,10);
-    return number;
-  }
-
+  //refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshLocation} />}
   render() {
     return (
-      <ScrollView
-        style={{flex:1}}
-        refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshLocation} />}
-      >
-        <View style={styles.picContainer} >
+      <View style={{flex:1}} >
+        <View style={styles.topContainer} >
 
-          {(this.props.location.image_url)
+          {/*(this.props.location.image_url)
             ? <Image style={styles.profilePic} source={{ uri: this.props.location.image_url }} />
             : <View style={styles.profilePicEmpty}>
                 <Text style={{fontSize:32,fontFamily:'roboto-bold',textAlign:'center', color:'gray'}}>No Image</Text>
               </View>
-          }
-
-          <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.3)',zIndex:1000}}></View>
-
-          <View style={styles.backButton}>
-            <RoundButton onPress={this._goBack} imagePath={require('../../assets/icons/back.png')}/>
-          </View>
-
-          {this.editProfileButton()}
+          */}
 
           <View style={styles.infoContainer} >
             <Text style={styles.infoTextName}>{this.props.location.name}</Text>
@@ -226,21 +218,32 @@ class RestaurantProfileScreen extends Component {
           </View>
 
         </View>
-        <View style={{height: 64, paddingBottom: 8}}>
-          <LocationTabBar />
-        </View>
 
-        <View style={styles.screenContainer} >
-       {(this.props.indexOn === 0)
-          ? <EmployeesTab />
-          : (this.props.indexOn === 1)
-            ? <DiscountsTab presentForm={() => this._presentDiscountForm()} selectDiscount={(discount) => this._presentDiscountModal(discount)} />
-            : (this.props.indexOn === 2)
-              ? <NotesTab presentForm={() => this._presentNoteForm()} />
-              : null
-        }
 
-        </View>
+          <View style={styles.backButton}>
+            <RoundButton onPress={this._goBack} imagePath={require('../../assets/icons/back.png')}/>
+          </View>
+
+          {this.editProfileButton()}
+
+          {/*<View style={{height:FRAME.height / 4, backgroundColor:'transparent'}}/>*/}
+          <View style={{height: 64, paddingBottom: 8}}>
+            <LocationTabBar />
+          </View>
+          <ScrollView style={{display: 'float', backgroundColor:'transparent', zIndex: 20000}}>
+
+          <View style={styles.screenContainer} >
+         {(this.props.indexOn === 0)
+            ? <EmployeesTab />
+            : (this.props.indexOn === 1)
+              ? <DiscountsTab presentForm={() => this._presentDiscountForm()} selectDiscount={(discount) => this._presentDiscountModal(discount)} />
+              : (this.props.indexOn === 2)
+                ? <NotesTab presentForm={() => this._presentNoteForm()} />
+                : null
+          }
+
+          </View>
+        </ScrollView>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.formModal} >
           <RestaurantFormEdit updateLocation={(place) => this._updateLocation(place)} dismiss={() => this.setState({ formModal: false }, () => { this.getUpdatedLocation()})} />
@@ -258,7 +261,7 @@ class RestaurantProfileScreen extends Component {
           <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} myRole={this.props.location.relation.role} />
         </Modal>
 
-      </ScrollView>
+      </View>
     )
   }
 }
@@ -267,6 +270,9 @@ const FRAME = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  topContainer: {
+    height: FRAME.height / 2 - 64, backgroundColor: Colors.BLUE
   },
   infoText: {
     backgroundColor: 'transparent',
@@ -289,23 +295,24 @@ const styles = StyleSheet.create({
     flex: 4,
   },
   profilePic: {
-    flex: 1, zIndex: 1,
-    height: FRAME.height / 8 * 5,
+    flex: 1, zIndex: 11000,
+    height: FRAME.height / 2 - 64,
     width: FRAME.width,
     resizeMode: 'cover'
   },
+  // height was FRAME.height / 8 * 5
   profilePicEmpty: {
-    flex: 1, zIndex: 4,
-    height: FRAME.height / 8 * 5, width: FRAME.width,
+    flex: 1, zIndex: 11000,
+    height: FRAME.height / 2 - 64, width: FRAME.width,
     resizeMode: 'cover',
     fontSize: 32, fontFamily: 'roboto-bold', textAlign: 'center', justifyContent: 'center', alignItems: 'center'
   },
   backButton: {
-    position: 'absolute', left: 20, top: 20,
+    position: 'absolute', left: 20, top: (FRAME.height === 812) ? 40 : 24,
     zIndex: 1001
   },
   optionsButton: {
-    position: 'absolute', right: 20, top: 20,
+    position: 'absolute', right: 20, top: (FRAME.height === 812) ? 40 : 24,
     zIndex: 1001
   },
   tabContainer: {

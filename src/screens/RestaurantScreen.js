@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl } from 'react-native';
 import {SearchBar} from 'react-native-elements';
 import { BLUE } from '../constants/colors';
+import { callPhoneNumber } from '../util';
 
 const RestaurantScreen = (props) => (
 
@@ -24,7 +25,7 @@ const RestaurantScreen = (props) => (
               <Text style={styles.nameText}>{place.name}</Text>
               <Text style={styles.addyText}>{place.address}</Text>
             </View>
-            <TouchableOpacity style={styles.phoneContainer} >
+            <TouchableOpacity style={styles.phoneContainer} onPress={() => callPhoneNumber(place.phone)} >
               <Image style={styles.phone} resizeMode={'containg'} source={require('../../assets/icons/phone-circle.png')} />
             </TouchableOpacity>
           </TouchableOpacity>

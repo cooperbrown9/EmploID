@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, ActivityIndicator, StyleSheet, Modal, TextInput, Image, Alert } from 'react-native';
+import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity,
+  ActivityIndicator, StyleSheet, Modal, TextInput,
+  Image, Alert, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
+
+// import TextInputMask from 'react-native-text-input-mask';
 
 import { connect } from 'react-redux';
 import { Camera, Permissions } from 'expo';
@@ -238,8 +242,28 @@ class EmployeeForm extends Component {
         onChangeText={(text) => onTextChange(text)}
         value={(this.props.edit) ? value : null}
         editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
+        onFocus={(input) => this.adjustScroll(input)}
       />
     )
+  }
+
+  phoneInputFactory(placeholder, onTextChange, value, canEdit, capitalize = true, keyboard = 'default') {
+    return (
+      <TextInputMask
+        placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
+        selectionColor={Colors.BLUE} style={styles.input}
+        autoCorrect={false} autoCapitalize={(capitalize ? 'words' : 'none')}
+        onChangeText={(formatted, extracted) => onTextChange(extracted)}
+        value={(this.props.edit) ? value : null}
+        editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
+        mask={'+1([000][000]-[0000])'}
+      />
+    )
+  }
+
+  adjustScroll = (input) => {
+    debugger;
+    // this.scroll.scrollTo(input)
   }
 
   getCameraPermission = async() => {
@@ -259,10 +283,20 @@ class EmployeeForm extends Component {
     }
   }
 
+  onScroll = (obj) => {
+    // debugger;
+    // console.log(this.scroll);
+  }
+
+  onTouchBG = (obj) => {
+    debugger;
+  }
+
   render() {
     return(
       <View style={{flex: 1}}>
-      <ScrollView style={styles.scrollContainer} >
+        <TouchableWithoutFeedback onPress={this.onTouchBG} style={{backgroundColor:'yellow'}}>
+      <ScrollView style={styles.scrollContainer} ref={ref => { this.scroll = ref }} onScroll={(obj) => this.onScroll(obj)}>
         <View style={styles.container} >
 
           <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
@@ -365,6 +399,7 @@ class EmployeeForm extends Component {
           : null
         }
       </ScrollView>
+    </TouchableWithoutFeedback>
       {(this.state.cameraPermission)
         ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
             <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >

@@ -26,16 +26,16 @@ import * as NavActions from './src/action-types/nav-action-types';
 // TODO "upload restaurant logo" instead
 // TODO round corners on all boxes
 // TODO alphabetize restaurants and employees roster
-// add phone call to restaurant cell 
 // TODO navigate to employee profile from their box on restaurant profile
 // TODO swipe to navigate -- check it out
 // TODO delete employees
 // TODO if image is not selected, send it up as null
-// TODO basically remove all restaurant image stuff
 // TODO camera icon not showing up
-// TODO changing tabs reformats the screen -- make concrete height of scroll
 // TODO float all edit buttons
 // TODO on profile, fix image, scrollview with tabs over it
+// add phone call to restaurant cell
+// basically remove all restaurant image stuff
+// changing tabs reformats the screen -- make concrete height of scroll
 
 export default class App extends React.Component {
 

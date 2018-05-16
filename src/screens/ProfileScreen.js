@@ -227,6 +227,8 @@ class ProfileScreen extends Component {
     }
   }
 
+  // refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshUser} /> }
+
   render() {
     if(!this.props.employee) {
       return(
@@ -234,11 +236,8 @@ class ProfileScreen extends Component {
       )
     }
     return (
-        <ScrollView
-          style={{flex:1}}
-          refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshUser} /> }
-        >
-          <View style={{flex: 1}}>
+        <View style={{flex:1}} >
+          {/*<View style={{flex: 1}}>*/}
             <View style={styles.profilePicContainer} >
 
               {(this.props.employee.image_url)
@@ -271,20 +270,26 @@ class ProfileScreen extends Component {
               <EmployeeTabBar />
             </View>
 
-            <View style={styles.screenContainer} >
+            <ScrollView
+              style={{display:'float',backgroundColor:'transparent'}}
+              refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshUser} /> }
+            >
 
-           {(this.props.indexOn === 0)
-              ? <ProfileTab />
-              : (this.props.indexOn === 1)
-                ? <LocationsTab presentModal={(model) => this._presentUserPermissionModal(model)} />
-                : (this.props.indexOn === 2)
-                  ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }, () => this._presentDiscountModal())} />
-                : (this.props.indexOn === 3)
-                    ? <NotesTab presentForm={() => this._presentNoteForm()} />
-                  : null
-            }
+              <View style={styles.screenContainer} >
 
-            </View>
+             {(this.props.indexOn === 0)
+                ? <ProfileTab />
+                : (this.props.indexOn === 1)
+                  ? <LocationsTab presentModal={(model) => this._presentUserPermissionModal(model)} />
+                  : (this.props.indexOn === 2)
+                    ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }, () => this._presentDiscountModal())} />
+                  : (this.props.indexOn === 3)
+                      ? <NotesTab presentForm={() => this._presentNoteForm()} />
+                    : null
+              }
+
+              </View>
+            </ScrollView>
 
             <Modal animationType={'slide'} transparent={false} visible={this.state.editModalPresented} styles={{marginTop: 0}} onDismiss={() => this.refreshUser()}>
               <EmployeeFormEdit dismiss={this._dismissFormModal} />
@@ -302,8 +307,8 @@ class ProfileScreen extends Component {
               <UserPermissionModal updatePermission={(role, location, position) => this._updateUserPermissions(role, location, position)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
             </Modal>
 
-          </View>
-        </ScrollView>
+          {/*</View>*/}
+        </View>
 
     )
   }
@@ -336,16 +341,16 @@ const styles = StyleSheet.create({
     flexDirection: 'column'
   },
   profilePicContainer: {
-    flex: 4
+    flex: 1
   },
   profilePic: {
     flex: 1, zIndex: 4,
-    height: FRAME.height / 8 * 5, width: FRAME.width,
+    height: FRAME.height / 2 + 32, width: FRAME.width,
     resizeMode: 'cover'
   },
   profilePicEmpty: {
     flex: 1, zIndex: 4,
-    height: FRAME.height / 8 * 5, width: FRAME.width,
+    height: FRAME.height / 2 + 32, width: FRAME.width,   // height was FRAME.height / 8 * 5
     fontFamily: 'roboto-bold', textAlign: 'center', justifyContent: 'center', alignItems: 'center'
   },
   backButton: {
