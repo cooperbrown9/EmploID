@@ -1,5 +1,5 @@
 import call from 'react-native-phone-call';
-
+import * as _ from 'lodash';
 
 export function callPhoneNumber(num) {
   const args = {
@@ -36,4 +36,14 @@ export function toPhoneNumber(num) {
   number += '-';
   number += num.slice(6,10);
   return number;
+}
+
+export function alphabetizeUsers(users) {
+  let sorted = _.sortBy(users, 'first_name');
+  return sorted;
+}
+
+export function alphabetizePlaces(places) {
+  let sorted = _.sortBy(places, 'name');
+  return sorted;
 }

@@ -5,6 +5,7 @@ import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity,
   Image, Alert, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
 
 // import TextInputMask from 'react-native-text-input-mask';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { connect } from 'react-redux';
 import { Camera, Permissions } from 'expo';
@@ -242,7 +243,6 @@ class EmployeeForm extends Component {
         onChangeText={(text) => onTextChange(text)}
         value={(this.props.edit) ? value : null}
         editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
-        onFocus={(input) => this.adjustScroll(input)}
       />
     )
   }
@@ -259,11 +259,6 @@ class EmployeeForm extends Component {
         mask={'+1([000][000]-[0000])'}
       />
     )
-  }
-
-  adjustScroll = (input) => {
-    debugger;
-    // this.scroll.scrollTo(input)
   }
 
   getCameraPermission = async() => {
@@ -283,21 +278,12 @@ class EmployeeForm extends Component {
     }
   }
 
-  onScroll = (obj) => {
-    // debugger;
-    // console.log(this.scroll);
-  }
-
-  onTouchBG = (obj) => {
-    debugger;
-  }
-
   render() {
     return(
       <View style={{flex: 1}}>
         <TouchableWithoutFeedback onPress={this.onTouchBG} style={{backgroundColor:'yellow'}}>
-      <ScrollView style={styles.scrollContainer} ref={ref => { this.scroll = ref }} onScroll={(obj) => this.onScroll(obj)}>
-        <View style={styles.container} >
+      <ScrollView style={styles.scrollContainer} >
+        <KeyboardAwareScrollView style={styles.container} >
 
           <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
             <EmployeeFormAddLocation
@@ -371,7 +357,7 @@ class EmployeeForm extends Component {
 
           <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
             {(this.state.employee.imageURI == null)
-              ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
+              ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'cover'} style={styles.imageEmpty} />
               : <Image source={{uri:this.state.employee.imageURI}} style={styles.image} />
             }
           </TouchableOpacity>
@@ -393,7 +379,7 @@ class EmployeeForm extends Component {
 
 
           <View style={{height: 64}}/>
-        </View>
+        </KeyboardAwareScrollView>
         {(this.props.isLoading)
           ? <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',justifyContent:'flex-end',alignItems:'center'}}><View style={{marginBottom: 140,justifyContent:'flex-start',alignItems:'center'}}><ActivityIndicator size={'large'} color={'white'} /></View></View>
           : null
@@ -442,8 +428,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   imageEmpty: {
-    width: 140, height: 140,
-    borderRadius: 70,
+    width: 84, height: 84,
+    // borderRadius: 70,
     tintColor: Colors.BLUE
   },
   image: {

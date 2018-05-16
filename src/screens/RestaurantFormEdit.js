@@ -183,6 +183,7 @@ class RestaurantFormEdit extends Component {
               <OptionViewSplit options={this.state.positionOptions} selectOption={(index) => this.positionSelected(index)} />
             </View>
 
+            {/*
             <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
               {(this.state.place.imageURL == null)
                 ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
@@ -190,7 +191,7 @@ class RestaurantFormEdit extends Component {
               }
             </TouchableOpacity>
             <Text style={styles.imageText}>Upload Restaurant Image</Text>
-
+            */}
             <TouchableOpacity style={styles.submitContainer} >
               <SubmitButton title={'UPDATE LOCATION'} onPress={() => this.submit()} />
             </TouchableOpacity>

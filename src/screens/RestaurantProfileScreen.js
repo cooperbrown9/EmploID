@@ -187,7 +187,7 @@ class RestaurantProfileScreen extends Component {
     if(this.props.location.relation.role === 2 || this.props.location.relation.role === 1) {
       return (
         <View style={styles.optionsButton}>
-          <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
+          <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')} color={Colors.LIGHT_BLUE}/>
         </View>
       )
     } else {
@@ -221,7 +221,7 @@ class RestaurantProfileScreen extends Component {
 
 
           <View style={styles.backButton}>
-            <RoundButton onPress={this._goBack} imagePath={require('../../assets/icons/back.png')}/>
+            <RoundButton onPress={this._goBack} imagePath={require('../../assets/icons/back.png')} color={Colors.LIGHT_BLUE} />
           </View>
 
           {this.editProfileButton()}

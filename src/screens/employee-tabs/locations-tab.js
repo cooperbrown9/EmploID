@@ -20,12 +20,16 @@ const LocationsTab = (props) => (
               key={model._id}
               onPress={() => props.presentModal(model)}
             >
-              <Image style={styles.restaurantImage} source={(model.image_url != null) ? { uri: model.image_url } : require('../../../assets/images/chef1.png')} />
+              {/*<Image style={styles.restaurantImage} source={(model.image_url != null) ? { uri: model.image_url } : require('../../../assets/images/chef1.png')} />*/}
 
             <View style={styles.restaurantInfo}>
-              <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.name} </Text>
-              <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}}>{model.address}</Text>
+              <Text style={styles.nameText}>{model.name}</Text>
+              <Text style={styles.addyText}>{model.address}</Text>
             </View>
+            <TouchableOpacity style={styles.phoneContainer} onPress={() => callPhoneNumber(model.phone)} >
+              <Image style={styles.phone} resizeMode={'containg'} source={require('../../../assets/icons/phone-circle.png')} />
+            </TouchableOpacity>
+
           </TouchableOpacity>
         )}
     </View>
@@ -86,6 +90,20 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 4,
     borderRightWidth: 16, borderColor: Colors.BLUE
+  },
+  nameText: {
+    fontSize: 24, marginBottom: 6,
+    fontFamily: 'roboto-bold', color: 'black'
+  },
+  addyText: {
+    fontSize: 18, fontFamily: 'roboto-bold',
+    color: 'gray'
+  },
+  phoneContainer: {
+    height: 64, width: 64, marginRight: 16
+  },
+  phone: {
+    height: 64, tintColor: Colors.BLUE
   },
   restaurantImage: {
   height: 100,

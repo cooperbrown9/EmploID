@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image, Modal, ActivityIndicator, Alert } from 'react-native';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Camera, Permissions } from 'expo';
 import { connect } from 'react-redux';
 import OptionView from '../ui-elements/option-view';
@@ -206,7 +206,7 @@ class RestaurantForm extends Component {
         */}
 
 
-        <View style={styles.container} >
+        <KeyboardAwareScrollView style={styles.container} >
 
           <View style={styles.backButton} >
             <RoundButton onPress={() => this.props.dispatch({ type: NavActions.BACK })} imagePath={require('../../assets/icons/back.png')} />
@@ -241,6 +241,7 @@ class RestaurantForm extends Component {
             <OptionViewSplit options={this.state.positionOptions} selectOption={(index) => this.positionSelected(index)} />
           </View>
 
+          {/*
           <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
             {(this.state.place.imageURI == null)
               ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
@@ -250,7 +251,6 @@ class RestaurantForm extends Component {
           </TouchableOpacity>
           <Text style={styles.imageText}>Upload Restaurant Image</Text>
 
-          {/*
           <View style={styles.submitContainer} >
             <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addEmployeeFormPresented: true }) } />
           </View>
@@ -266,7 +266,7 @@ class RestaurantForm extends Component {
           </TouchableOpacity>
 
           <View style={{height: 64}}/>
-        </View>
+        </KeyboardAwareScrollView>
         {(this.props.isLoading)
           ? <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',justifyContent:'flex-end',alignItems:'center'}}><View style={{marginBottom: 140,justifyContent:'flex-start',alignItems:'center'}}><ActivityIndicator size={'large'} color={'white'} /></View></View>
           : null

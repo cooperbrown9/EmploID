@@ -250,7 +250,7 @@ class ProfileScreen extends Component {
               <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.3)',zIndex:1000}}></View>
 
               <View style={styles.backButton}>
-                <RoundButton onPress={() => this._goBack()} imagePath={require('../../assets/icons/back.png')}/>
+                <RoundButton onPress={() => this._goBack()} />
               </View>
 
               {this.editProfileButton()}

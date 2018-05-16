@@ -25,6 +25,7 @@ import FilterModal from './FilterModal';
 import EmployeeForm from './EmployeeForm';
 import PlaceForm from './RestaurantForm';
 import ProfileScreen from './ProfileScreen';
+import { alphabetizeUsers, alphabetizePlaces } from '../util';
 
 import { Camera, Permissions } from 'expo';
 
@@ -39,6 +40,9 @@ class HomeScreen extends Component {
 // locations to say "you need to be added to restaurants"
   constructor() {
     super();
+
+    this.alphabetizeUsers = alphabetizeUsers.bind(this);
+    this.alphabetizePlaces = alphabetizePlaces.bind(this);
 
     this.state = {
       filterPresented: false,
@@ -91,7 +95,9 @@ class HomeScreen extends Component {
             this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
           } else {
             DataBuilder.assignRelationsToPlaces(relations, locations, (locationsWithRelations) => {
-              this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: locationsWithRelations });
+              let sortedLocationsWithRelations = this.alphabetizePlaces(locationsWithRelations);
+
+              this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: sortedLocationsWithRelations });
               this.getUsers();
             })
           }
@@ -114,9 +120,10 @@ class HomeScreen extends Component {
         console.log(err);
         this.setState({ isRefreshing: false }, () => {
           this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
+          Alert.alert('Error loading Users');
         });
       } else {
-        console.log('yesssss');
+
         let userIDs = [];
         for(let i = 0; i < relations.length; i++) {
           userIDs.push({ 'userID': relations[i].user_id });
@@ -131,7 +138,9 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
-            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
+            let sortedUsers = this.alphabetizeUsers(users);
+            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: sortedUsers });
+
             this.setState({ isRefreshing: false }, () => {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });

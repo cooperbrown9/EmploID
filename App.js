@@ -14,25 +14,25 @@ import * as Keys from './src/constants/keys';
 import { FONT_LOADED } from './src/action-types/setup-action-types';
 import * as NavActions from './src/action-types/nav-action-types';
 
-// TODO PlaceForm: Break up address fields
 // TODO Phone number
 // TODO access camera roll for photos
 // TODO clear Detail USer/Location data so
-// TODO KeyboardAvoidingView on both forms
 // TODO close on update forms acts as a submit, instead of dismiss
 // TODO search
 // TODO add employees to restaurants from Employee Roster
 // TODO leave employees without image, without the image
 // TODO "upload restaurant logo" instead
 // TODO round corners on all boxes
-// TODO alphabetize restaurants and employees roster
 // TODO navigate to employee profile from their box on restaurant profile
 // TODO swipe to navigate -- check it out
 // TODO delete employees
 // TODO if image is not selected, send it up as null
-// TODO camera icon not showing up
 // TODO float all edit buttons
-// TODO on profile, fix image, scrollview with tabs over it
+// COMBAK PlaceForm: Break up address fields
+// camera icon not showing up
+// KeyboardAvoidingView on both forms
+// alphabetize restaurants and employees roster
+// on profile, fix image, scrollview with tabs over it
 // add phone call to restaurant cell
 // basically remove all restaurant image stuff
 // changing tabs reformats the screen -- make concrete height of scroll

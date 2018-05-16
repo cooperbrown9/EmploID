@@ -1,5 +1,6 @@
 
 import * as DetailActions from '../action-types/detail-action-types';
+import * as util from '../util';
 import { connect } from 'react-redux';
 
 const initialState = {
@@ -30,14 +31,14 @@ function detail(state = initialState, action) {
     case DetailActions.SET_LOCATIONS:
       return {
         ...state,
-        locations: action.locations
+        locations: util.alphabetizePlaces(action.locations)
       }
 
     case DetailActions.SET_EMPLOYEES:
-      return {
-        ...state,
-        employees: action.employees
-      }
+        return {
+          ...state,
+          employees: util.alphabetizeUsers(action.employees)
+        }
 
     case DetailActions.SET_DISCOUNTS:
       return {
