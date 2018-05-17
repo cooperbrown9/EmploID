@@ -15,6 +15,7 @@ import EmployeeFormEdit from './edit/EmployeeFormEdit';
 import DiscountModal from './DiscountModal';
 import UserPermissionModal from './UserPermissionModal';
 import CreateUserNoteForm from './CreateUserNoteForm';
+import ImageScreen from './ImageScreen';
 
 import * as Parser from '../api/data-builder';
 import * as NavActions from '../action-types/nav-action-types';
@@ -33,6 +34,7 @@ class ProfileScreen extends Component {
     discountModalPresented: false,
     userPermissionModalPresented: false,
     noteFormPresented: false,
+    imagePresented: false,
     selectedDiscount: null,
     isRefreshing: false,
     userPermissionModel: {},
@@ -60,6 +62,10 @@ class ProfileScreen extends Component {
 
   componentDidMount () {
     this.getPlaces();
+  }
+
+  componentWillUnmount() {
+    this.props.dispatch({ type: DetailActions.CLEAR });
   }
 
   refreshUser = () => {
@@ -227,7 +233,17 @@ class ProfileScreen extends Component {
     }
   }
 
-  // refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshUser} /> }
+  addNoteButton() {
+    if(this.props.indexOn === 3) {
+      return (
+        <View style={styles.addNote} >
+          <RoundButton onPress={() => this._presentNoteForm()} imagePath={require('../../assets/icons/plus.png')} />
+        </View>
+      )
+    } else {
+      return null;
+    }
+  }
 
   render() {
     if(!this.props.employee) {
@@ -237,79 +253,79 @@ class ProfileScreen extends Component {
     }
     return (
         <View style={{flex:1}} >
-          {/*<View style={{flex: 1}}>*/}
-            <View style={styles.profilePicContainer} >
+          <TouchableOpacity style={styles.profilePicContainer} onPress={() => this.setState({ imagePresented: true })}>
 
-              {(this.props.employee.image_url)
-                ? <Image style={styles.profilePic} source={{ uri: this.props.employee.image_url }} />
-                : <View style={styles.profilePicEmpty}>
-                    <Text style={{fontSize:32,fontFamily:'roboto-bold',textAlign:'center', color:'gray'}}>No Image</Text>
-                  </View>
-              }
+            {(this.props.employee.image_url)
+              ? <Image style={styles.profilePic} source={{ uri: this.props.employee.image_url }} />
+              : <View style={styles.profilePicEmpty}>
+                  <Text style={{fontSize:32,fontFamily:'roboto-bold',textAlign:'center', color:'gray'}}>No Image</Text>
+                </View>
+            }
 
-              <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.3)',zIndex:1000}}></View>
+            <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.3)',zIndex:1000}}></View>
 
-              <View style={styles.backButton}>
-                <RoundButton onPress={() => this._goBack()} />
-              </View>
-
-              {this.editProfileButton()}
-
-              <View style={styles.infoContainer} >
-                <Text style={styles.infoTextName}>
-                  {this.props.employee.first_name} {this.props.employee.last_name}
-                </Text>
-                <Text style={styles.infoText}>{this.props.employee.email}</Text>
-                <TouchableOpacity onPress={() => util.callPhoneNumber(this.props.employee.phone)}>
-                  <Text style={styles.infoText}>{util.toPhoneNumber(this.props.employee.phone)}</Text>
-                </TouchableOpacity>
-              </View>
+            <View style={styles.backButton}>
+              <RoundButton onPress={() => this._goBack()} />
             </View>
 
-            <View style={{height: 64, paddingBottom: 8}}>
-              <EmployeeTabBar />
+            {this.editProfileButton()}
+
+            <View style={styles.infoContainer} >
+              <Text style={styles.infoTextName}>
+                {this.props.employee.first_name} {this.props.employee.last_name}
+              </Text>
+              <Text style={styles.infoText}>{this.props.employee.email}</Text>
+              <TouchableOpacity onPress={() => util.callPhoneNumber(this.props.employee.phone)}>
+                <Text style={styles.infoText}>{util.toPhoneNumber(this.props.employee.phone)}</Text>
+              </TouchableOpacity>
             </View>
+          </TouchableOpacity>
 
-            <ScrollView
-              style={{display:'float',backgroundColor:'transparent'}}
-              refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshUser} /> }
-            >
+          <View style={{height: 64, paddingBottom: 8}}>
+            <EmployeeTabBar />
+          </View>
 
-              <View style={styles.screenContainer} >
+          <ScrollView
+            style={{display:'float',backgroundColor:'transparent'}}
+            refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshUser} /> }
+          >
 
-             {(this.props.indexOn === 0)
-                ? <ProfileTab />
-                : (this.props.indexOn === 1)
-                  ? <LocationsTab presentModal={(model) => this._presentUserPermissionModal(model)} />
-                  : (this.props.indexOn === 2)
-                    ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }, () => this._presentDiscountModal())} />
-                  : (this.props.indexOn === 3)
-                      ? <NotesTab presentForm={() => this._presentNoteForm()} />
-                    : null
-              }
+            <View style={styles.screenContainer} >
+              {this.addNoteButton()}
+           {(this.props.indexOn === 0)
+              ? <ProfileTab />
+              : (this.props.indexOn === 1)
+                ? <LocationsTab presentModal={(model) => this._presentUserPermissionModal(model)} />
+                : (this.props.indexOn === 2)
+                  ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }, () => this._presentDiscountModal())} />
+                : (this.props.indexOn === 3)
+                    ? <NotesTab />
+                  : null
+            }
 
-              </View>
-            </ScrollView>
+            </View>
+          </ScrollView>
 
-            <Modal animationType={'slide'} transparent={false} visible={this.state.editModalPresented} styles={{marginTop: 0}} onDismiss={() => this.refreshUser()}>
-              <EmployeeFormEdit dismiss={this._dismissFormModal} />
-            </Modal>
+          <Modal animationType={'slide'} transparent={false} visible={this.state.imagePresented} styles={{marginTop: 0}} >
+            <ImageScreen image={this.props.employee.image_url} dismiss={() => this.setState({ imagePresented: false })} />
+          </Modal>
 
-            <Modal animationType={'slide'} transparent={false} visible={this.state.noteFormPresented} >
-              <CreateUserNoteForm dismiss={() => this._dismissNoteForm()} />
-            </Modal>
+          <Modal animationType={'slide'} transparent={false} visible={this.state.editModalPresented} styles={{marginTop: 0}} onDismiss={() => this.refreshUser()}>
+            <EmployeeFormEdit dismiss={this._dismissFormModal} />
+          </Modal>
 
-            <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal} onDismiss={() => this.refreshUser()}>
-              <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} />
-            </Modal>
+          <Modal animationType={'slide'} transparent={false} visible={this.state.noteFormPresented} >
+            <CreateUserNoteForm dismiss={() => this._dismissNoteForm()} />
+          </Modal>
 
-            <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} onDismiss={() => this.refreshUser()}>
-              <UserPermissionModal updatePermission={(role, location, position) => this._updateUserPermissions(role, location, position)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
-            </Modal>
+          <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal} onDismiss={() => this.refreshUser()}>
+            <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} />
+          </Modal>
 
-          {/*</View>*/}
+          <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} onDismiss={() => this.refreshUser()}>
+            <UserPermissionModal updatePermission={(role, location, position) => this._updateUserPermissions(role, location, position)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
+          </Modal>
         </View>
-
     )
   }
 }
@@ -360,6 +376,11 @@ const styles = StyleSheet.create({
   optionsButton: {
     position: 'absolute', right: 20, top: 32,
     zIndex: 1001
+  },
+  addNote: {
+    position: 'absolute',
+    right: 16, top: 8,
+    zIndex: 1000
   },
   tabContainer: {
     height: 64

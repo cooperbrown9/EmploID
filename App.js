@@ -15,20 +15,21 @@ import { FONT_LOADED } from './src/action-types/setup-action-types';
 import * as NavActions from './src/action-types/nav-action-types';
 
 // TODO Phone number
-// TODO access camera roll for photos
-// TODO clear Detail USer/Location data so
 // TODO close on update forms acts as a submit, instead of dismiss
 // TODO search
-// TODO add employees to restaurants from Employee Roster
+// TODO TODO TODO add employees to restaurants from Employee Roster
 // TODO leave employees without image, without the image
 // TODO "upload restaurant logo" instead
 // TODO round corners on all boxes
 // TODO navigate to employee profile from their box on restaurant profile
-// TODO swipe to navigate -- check it out
 // TODO delete employees
-// TODO if image is not selected, send it up as null
-// TODO float all edit buttons
+// TODO filter modal
 // COMBAK PlaceForm: Break up address fields
+// float all edit buttons
+// swipe to navigate -- check it out
+// if image is not selected, send it up as null
+// clear Detail USer/Location data so
+// access camera roll for photos
 // camera icon not showing up
 // KeyboardAvoidingView on both forms
 // alphabetize restaurants and employees roster

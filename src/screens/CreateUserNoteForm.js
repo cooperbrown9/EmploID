@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { View, ScrollView, Text, TextInput, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 import OptionView from '../ui-elements/option-view';
@@ -106,7 +108,7 @@ class CreateUserNoteForm extends Component {
   render() {
     return(
       <ScrollView style={styles.scrollContainer} >
-        <View style={styles.container} >
+        <KeyboardAwareScrollView style={styles.container} >
 
           <View style={styles.backButton} >
             <RoundButton imagePath={require('../../assets/icons/down.png')} onPress={this.props.dismiss} />
@@ -123,7 +125,7 @@ class CreateUserNoteForm extends Component {
             {this.textInputFactory('Text', (text) => this.setState({ text: text }), this.state.text)}
           </View>
 
-        </View>
+        </KeyboardAwareScrollView>
 
         <View style={styles.submitButton} >
           <SubmitButton
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BACKGROUND_GREY
   },
   backButton: {
-    marginLeft: 16, marginTop: 32, marginBottom: 32
+    marginLeft: 16, marginBottom: 64
   },
   container: {
     flex: 1,

@@ -7,3 +7,5 @@ export const SET_COWORKERS = 'detail/set-coworkers';
 export const SET_EMPLOYEES = 'detail/set-employees';
 export const SET_DISCOUNTS = 'detail/set-discounts';
 export const SET_NOTES = 'detail/set-notes';
+
+export const CLEAR = 'detail/clear';

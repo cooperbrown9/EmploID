@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { View, ScrollView, ListView, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 
 import * as Colors from '../../constants/colors';
+import { callPhoneNumber } from '../../util';
 
 const LocationsTab = (props) => (
 

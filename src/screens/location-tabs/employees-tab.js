@@ -15,7 +15,7 @@ const EmployeesTab = (props) => (
           <Image style={styles.employeeImage} source={(model.image_url != null) ? { uri: model.image_url } : require('../../../assets/images/chef1.png')} />
           <View style={styles.employeeInfo}>
             <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.first_name} {model.last_name}</Text>
-            <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}}>{model.position}</Text>
+            <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}}>{model.relation.position}</Text>
           </View>
           <View style={{}}>
 
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
       justifyContent: 'space-around',
       flexDirection: 'row',
       backgroundColor: 'white',
-      height: 100, borderRadius: 8,
+      height: 100, borderRadius: 4,
       marginTop: 4, marginBottom: 4,
       backgroundColor: 'white',
       overflow: 'hidden'
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
       justifyContent: 'space-around',
       flexDirection: 'row',
       backgroundColor: 'white',
-      height: 100, borderRadius: 8,
+      height: 100, borderRadius: 4,
       marginTop: 4, marginBottom: 4,
       backgroundColor: 'white',
       overflow: 'hidden',
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
       justifyContent: 'space-around',
       flexDirection: 'row',
       backgroundColor: 'white',
-      height: 100, borderRadius: 8,
+      height: 100, borderRadius: 4,
       marginTop: 4, marginBottom: 4,
       backgroundColor: 'white',
       overflow: 'hidden',

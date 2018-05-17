@@ -52,6 +52,11 @@ function detail(state = initialState, action) {
         notes: action.notes
       }
 
+    case DetailActions.CLEAR:
+      return {
+        ...initialState
+      }
+
     default:
       return state;
   }

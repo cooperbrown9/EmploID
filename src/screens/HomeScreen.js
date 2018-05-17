@@ -69,6 +69,7 @@ class HomeScreen extends Component {
   }
 
   loadData() {
+    this.props.dispatch({ type: DetailActions.CLEAR });
     this.props.dispatch({ type: LoadingActions.START_LOADING });
     this.getPlaces();
   }
@@ -353,11 +354,11 @@ class HomeScreen extends Component {
           : null
         }
 
-        {/* FILTER BUTTON OUT FOR NOW
+        {
         <TouchableOpacity onPress={() => this._presentFilterModal()} style={styles.filterButton} >
           <Text style={styles.filterText}>Filter</Text>
         </TouchableOpacity>
-        */}
+        }
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
           <FilterModal dismiss={() => this._dismissFilterModal()} />

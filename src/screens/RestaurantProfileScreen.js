@@ -40,6 +40,10 @@ class RestaurantProfileScreen extends Component {
     this.getUsers();
   }
 
+  componentWillUnmount() {
+    this.props.dispatch({ type: DetailActions.CLEAR });
+  }
+
   getUsers() {
     API.getRelationsByPlace(this.props.location._id, (e1, relations) => {
       if(e1) {
@@ -195,6 +199,27 @@ class RestaurantProfileScreen extends Component {
     }
   }
 
+  addButton() {
+    if(this.props.indexOn === 1) {
+      // discounts tab
+      if(this.props.myRole === 1 || this.props.myRole === 2) {
+        return(
+          <View style={styles.addDiscount} >
+            <RoundButton onPress={() => this._presentDiscountForm()} imagePath={require('../../assets/icons/plus.png')} />
+          </View>
+        )
+      }
+    } else if(this.props.indexOn === 2) {
+      return(
+        <View style={styles.addDiscount} >
+          <RoundButton onPress={() => this._presentNoteForm()} imagePath={require('../../assets/icons/plus.png')} />
+        </View>
+      )
+    } else {
+      return null;
+    }
+  }
+
   //refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshLocation} />}
   render() {
     return (
@@ -207,6 +232,7 @@ class RestaurantProfileScreen extends Component {
                 <Text style={{fontSize:32,fontFamily:'roboto-bold',textAlign:'center', color:'gray'}}>No Image</Text>
               </View>
           */}
+
 
           <View style={styles.infoContainer} >
             <Text style={styles.infoTextName}>{this.props.location.name}</Text>
@@ -233,14 +259,15 @@ class RestaurantProfileScreen extends Component {
           <ScrollView style={{display: 'float', backgroundColor:'transparent', zIndex: 20000}}>
 
           <View style={styles.screenContainer} >
-         {(this.props.indexOn === 0)
-            ? <EmployeesTab />
-            : (this.props.indexOn === 1)
-              ? <DiscountsTab presentForm={() => this._presentDiscountForm()} selectDiscount={(discount) => this._presentDiscountModal(discount)} />
-              : (this.props.indexOn === 2)
-                ? <NotesTab presentForm={() => this._presentNoteForm()} />
-                : null
-          }
+            {this.addButton()}
+       {(this.props.indexOn === 0)
+          ? <EmployeesTab />
+          : (this.props.indexOn === 1)
+            ? <DiscountsTab selectDiscount={(discount) => this._presentDiscountModal(discount)} />
+            : (this.props.indexOn === 2)
+              ? <NotesTab />
+              : null
+        }
 
           </View>
         </ScrollView>
@@ -318,8 +345,11 @@ const styles = StyleSheet.create({
   tabContainer: {
     height: 64
   },
-
-
+  addDiscount: {
+    position: 'absolute',
+    right: 16, top: 8,
+    zIndex: 1000
+  }
 });
 
 var mapStateToProps = state => {

@@ -281,7 +281,6 @@ class EmployeeForm extends Component {
   render() {
     return(
       <View style={{flex: 1}}>
-        <TouchableWithoutFeedback onPress={this.onTouchBG} style={{backgroundColor:'yellow'}}>
       <ScrollView style={styles.scrollContainer} >
         <KeyboardAwareScrollView style={styles.container} >
 
@@ -385,7 +384,6 @@ class EmployeeForm extends Component {
           : null
         }
       </ScrollView>
-    </TouchableWithoutFeedback>
       {(this.state.cameraPermission)
         ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
             <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >

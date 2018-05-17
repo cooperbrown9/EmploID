@@ -8,12 +8,6 @@ import RoundButton from '../../ui-elements/round-button';
 const DiscountsTab = (props) => (
 
     <View style={styles.container}>
-      {(props.myRole === 1 || props.myRole === 2)
-        ? <View style={styles.addDiscount} >
-            <RoundButton onPress={() => props.presentForm()} imagePath={require('../../../assets/icons/plus.png')} />
-          </View>
-        : null
-      }
 
       {props.discounts.map(model =>
         <TouchableOpacity style={styles.discountItem} key={model._id} onPress={() => props.selectDiscount(model)} >
@@ -29,7 +23,6 @@ const DiscountsTab = (props) => (
 
 DiscountsTab.propTypes = {
   discounts: PropTypes.array,
-  presentForm: PropTypes.func,
   selectDiscount: PropTypes.func
 };
 
@@ -43,7 +36,8 @@ DiscountsTab.defaultPropTypes = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginRight: 8, marginLeft: 8
+    marginRight: 8, marginLeft: 8,
+    overflow: 'hidden'
   },
   addDiscount: {
     position: 'absolute',
@@ -52,6 +46,7 @@ const styles = StyleSheet.create({
   },
   discountItem: {
       flex: 1,
+      borderRadius: 4,
       alignItems: 'center',
       justifyContent: 'space-around',
       flexDirection: 'row',

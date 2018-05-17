@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 
 import OptionView from '../ui-elements/option-view';
+import OptionViewSplit from '../ui-elements/option-view-split';
 
 class FilterModal extends Component {
 
@@ -12,11 +13,14 @@ class FilterModal extends Component {
 
     this.state = {
       jobOptions: [
-        {value: 'Chef', selected: true, index: 0},
-        {value: 'Host', selected: false, index: 1},
-        { value: 'Server', selected: false, index: 2},
-        { value: 'Manager', selected: false, index: 3},
-        { value: 'Busser', selected: false, index: 4}
+        { value: 'Server', selected: false, index: 0 },
+        { value: 'Bartender', selected: false, index: 1 },
+        { value: 'Host', selected: false, index: 2 },
+        { value: 'Busser', selected: false, index: 3 },
+        { value: 'Manager', selected: false, index: 4 },
+        { value: 'Chef', selected: false, index: 5 },
+        { value: 'Cook', selected: false, index: 6 },
+        { value: 'Dishwasher', selected: false, index: 7 }
       ],
       genderOptions: [
         { value: 'Male', selected: false, index: 0},
@@ -43,19 +47,19 @@ class FilterModal extends Component {
   }
 
   _selectJob = (index) => {
-    this.optionSelected(this.state.jobOptions, index, (arr) => {
-      this.state({ jobOptions: arr });
+    OptionView.selected(this.state.jobOptions, index, (arr) => {
+      this.setState({ jobOptions: arr });
     });
   }
 
   _selectGender = (index) => {
-    this.optionSelected(this.state.genderOptions, index, (arr) => {
+    OptionView.selected(this.state.genderOptions, index, (arr) => {
       this.setState({ genderOptions: arr });
     });
   }
 
   _selectHairColor = (index) => {
-    this.optionSelected(this.state.hairOptions, index, (arr) => {
+    OptionView.selected(this.state.hairOptions, index, (arr) => {
       this.setState({ hairOptions: arr });
     });
   }
@@ -89,27 +93,30 @@ class FilterModal extends Component {
             <Text style={styles.text}>Apply</Text>
           </TouchableOpacity>
         </View>
+        <ScrollView style={styles.container} >
 
-        <Text style={styles.titleText}>Job Title</Text>
-        <View style={styles.jobOptionContainer} >
-          <OptionView options={this.state.jobOptions} selectOption={(index) => this._selectJob(index)} />
-        </View>
+          <Text style={styles.titleText}>Job Title</Text>
+          <View style={styles.optionContainer} >
+            <OptionViewSplit options={this.state.jobOptions} selectOption={(index) => this._selectJob(index)} />
+          </View>
 
-        <Text style={styles.titleText}>Gender</Text>
-        <View style={styles.genderOptionContainer} >
-          <OptionView options={this.state.genderOptions} selectOption={(index) => this._selectGender(index)} />
-        </View>
+          <Text style={styles.titleText}>Gender</Text>
+          <View style={styles.optionContainer} >
+            <OptionView options={this.state.genderOptions} selectOption={(index) => this._selectGender(index)} />
+          </View>
 
-        <Text style={styles.titleText}>Hair Color</Text>
-        <View style={styles.optionContainer} >
-          <OptionView options={this.state.hairOptions} selectOption={(index) => this._selectHairColor(index)} />
-        </View>
+          <Text style={styles.titleText}>Hair Color</Text>
+          <View style={styles.optionContainer} >
+            <OptionView options={this.state.hairOptions} selectOption={(index) => this._selectHairColor(index)} />
+          </View>
+        </ScrollView>
       </View>
     )
   }
 }
 
 // change margins based on screen size
+const FRAME = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -117,23 +124,23 @@ const styles = StyleSheet.create({
   },
   optionContainer: {
     flex: 1,
-    marginLeft: 32, marginRight: 16, marginBottom: 16,
+    marginLeft: 16, marginRight: 16, marginBottom: 16,
   },
   genderOptionContainer: {
-    marginLeft: 32, marginRight: 16, marginBottom: 16,
+    marginLeft: 16, marginRight: 16, marginBottom: 16,
     flex: 1,
   },
   jobOptionContainer: {
-    marginLeft: 32, marginRight: 32, marginBottom: 16,
+    marginLeft: 16, marginRight: 16, marginBottom: 16,
     flex: 1,
   },
   titleText: {
-    marginLeft: 32, marginBottom: 16,
+    marginLeft: 24, marginBottom: 24,
     fontSize: 16,
-    color: 'black'
+    color: 'black', fontFamily: 'roboto-regular'
   },
   topBar: {
-    height: 64,
+    height: (FRAME.height === 812) ? 96 : 64,
     marginBottom: 64,
     backgroundColor: 'white',
     flexDirection: 'row',
@@ -141,19 +148,20 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   leftButton: {
-    marginLeft: 16,
+    marginLeft: 16, marginTop: (FRAME.height === 812) ? 48 : 24,
     justifyContent: 'center',
-
+    backgroundColor: 'transparent'
   },
   rightButton: {
-    marginRight: 16,
-    justifyContent: 'center'
+    marginRight: 16, marginTop: (FRAME.height === 812) ? 48 : 24,
+    justifyContent: 'center',
+    backgroundColor: 'transparent'
   },
   text: {
     fontSize: 16,
     padding: 22,
     textAlign: 'center',
-    color: 'black'
+    color: 'black', fontFamily: 'roboto-bold'
   }
 })
 

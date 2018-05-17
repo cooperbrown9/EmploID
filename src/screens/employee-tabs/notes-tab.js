@@ -7,9 +7,6 @@ import RoundButton from '../../ui-elements/round-button';
 
 const NotesTab = (props) => (
   <View style={styles.container}>
-    <View style={styles.addNote} >
-      <RoundButton onPress={() => props.presentForm()} imagePath={require('../../../assets/icons/plus.png')} />
-    </View>
 
     {props.notes.map(model =>
       <TouchableOpacity style={styles.noteItem} onPress={() => props.selectNote(model)} key={model._id} >
@@ -24,19 +21,13 @@ const NotesTab = (props) => (
 )
 
 NotesTab.propTypes = {
-  notes: PropTypes.array,
-  presentForm: PropTypes.func
+  notes: PropTypes.array
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginRight: 8, marginLeft: 8
-  },
-  addNote: {
-    position: 'absolute',
-    right: 16, top: 8,
-    zIndex: 1000
   },
   noteText: {
     flex:3,

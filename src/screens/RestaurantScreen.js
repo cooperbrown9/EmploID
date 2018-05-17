@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl } from 'react-native';
 import {SearchBar} from 'react-native-elements';
-import { BLUE } from '../constants/colors';
+import { BLUE, DARK_GREY } from '../constants/colors';
 import { callPhoneNumber } from '../util';
 
 const RestaurantScreen = (props) => (
@@ -25,9 +25,15 @@ const RestaurantScreen = (props) => (
               <Text style={styles.nameText}>{place.name}</Text>
               <Text style={styles.addyText}>{place.address}</Text>
             </View>
-            <TouchableOpacity style={styles.phoneContainer} onPress={() => callPhoneNumber(place.phone)} >
-              <Image style={styles.phone} resizeMode={'containg'} source={require('../../assets/icons/phone-circle.png')} />
-            </TouchableOpacity>
+            <View style={styles.rightContainer} >
+              <TouchableOpacity style={styles.phoneContainer} onPress={() => callPhoneNumber(place.phone)} >
+                <Image style={styles.phone} resizeMode={'contain'} source={require('../../assets/icons/phone-circle.png')} />
+              </TouchableOpacity>
+              <View style={{flexDirection: 'row'}} >
+                <Image style={styles.userImage} source={require('../../assets/icons/users.png')} />
+                <Text style={styles.userCount}>: 100</Text>
+              </View>
+            </View>
           </TouchableOpacity>
         ))}
 
@@ -55,6 +61,16 @@ const styles = StyleSheet.create({
     fontSize: 18, fontFamily: 'roboto-bold',
     color: 'gray'
   },
+  userCount: {
+    fontSize: 16, fontFamily: 'roboto-bold', color: DARK_GREY
+  },
+  userImage: {
+    height:16, width: 16, tintColor: DARK_GREY
+  },
+  rightContainer: {
+    flex: 1, flexDirection: 'column',
+    justifyContent: 'center', alignItems: 'center'
+  },
   restaurantItem: {
     flex: 1,
     alignItems: 'center',
@@ -67,10 +83,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   phoneContainer: {
-    height: 64, width: 64, marginRight: 16
+    height: 64, width: 64
   },
   phone: {
-    height: 64, tintColor: BLUE
+    height: 48, tintColor: BLUE
   },
   restaurantImage: {
   height: 100, width: 100,
