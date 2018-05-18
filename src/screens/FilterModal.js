@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import OptionView from '../ui-elements/option-view';
 import OptionViewSplit from '../ui-elements/option-view-split';
 
+import * as Colors from '../constants/colors';
+
 class FilterModal extends Component {
 
   constructor() {
@@ -24,11 +26,11 @@ class FilterModal extends Component {
       ],
       genderOptions: [
         { value: 'Male', selected: false, index: 0},
-        { value: 'Female', selected: true, index: 1},
+        { value: 'Female', selected: false, index: 1},
         { value: 'Other', selected: false, index: 2}
       ],
       hairOptions: [
-        { value: 'Brown', selected: true, index: 0},
+        { value: 'Brown', selected: false, index: 0},
         { value: 'Red', selected: false, index: 1},
         { value: 'Black', selected: false, index: 2},
         { value: 'Grey', selected: false, index: 3},
@@ -40,6 +42,10 @@ class FilterModal extends Component {
 
   static propTypes = {
     dismiss: PropTypes.func
+  }
+
+  componentWillMount() {
+    this.renderLocations();
   }
 
   componentDidMount() {
@@ -64,21 +70,40 @@ class FilterModal extends Component {
     });
   }
 
-  optionSelected(arr, index, callback) {
-    if(arr[index].selected) {
-      arr[index].selected = false;
-    } else {
-      for(let i = 0; i < arr.length; i++) {
-        arr[i].selected = false;
-      }
-      arr[index].selected = true;
-    }
-    callback(arr);
-  }
+  // optionSelected(arr, index, callback) {
+  //   if(arr[index].selected) {
+  //     arr[index].selected = false;
+  //   } else {
+  //     for(let i = 0; i < arr.length; i++) {
+  //       arr[i].selected = false;
+  //     }
+  //     arr[index].selected = true;
+  //   }
+  //   callback(arr);
+  // }
 
   sortFilters() {
     // sort filters here, then pass to this.props.dismiss()
     this.props.dismiss();
+  }
+
+  selectLocation(location) {
+    OptionView.selected(this.state.locations, location.index, (arr) => {
+      this.setState({ locations: arr });
+    })
+  }
+
+  renderLocations() {
+    let locs = [];
+    for(let i = 0; i < this.props.locations.length; i++) {
+      locs.push({
+        placeID: this.props.locations[i]._id,
+        value: this.props.locations[i].name,
+        selected: false,
+        index: i
+      })
+    }
+    this.setState({ locations: locs });
   }
 
   render() {
@@ -109,6 +134,17 @@ class FilterModal extends Component {
           <View style={styles.optionContainer} >
             <OptionView options={this.state.hairOptions} selectOption={(index) => this._selectHairColor(index)} />
           </View>
+
+          <Text style={styles.titleText}>Restaurants</Text>
+          <View style={styles.optionContainer} >
+            {(this.state.locations.map((location) => (
+              <TouchableOpacity style={(location.selected) ? styles.locationOn : styles.locationOff} onPress={() => this.selectLocation(location)}>
+                <Text style={(location.selected) ? styles.locationTextOn : styles.locationTextOff}>{location.value}</Text>
+              </TouchableOpacity>
+            )))}
+          </View>
+          <View style={{height: 64}} />
+
         </ScrollView>
       </View>
     )
@@ -133,6 +169,33 @@ const styles = StyleSheet.create({
   jobOptionContainer: {
     marginLeft: 16, marginRight: 16, marginBottom: 16,
     flex: 1,
+  },
+  locationOff: {
+    height: 48,
+    borderRadius: 24,
+    marginRight: 8, marginBottom: 8,
+    backgroundColor: Colors.MID_GREY,
+    justifyContent: 'center'
+  },
+  locationOn: {
+    flexGrow: 1,
+    height: 48,
+    borderRadius: 24,
+    marginRight: 8, marginBottom: 8,
+    backgroundColor: 'black',
+    justifyContent: 'center'
+  },
+  locationTextOff: {
+    fontSize: 18,
+    marginLeft: 12, marginRight: 12,
+    color: Colors.DARK_GREY, textAlign: 'center',
+    fontFamily: 'roboto-bold'
+  },
+  locationTextOn: {
+    fontSize: 18,
+    marginLeft: 12, marginRight: 12,
+    color: 'white', textAlign: 'center',
+    fontFamily: 'roboto-bold'
   },
   titleText: {
     marginLeft: 24, marginBottom: 24,
@@ -167,7 +230,8 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    user: state.user
+    user: state.user,
+    locations: state.user.myLocations
   }
 }
 
