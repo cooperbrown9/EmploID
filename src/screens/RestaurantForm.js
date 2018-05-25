@@ -194,6 +194,9 @@ class RestaurantForm extends Component {
   render() {
     return(
       <View style={{flex: 1}} >
+        <View style={styles.backButton} >
+          <RoundButton onPress={() => this.props.dispatch({ type: NavActions.BACK })} imagePath={require('../../assets/icons/back.png')} />
+        </View>
       <ScrollView style={styles.scrollContainer} >
 
         {/*
@@ -207,10 +210,7 @@ class RestaurantForm extends Component {
 
 
         <KeyboardAwareScrollView style={styles.container} >
-
-          <View style={styles.backButton} >
-            <RoundButton onPress={() => this.props.dispatch({ type: NavActions.BACK })} imagePath={require('../../assets/icons/back.png')} />
-          </View>
+          <View style={{height: 124}} />
 
           <Text style={styles.textHeader} >Restaurant Name</Text>
           <View style={styles.inputView} >
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     marginLeft: 16, marginRight: 16
   },
   backButton: {
-    marginLeft: 16, marginTop: 32, marginBottom: 32
+    position: 'absolute', left:16,top: 40, zIndex: 100000
   },
   submitContainer: {
     marginLeft: 16, marginRight: 16, marginTop: 16
@@ -339,13 +339,13 @@ const styles = StyleSheet.create({
   },
   inputView: {
     borderRadius: 8,
-    marginBottom: 32, marginRight: 16, marginLeft: 16,
+    marginBottom: 32, marginRight: 8, marginLeft: 8,
     height: 56,
     backgroundColor: 'white',
     justifyContent: 'center'
   },
   textHeader: {
-    fontSize: 16, marginLeft: 16, marginBottom: 12,
+    fontSize: 16, marginLeft: 8, marginBottom: 12,
     color: 'black'
   }
 });

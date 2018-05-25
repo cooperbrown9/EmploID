@@ -10,7 +10,7 @@ const RestaurantScreen = (props) => (
 
 
     <View style={styles.container}>
-      <SearchBar lightTheme placeholder='Search' style={{marginBottom: 20}}/>
+      <SearchBar lightTheme placeholder='Search' style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />
       <ScrollView
         contentContainerStyle={{marginRight: 8, marginLeft: 8}}
         refreshControl={
@@ -46,7 +46,8 @@ RestaurantScreen.propTypes = {
   places: PropTypes.array,
   openProfile: PropTypes.func,
   isRefreshing: PropTypes.bool,
-  onRefresh: PropTypes.func
+  onRefresh: PropTypes.func,
+  search: PropTypes.func
 };
 
 const styles = StyleSheet.create({

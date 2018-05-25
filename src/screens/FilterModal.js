@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import { connect } from 'react-redux';
 
 import OptionView from '../ui-elements/option-view';
 import OptionViewSplit from '../ui-elements/option-view-split';
 
+import * as TabActions from '../action-types/tab-action-types';
+import * as UserActions from '../action-types/auth-action-types';
+
 import * as Colors from '../constants/colors';
+import * as query from '../util/query';
 
 class FilterModal extends Component {
 
@@ -36,12 +40,17 @@ class FilterModal extends Component {
         { value: 'Grey', selected: false, index: 3},
         { value: 'Blonde', selected: false, index: 4},
         { value: 'Other', selected: false, index: 5}
-      ]
+      ],
+      selectedGender: null,
+      selectedHair: null,
+      selectedJob: null,
+      selectedLocation: null
     }
   }
 
   static propTypes = {
-    dismiss: PropTypes.func
+    dismiss: PropTypes.func,
+    employeeIDs: PropTypes.array
   }
 
   componentWillMount() {
@@ -52,45 +61,68 @@ class FilterModal extends Component {
 
   }
 
-  _selectJob = (index) => {
+  selectJob = (index) => {
     OptionView.selected(this.state.jobOptions, index, (arr) => {
-      this.setState({ jobOptions: arr });
+      this.setState({ jobOptions: arr, selectedJob: arr[index].value });
     });
   }
 
-  _selectGender = (index) => {
+  selectGender = (index) => {
     OptionView.selected(this.state.genderOptions, index, (arr) => {
-      this.setState({ genderOptions: arr });
+      this.setState({ genderOptions: arr, selectedGender: arr[index].index });
     });
   }
 
-  _selectHairColor = (index) => {
+  selectHairColor = (index) => {
     OptionView.selected(this.state.hairOptions, index, (arr) => {
-      this.setState({ hairOptions: arr });
+      this.setState({ hairOptions: arr, selectedHair: arr[index].index });
     });
-  }
-
-  // optionSelected(arr, index, callback) {
-  //   if(arr[index].selected) {
-  //     arr[index].selected = false;
-  //   } else {
-  //     for(let i = 0; i < arr.length; i++) {
-  //       arr[i].selected = false;
-  //     }
-  //     arr[index].selected = true;
-  //   }
-  //   callback(arr);
-  // }
-
-  sortFilters() {
-    // sort filters here, then pass to this.props.dismiss()
-    this.props.dismiss();
   }
 
   selectLocation(location) {
     OptionView.selected(this.state.locations, location.index, (arr) => {
-      this.setState({ locations: arr });
+      this.setState({ locations: arr, selectedLocation: location.placeID });
     })
+  }
+
+  sortFilters() {
+    // sort filters here, then pass to this.props.dismiss()
+    // let userIDs = [];
+    // for(let i = 0; i < this.props.employees.length; i++) {
+      // userIDs.push(this.props.employees[i]._id);
+    // }
+
+    let data = {
+      hair: this.state.selectedHair,
+      gender: this.state.selectedGender,
+      location: this.state.selectedLocation,
+      job: this.state.selectedJob,
+      userIDs: this.props.employeeIDs
+    }
+
+    query.query(data, (err, users) => {
+      this.filterCleanup(err, users);
+    })
+
+    // if(data.location != null) {
+    //   query.queryWithLocation(data, (err, users) => {
+    //     this.filterCleanup(err, users);
+    //   });
+    // } else {
+    //   query.queryWithoutLocation(data, (err, users) => {
+    //     this.filterCleanup(err, users);
+    //   });
+    // }
+  }
+
+  filterCleanup(err, users) {
+    if(err) {
+      Alert.alert('There was a problem filtering! Please check your connection and try again.');
+    } else {
+      this.props.dispatch({ type: TabActions.EMPLOYEE_TAB });
+      this.props.dispatch({ type: UserActions.SET_EMPLOYEES, employees: users });
+      this.props.dismiss();
+    }
   }
 
   renderLocations() {
@@ -120,19 +152,20 @@ class FilterModal extends Component {
         </View>
         <ScrollView style={styles.container} >
 
+
           <Text style={styles.titleText}>Job Title</Text>
           <View style={styles.optionContainer} >
-            <OptionViewSplit options={this.state.jobOptions} selectOption={(index) => this._selectJob(index)} />
+            <OptionViewSplit options={this.state.jobOptions} selectOption={(index) => this.selectJob(index)} />
           </View>
 
           <Text style={styles.titleText}>Gender</Text>
           <View style={styles.optionContainer} >
-            <OptionView options={this.state.genderOptions} selectOption={(index) => this._selectGender(index)} />
+            <OptionView options={this.state.genderOptions} selectOption={(index) => this.selectGender(index)} />
           </View>
 
           <Text style={styles.titleText}>Hair Color</Text>
           <View style={styles.optionContainer} >
-            <OptionView options={this.state.hairOptions} selectOption={(index) => this._selectHairColor(index)} />
+            <OptionView options={this.state.hairOptions} selectOption={(index) => this.selectHairColor(index)} />
           </View>
 
           <Text style={styles.titleText}>Restaurants</Text>

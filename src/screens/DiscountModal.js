@@ -126,12 +126,12 @@ const styles = StyleSheet.create({
   },
   editButton: {
     position: 'absolute',
-    right: 20, top: 20,
+    right: 24, top: 40,
     zIndex: 1001
   },
   backButton: {
     position: 'absolute',
-    left: 20, top: 20,
+    left: 24, top: 40,
     zIndex: 1001
   },
 });

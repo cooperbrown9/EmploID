@@ -52,6 +52,7 @@ class HomeScreen extends Component {
       places: [],
       employees: [],
       employeeMatches: [],
+      employeeIDs: [],
       isRefreshing: false
     }
   }
@@ -116,6 +117,8 @@ class HomeScreen extends Component {
       'places': places
     }
     // gets relations of all employees who are at my locations
+
+    // COMBAK to keep all a user's data local, give them an array of their relations
     API.getRelationsByPlaces(sender, (err, relations) => {
       if(err) {
         console.log(err);
@@ -139,10 +142,10 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
-            let sortedUsers = this.alphabetizeUsers(users);
-            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: sortedUsers });
+            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
+            console.log(users);
 
-            this.setState({ isRefreshing: false }, () => {
+            this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           }
@@ -298,10 +301,6 @@ class HomeScreen extends Component {
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
   }
 
-  _dismissMyProfile = () => {
-    this.setState({ myProfilePresented: false });
-  }
-
   refreshData = () => {
     this.setState({ isRefreshing: true }, () => {
       this.loadData();
@@ -315,20 +314,24 @@ class HomeScreen extends Component {
     });
   }
 
-  placesEmptyElement() {
-    return (
-      <View style={{ }}>
-      </View>
-    )
-  }
-
   _searchEmployees = (text) => {
+    let matches = [];
     for(let i = 0; i < this.props.employees.length; i++) {
       if((this.props.employees[i].first_name + this.props.employees[i].last_name).includes(text)) {
-        this.state.employeeMatches.push(this.props.employees[i]);
+        matches.push(this.props.employees[i]);
       }
     }
-    this.setState({ employeeMatches: this.state.employeeMatches });
+    this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: matches });
+  }
+
+  _searchLocations = (text) => {
+    let matches = [];
+    for(let i = 0; i < this.props.places.length; i++) {
+      if(this.props.places[i].name.includes(text)) {
+        matches.push(this.props.places[i]);
+      }
+    }
+    this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: matches });
   }
 
   render() {
@@ -343,7 +346,7 @@ class HomeScreen extends Component {
             ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ textAlign:'center', fontSize: 20, fontFamily: 'roboto-bold', color: Colors.MID_GREY}}>Add a Restaurant before you add employees!</Text>
               </View>
-            : <RestaurantScreen isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
+            : <RestaurantScreen search={(text) => this._searchLocations(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
           : <EmployeeScreen search={(text) => this._searchEmployees(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
         }
 
@@ -361,7 +364,7 @@ class HomeScreen extends Component {
         }
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
-          <FilterModal dismiss={() => this._dismissFilterModal()} />
+          <FilterModal employeeIDs={this.state.employeeIDs} dismiss={() => this._dismissFilterModal()} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.myProfilePresented} >

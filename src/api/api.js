@@ -40,6 +40,9 @@ const DELETE_DISCOUNT = '/delete-discount/';
 
 const VERIFY_SESSION_GET_USER = '/verify-session-get-user';
 
+const QUERY_WITH_PLACE = '/query-with-place';
+const QUERY_BY_POSITION = '/query-by-position';
+
 const LOGIN_USER = '/login';
 
 export function getUser(userID, callback) {
@@ -226,6 +229,18 @@ export function deleteRelations(relations, callback) {
 
 export function deleteDiscount(discountID, callback) {
   axios.get(BASE + DELETE_DISCOUNT + discountID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function queryWithPlace(data, callback) {
+  axios.post(BASE + QUERY_WITH_PLACE, data)
+    .then(resposne => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function queryByPosition(data, callback) {
+  axios.post(BASE + QUERY_BY_POSITION, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

@@ -39,14 +39,10 @@ const styles = StyleSheet.create({
   },
   noteItem: {
       flex: 1,
-      alignItems: 'center',
-      justifyContent: 'space-around',
-      flexDirection: 'row',
       backgroundColor: 'white',
-      height: 100,
-      marginTop: 4,
-      marginBottom: 4,
-      backgroundColor: 'white'
+      flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around',
+      backgroundColor: 'white',
+      height: 100, marginTop: 4, marginBottom: 4, borderRadius: 4
   },
 });
 

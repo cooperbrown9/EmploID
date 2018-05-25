@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 24,
     color: 'white',
     fontFamily: 'roboto-bold'
   }

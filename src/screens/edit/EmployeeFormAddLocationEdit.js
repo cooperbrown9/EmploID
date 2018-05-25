@@ -196,32 +196,35 @@ class EmployeeFormAddLocationEdit extends Component {
 
   render() {
     return(
-      <ScrollView style={styles.scrollContainer} >
+      <View style={styles.container} >
+        <View style={styles.backButton} >
+          <RoundButton onPress={this.props.dismiss} imagePath={require('../../../assets/icons/down.png')} />
+        </View>
+        <ScrollView style={styles.scrollContainer} >
+          <View style={{height:124}} />
 
-          <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} imagePath={require('../../../assets/icons/down.png')} />
-          </View>
 
-          <View style={styles.buttonContainer} >
-            {(this.state) ? this.state.places.map((place) => (
-              <PositionSelector
-                place={place}
-                selectPlace={(place) => this.selectPlace(place)}
-                positionSelected={(index, place) => this.positionSelected(index, place)}
-              />
-            )) : null}
-          </View>
+            <View style={styles.buttonContainer} >
+              {(this.state) ? this.state.places.map((place) => (
+                <PositionSelector
+                  place={place}
+                  selectPlace={(place) => this.selectPlace(place)}
+                  positionSelected={(index, place) => this.positionSelected(index, place)}
+                />
+              )) : null}
+            </View>
 
-          <View style={styles.submitButton} >
-            <SubmitButton onPress={() => this.submit() } title={'SUBMIT'} />
-          </View>
+            <View style={styles.submitButton} >
+              <SubmitButton onPress={() => this.submit() } title={'SUBMIT'} />
+            </View>
 
-          {(this.state.loading)
-            ? <LoadingOverlay />
-            : null
-          }
+            {(this.state.loading)
+              ? <LoadingOverlay />
+              : null
+            }
 
-      </ScrollView>
+        </ScrollView>
+      </View>
     )
   }
 }
@@ -229,6 +232,9 @@ class EmployeeFormAddLocationEdit extends Component {
 const FRAME = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
   scrollContainer: {
     flex: 1,
     backgroundColor: Colors.BACKGROUND_GREY
@@ -280,7 +286,7 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto-regular'
   },
   backButton: {
-    marginLeft: 16, marginTop: 32, marginBottom: 32
+    position: 'absolute', left:16,top: 40, zIndex: 100000
   },
 });
 

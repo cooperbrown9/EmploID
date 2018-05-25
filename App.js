@@ -16,15 +16,15 @@ import * as NavActions from './src/action-types/nav-action-types';
 
 // TODO Phone number
 // TODO close on update forms acts as a submit, instead of dismiss
-// TODO search
 // TODO TODO TODO add employees to restaurants from Employee Roster
 // TODO leave employees without image, without the image
 // TODO "upload restaurant logo" instead
 // TODO round corners on all boxes
 // TODO navigate to employee profile from their box on restaurant profile
 // TODO delete employees
-// TODO filter modal
 // COMBAK PlaceForm: Break up address fields
+// search
+// filter modal
 // float all edit buttons
 // swipe to navigate -- check it out
 // if image is not selected, send it up as null

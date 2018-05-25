@@ -249,7 +249,8 @@ class EmployeeForm extends Component {
 
   phoneInputFactory(placeholder, onTextChange, value, canEdit, capitalize = true, keyboard = 'default') {
     return (
-      <TextInputMask
+      <MaskedInput
+        mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
         placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
         selectionColor={Colors.BLUE} style={styles.input}
         autoCorrect={false} autoCapitalize={(capitalize ? 'words' : 'none')}
@@ -281,8 +282,13 @@ class EmployeeForm extends Component {
   render() {
     return(
       <View style={{flex: 1}}>
+        <View style={styles.backButton} >
+          <RoundButton onPress={() => this.props.dispatch({type:NavActions.BACK})} imagePath={require('../../assets/icons/back.png')} />
+        </View>
       <ScrollView style={styles.scrollContainer} >
         <KeyboardAwareScrollView style={styles.container} >
+
+          <View style={{height: 124 }} />
 
           <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
             <EmployeeFormAddLocation
@@ -291,9 +297,6 @@ class EmployeeForm extends Component {
             />
           </Modal>
 
-          <View style={styles.backButton} >
-            <RoundButton onPress={() => this.props.dispatch({type:NavActions.BACK})} imagePath={require('../../assets/icons/back.png')} />
-          </View>
 
           <Text style={styles.textHeader} >First Name</Text>
           <View style={styles.inputView} >
@@ -416,7 +419,7 @@ const styles = StyleSheet.create({
     marginLeft: 16, marginRight: 16
   },
   backButton: {
-    marginLeft: 16, marginTop: 32, marginBottom: 32
+    position: 'absolute', left:16,top: 40, zIndex: 100000
   },
   submitContainer: {
     marginLeft: 16, marginRight: 16, marginTop: 16
@@ -452,20 +455,20 @@ const styles = StyleSheet.create({
   },
   inputView: {
     borderRadius: 8,
-    marginBottom: 32, marginRight: 16, marginLeft: 16,
+    marginBottom: 32, marginRight: 8, marginLeft: 8,
     height: 56,
     backgroundColor: 'white',
     justifyContent: 'center'
   },
   dateView: {
-    marginLeft: 16, marginRight: 16, marginBottom: 16,
+    marginLeft: 8, marginRight: 8, marginBottom: 16,
     flex: 1, borderRadius: 8,
     backgroundColor: 'white'
   },
   birthdayView: {
     flex: 1, flexDirection: 'row', justifyContent: 'space-between',
     borderRadius: 8,
-    marginBottom: 32, marginRight: 16, marginLeft: 16,
+    marginBottom: 32, marginRight: 8, marginLeft: 8,
     height: 56,
     backgroundColor: 'white',
     justifyContent: 'center'
@@ -476,7 +479,7 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   textHeader: {
-    fontSize: 16, marginLeft: 16, marginBottom: 12,
+    fontSize: 16, marginLeft: 8, marginBottom: 12,
     color: 'black'
   }
 });

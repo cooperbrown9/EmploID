@@ -202,7 +202,11 @@ class EmployeeFormEdit extends Component {
     }
     return(
       <View style={{flex: 1}}>
+        <View style={styles.backButton} >
+          <RoundButton imagePath={require('../../../assets/icons/down.png')} onPress={this.props.dismiss} />
+        </View>
         <ScrollView style={styles.scrollContainer} >
+          <View style={{height:124}} />
           <View style={styles.container} >
 
             <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
@@ -212,9 +216,6 @@ class EmployeeFormEdit extends Component {
               />
             </Modal>
 
-            <View style={styles.backButton} >
-              <RoundButton imagePath={require('../../../assets/icons/down.png')} onPress={this.props.dismiss} />
-            </View>
 
             <Text style={styles.textHeader} >First Name</Text>
             <View style={styles.inputView} >
@@ -246,7 +247,7 @@ class EmployeeFormEdit extends Component {
                 mode={'date'} maximumDate={new Date()}
               />
             </View>
-            
+
             <Text style={styles.textHeader} >Phone Number</Text>
             <View style={styles.inputView} >
               {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text}}), this.state.employee.phone, true)}
@@ -325,7 +326,7 @@ const styles = StyleSheet.create({
     marginLeft: 16, marginRight: 16
   },
   backButton: {
-    marginLeft: 16, marginTop: 32, marginBottom: 32
+    position: 'absolute', left:16,top: 40, zIndex: 100000
   },
   submitContainer: {
     marginLeft: 16, marginRight: 16, marginTop: 16
@@ -365,7 +366,7 @@ const styles = StyleSheet.create({
   },
   inputView: {
     borderRadius: 8,
-    marginBottom: 32, marginRight: 16, marginLeft: 16,
+    marginBottom: 32, marginRight: 8, marginLeft: 8,
     height: 56,
     backgroundColor: 'white',
     justifyContent: 'center'
@@ -378,7 +379,7 @@ const styles = StyleSheet.create({
   birthdayView: {
     flex: 1, flexDirection: 'row', justifyContent: 'space-between',
     borderRadius: 8,
-    marginBottom: 32, marginRight: 16, marginLeft: 16,
+    marginBottom: 32, marginRight: 8, marginLeft: 8,
     height: 56,
     backgroundColor: 'white',
     justifyContent: 'center'
@@ -389,7 +390,7 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   textHeader: {
-    fontSize: 16, marginLeft: 16, marginBottom: 12,
+    fontSize: 16, marginLeft: 8, marginBottom: 12,
     color: 'black'
   }
 });

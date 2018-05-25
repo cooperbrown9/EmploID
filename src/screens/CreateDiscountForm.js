@@ -118,63 +118,68 @@ class CreateDiscountForm extends Component {
 
   render() {
     return(
-      <ScrollView style={styles.scrollContainer} >
-        <View style={styles.container} >
+      <View style={styles.mainContainer} >
+        <View style={styles.backButton} >
+          <RoundButton imagePath={require('../../assets/icons/down.png')} onPress={this.props.dismiss} />
+        </View>
+        <ScrollView style={styles.scrollContainer} >
+          <View style={styles.container} >
 
-          <View style={styles.backButton} >
-            <RoundButton imagePath={require('../../assets/icons/down.png')} onPress={this.props.dismiss} />
+
+            <Text style={styles.textHeader}>Name</Text>
+            <View style={styles.inputView}>
+              {this.textInputFactory('Name', (text) => this.setState({ name: text }), this.state.name)}
+            </View>
+
+
+            <Text style={styles.textHeader}>Description</Text>
+            <View style={styles.inputView} >
+              {this.textInputFactory('Description', (text) => this.setState({ description: text }), this.state.description)}
+            </View>
+
+            <Text style={styles.textHeader}>Access to the discount</Text>
+            <View style={styles.optionContainer} >
+              <OptionView
+                options={this.state.exclusiveOptions}
+                selectOption={(index) => this.optionSelected(index)}
+              />
+            </View>
+
           </View>
 
-          <Text style={styles.textHeader}>Name</Text>
-          <View style={styles.inputView}>
-            {this.textInputFactory('Name', (text) => this.setState({ name: text }), this.state.name)}
-          </View>
-
-
-          <Text style={styles.textHeader}>Description</Text>
-          <View style={styles.inputView} >
-            {this.textInputFactory('Description', (text) => this.setState({ description: text }), this.state.description)}
-          </View>
-
-          <Text style={styles.textHeader}>Access to the discount</Text>
-          <View style={styles.optionContainer} >
-            <OptionView
-              options={this.state.exclusiveOptions}
-              selectOption={(index) => this.optionSelected(index)}
+          <View style={styles.submitButton} >
+            <SubmitButton
+              title={(this.props.edit) ? 'UPDATE DISCOUNT' : 'CREATE DISCOUNT'}
+              onPress={() => {(this.props.edit) ? this.editDiscount() : this.createDiscount()}}
             />
           </View>
+          {(this.props.edit)
+            ? <View style={styles.deleteButton}>
+                <SubmitButton title={this.state.deleteText} onPress={() => this.deleteDiscount()} hasBGColor={true} bgColor={'red'} />
+              </View>
+            : null
+          }
 
-        </View>
-
-        <View style={styles.submitButton} >
-          <SubmitButton
-            title={(this.props.edit) ? 'UPDATE DISCOUNT' : 'CREATE DISCOUNT'}
-            onPress={() => {(this.props.edit) ? this.editDiscount() : this.createDiscount()}}
-          />
-        </View>
-        {(this.props.edit)
-          ? <View style={styles.deleteButton}>
-              <SubmitButton title={this.state.deleteText} onPress={() => this.deleteDiscount()} hasBGColor={true} bgColor={'red'} />
-            </View>
-          : null
-        }
-
-      </ScrollView>
+        </ScrollView>
+      </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1, backgroundColor: Colors.BACKGROUND_GREY
+  },
   scrollContainer: {
     flex: 1,
     backgroundColor: Colors.BACKGROUND_GREY
   },
   backButton: {
-    marginLeft: 16, marginTop: 32, marginBottom: 32
+    position: 'absolute', left:16,top: 40, zIndex: 100000
   },
   container: {
     flex: 1,
-    marginLeft: 16, marginRight: 16, marginTop: 84
+    marginLeft: 16, marginRight: 16, marginTop: 144
   },
   optionContainer: {
     justifyContent: 'center',

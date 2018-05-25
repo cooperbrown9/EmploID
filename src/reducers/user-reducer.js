@@ -1,4 +1,6 @@
 import * as UserActions from '../action-types/auth-action-types';
+import { alphabetizeUsers, alphabetizePlaces } from '../util';
+
 
 const initialState = {
   isLoggedIn: false, isOwner : true,
@@ -35,6 +37,9 @@ export default function user (state = initialState, action) {
           cleanEmployees.push(action.employees[i]);
         }
       }
+
+      cleanEmployees = alphabetizeUsers(cleanEmployees);
+
       return {
         ...state,
         myEmployees: cleanEmployees//action.employees
