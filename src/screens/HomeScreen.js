@@ -144,6 +144,7 @@ class HomeScreen extends Component {
             });
           } else {
             this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
+            this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
             console.log(users);
 
             this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {

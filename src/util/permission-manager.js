@@ -19,12 +19,16 @@ export function assignPositionsToUser (places, userPlaces, callback) {
 }
 
 export function assignSinglePlacePositionToUser (place, callback) {
-  place.positions.forEach((position, index) => {
-    if(place.relation.position === position) {
-      place.positions[index] = { value: place.relation.position, selected: true, index: index };
-    } else {
-      place.positions[index] = { value: position, selected: false, index: index };
+  for(let i = 0; i < place.positions.length; i++) {
+    place.positions[i] = { value: place.positions[i], selected: false, index: i }
+  }
+
+  for(let o = 0; o < place.positions.length; o++) {
+    for(let i = 0; i < place.relation.positions.length; i++) {
+      if(place.relation.positions[i] == place.positions[o].value) {
+        place.positions[o].selected = true;
+      }
     }
-  });
+  };
   callback(place);
 }
