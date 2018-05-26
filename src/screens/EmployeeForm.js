@@ -23,6 +23,7 @@ import * as DataBuilder from '../api/data-builder';
 import * as ErrorManager from '../util/error-manager';
 
 import SubmitButton from '../ui-elements/submit-button';
+import SubmitButtonCounter from '../ui-elements/submit-button-counter';
 import RoundButton from '../ui-elements/round-button';
 import LoadingOverlay from '../ui-elements/loading-overlay';
 
@@ -208,10 +209,11 @@ class EmployeeForm extends Component {
             Alert.alert(message);
           })
         } else {
+          // these are looped, instead of passing the array to the server, because they need one employee to attach to,
+          // so its ok if some of them fail just not all
           let relationsCreatedCount = 0;
-
           for(let i = 0; i < this.state.selectedPlaces.length; i++) {
-            let relation = { 'userID': emp.user_id, 'placeID': this.state.selectedPlaces[i].place_id, 'role': 0, position: this.state.selectedPlaces[i].position }
+            let relation = { 'userID': emp.user_id, 'placeID': this.state.selectedPlaces[i].place_id, 'role': 0, 'positions': this.state.selectedPlaces[i].positions }
             API.createRelation(relation, (e2, relation) => {
               if(e2) {
                 console.log(e2);

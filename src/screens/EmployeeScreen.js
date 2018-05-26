@@ -20,7 +20,7 @@ const EmployeeScreen = (props) => (
         }
       >
 
-        {(props.employees.length > 0) ? props.employees.map((employee) => (
+        {((!props.spotlightOn) ? (props.employees) : props.spotlightUsers).map((employee) => (
           <TouchableOpacity style={styles.employeeItem} key={employee._id} onPress={() => props.openProfile(employee)}>
             <Image
               style={styles.employeeImage}
@@ -32,7 +32,7 @@ const EmployeeScreen = (props) => (
               <Text style={styles.positionText}>{(employee.position === 0) ? 'Employee' : 'Manager'}</Text>
             </View>
           </TouchableOpacity>
-        )) : null}
+        ))}
 
       </ScrollView>
 
@@ -92,7 +92,9 @@ const styles = StyleSheet.create({
 var mapStateToProps = state => {
   return {
     employees: state.user.myEmployees,
-    myID: state.user.userID
+    myID: state.user.userID,
+    spotlightOn: state.spotlight.isOn,
+    spotlightUsers: state.spotlight.users
   }
 }
 

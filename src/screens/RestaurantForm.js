@@ -4,6 +4,7 @@ import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image,
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Camera, Permissions } from 'expo';
 import { connect } from 'react-redux';
+
 import OptionView from '../ui-elements/option-view';
 import OptionViewSplit from '../ui-elements/option-view-split';
 
@@ -13,6 +14,7 @@ import * as NavActions from '../action-types/nav-action-types';
 import * as DataBuilder from '../api/data-builder';
 import * as API from '../api/api';
 
+import RestaurantFormAddEmployee from './RestaurantFormAddEmployee';
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
 import { checkEmail } from '../util';
@@ -37,6 +39,7 @@ class RestaurantForm extends Component {
         positions: [],
         imageURI: null
       },
+      employees: [],
       positionOptions: [
         { value: 'Server', selected: false, index: 0 },
         { value: 'Bartender', selected: false, index: 1 },
@@ -96,58 +99,71 @@ class RestaurantForm extends Component {
       "groupID": this.props.me.group_id
     }
 
-    if(data.imageURI == null) {
-      this.submitHelper(data);
-    } else {
-      var img = new FormData();
-      img.append('file', {
-        uri: data.imageURI,
-        type: 'image/png',
-        name: 'testpic'
-      });
-      API.uploadImage(img, (err, newImage) => {
-        if(err) {
-          console.log(err);
-          this.props.dispatch({ type: LoadingActions.STOP_LOADING });
-        } else {
-          data.imageURL = newImage;
-          this.submitHelper(data);
-        }
-      })
-    }
+    this.submitHelper(data);
+
+    // if(data.imageURI == null) {
+    //   this.submitHelper(data);
+    // } else {
+    //   var img = new FormData();
+    //   img.append('file', {
+    //     uri: data.imageURI,
+    //     type: 'image/png',
+    //     name: 'testpic'
+    //   });
+    //   API.uploadImage(img, (err, newImage) => {
+    //     if(err) {
+    //       console.log(err);
+    //       this.props.dispatch({ type: LoadingActions.STOP_LOADING });
+    //     } else {
+    //       data.imageURL = newImage;
+    //       this.submitHelper(data);
+    //     }
+    //   })
+    // }
   }
 
   submitHelper = (data) => {
     DataBuilder.buildPlaceForm(data, (obj) => {
-      API.createPlace(obj, (err, place) => {
-        if(err) {
-          Alert.alert(err.message);
+      API.createPlace(obj, (e1, place) => {
+        if(e1) {
+          Alert.alert(e1.message);
           this.props.dispatch({ type: LoadingActions.STOP_LOADING });
         } else {
           console.log(place);
 
+          this.state.employees.forEach((e) => {
+            e.placeID = place._id;
+          });
+
           const relationData = {
             'placeID': place._id,
             'userID': this.props.me._id,
-            'role': 2
+            'role': 2,
+            'positions': []
           }
-          API.createRelation(relationData, (err, relation) => {
-            if(err) {
-              console.log(err);
+          API.createRelation(relationData, (e2, relation) => {
+            if(e2) {
+              console.log(e2);
               this.props.dispatch({ type: LoadingActions.STOP_LOADING });
             } else {
-              console.log(relation);
 
+              if(this.state.employees.length > 0) {
+                let sender = {
+                  'relations': this.state.employees
+                }
+                API.createRelations(sender, (e3, empRelations) => {
+                  if(e3) {
+                    console.log(e3);
+                  } else {
+                    console.log(empRelations);
+                  }
+                })
+              }
+              // create relations for all the employees
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: true });
               this.props.dispatch({ type: NavActions.BACK });
-
               Alert.alert('Success!');
-
               this.props.onBack();
-              // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
-              // this.refreshUser(data, () => {
-              //   this.getPlaces();
-              // });
             }
           });
         }
@@ -159,6 +175,22 @@ class RestaurantForm extends Component {
     OptionViewSplit.selectedMultiple(this.state.positionOptions, index, (arr) => {
       this.setState({ positionOptions: arr });
     });
+  }
+
+  handleAddEmployees = () => {
+    let positions = [];
+    for(let i = 0; i < this.state.positionOptions.length; i++) {
+      if(this.state.positionOptions[i].selected) {
+        positions.push(this.state.positionOptions[i].value);
+      }
+    }
+
+    if(positions.length === 0) {
+      Alert.alert('You need to select positions first!');
+    } else {
+      this.setState({ selectedPositions: positions, addEmployeeFormPresented: true });
+    }
+
   }
 
   textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default') {
@@ -199,14 +231,13 @@ class RestaurantForm extends Component {
         </View>
       <ScrollView style={styles.scrollContainer} >
 
-        {/*
         <Modal animationType={'slide'} transparent={false} visible={this.state.addEmployeeFormPresented} >
-          <LocationFormAddEmployee
-            dismissModal={() => this.setState({ addEmployeeFormPresented: false })}
-            addEmployees={(employees) => this.setState({ place: { ...this.state.place, employees: employees }})}
+          <RestaurantFormAddEmployee
+            dismissModal={(employees) => this.setState({ addEmployeeFormPresented: false })}
+            addEmployees={(employees) => this.setState({ addEmployeeFormPresented: false, employees: employees })}
+            positions={this.state.selectedPositions}
           />
         </Modal>
-        */}
 
 
         <KeyboardAwareScrollView style={styles.container} >
@@ -255,6 +286,15 @@ class RestaurantForm extends Component {
             <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addEmployeeFormPresented: true }) } />
           </View>
           */}
+
+          <TouchableOpacity style={styles.submitContainer} >
+            <SubmitButton
+              title={'ADD EMPLOYEES'}
+              onPress={() => this.handleAddEmployees()}
+              hasBGColor={true}
+              bgColor={Colors.BLUE}
+            />
+          </TouchableOpacity>
 
           <TouchableOpacity style={styles.submitContainer} >
             <SubmitButton

@@ -15,6 +15,7 @@ import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
 import * as Keys from '../constants/keys';
 import * as ErrorManager from '../util/error-manager';
+import * as SpotlightActions from '../action-types/spotlight-action-types';
 
 import axios from 'axios';
 
@@ -315,13 +316,20 @@ class HomeScreen extends Component {
   }
 
   _searchEmployees = (text) => {
+    if(text.length === 0) {
+      this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
+      return;
+    }
+
     let matches = [];
     for(let i = 0; i < this.props.employees.length; i++) {
       if((this.props.employees[i].first_name + this.props.employees[i].last_name).includes(text)) {
         matches.push(this.props.employees[i]);
       }
     }
-    this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: matches });
+    this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_ON, users: matches });
+
+    // this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: matches });
   }
 
   _searchLocations = (text) => {
@@ -394,7 +402,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.MID_GREY
   },
   filterText: {
-    fontFamily: 'roboto-regular', fontSize: 16,
+    fontFamily: 'roboto-bold', fontSize: 18,
     color: Colors.DARK_GREY
   },
   addButton: {
@@ -420,7 +428,9 @@ var mapStateToProps = state => {
     places: state.user.myLocations,
     employees: state.user.myEmployees,
     needReload: state.loading.needReload,
-    isLoading: state.loading.isLoading
+    isLoading: state.loading.isLoading,
+    spotlightOn: state.spotlight.isOn,
+    spotlightUsers: state.spotlight.users
   }
 }
 

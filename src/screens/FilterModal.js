@@ -7,7 +7,7 @@ import OptionView from '../ui-elements/option-view';
 import OptionViewSplit from '../ui-elements/option-view-split';
 
 import * as TabActions from '../action-types/tab-action-types';
-import * as UserActions from '../action-types/auth-action-types';
+import * as SpotlightActions from '../action-types/spotlight-action-types';
 
 import * as Colors from '../constants/colors';
 import * as query from '../util/query';
@@ -86,12 +86,6 @@ class FilterModal extends Component {
   }
 
   sortFilters() {
-    // sort filters here, then pass to this.props.dismiss()
-    // let userIDs = [];
-    // for(let i = 0; i < this.props.employees.length; i++) {
-      // userIDs.push(this.props.employees[i]._id);
-    // }
-
     let data = {
       hair: this.state.selectedHair,
       gender: this.state.selectedGender,
@@ -103,16 +97,6 @@ class FilterModal extends Component {
     query.query(data, (err, users) => {
       this.filterCleanup(err, users);
     })
-
-    // if(data.location != null) {
-    //   query.queryWithLocation(data, (err, users) => {
-    //     this.filterCleanup(err, users);
-    //   });
-    // } else {
-    //   query.queryWithoutLocation(data, (err, users) => {
-    //     this.filterCleanup(err, users);
-    //   });
-    // }
   }
 
   filterCleanup(err, users) {
@@ -120,7 +104,7 @@ class FilterModal extends Component {
       Alert.alert('There was a problem filtering! Please check your connection and try again.');
     } else {
       this.props.dispatch({ type: TabActions.EMPLOYEE_TAB });
-      this.props.dispatch({ type: UserActions.SET_EMPLOYEES, employees: users });
+      this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_ON, users: users });
       this.props.dismiss();
     }
   }

@@ -72,7 +72,7 @@ class UserPermissionModal extends Component {
         <ScrollView style={styles.container} >
 
           <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/back.png')} />
+            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/down.png')} />
           </View>
 
           <Text style={styles.nameHeader}>{this.props.employee.first_name} {this.props.employee.last_name}</Text>
