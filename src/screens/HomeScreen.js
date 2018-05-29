@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert, Dimensions, AsyncStorage } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert, Dimensions, AsyncStorage, Animated, LayoutAnimation } from 'react-native';
 
 import { connect } from 'react-redux';
 
@@ -34,8 +34,6 @@ class HomeScreen extends Component {
 
 
 // TODO
-// FIXME add employees from RestaurantForm
-// people upgraded to owners cant create employees
 
 // TODO if cant create, change Alert from clicking employee tab without
 // locations to say "you need to be added to restaurants"
@@ -54,7 +52,8 @@ class HomeScreen extends Component {
       employees: [],
       employeeMatches: [],
       employeeIDs: [],
-      isRefreshing: false
+      isRefreshing: false,
+      animation: 1
     }
   }
 
@@ -178,13 +177,10 @@ class HomeScreen extends Component {
 
   _presentAddEmployeeModal = () => {
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
-    //this.setState({ employeeFormPresented: true });
   }
   _openEmployeeProfile = (employee) => {
-    // get my rank compared to employee
     this.props.dispatch({ type: DetailActions.SET_USER, user: employee });
     this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
-    //this.setState({ employeeFormPresented: true });
   }
 
   // role based on user (me)'s role for that location
@@ -361,7 +357,7 @@ class HomeScreen extends Component {
 
         {(this.props.role === 1)
           ? <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
-              <Image style={{height:64,width:64, tintColor:Colors.ORANGE}} source={require('../../assets/icons/plus.png')} />
+              <Image style={{height:64,width:64, tintColor:'black'}} source={require('../../assets/icons/plus.png')} />
             </TouchableOpacity>
           : null
         }

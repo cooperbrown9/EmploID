@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl, Animated } from 'react-native';
 import {SearchBar} from 'react-native-elements';
 
 import * as NavActions from '../action-types/nav-action-types';

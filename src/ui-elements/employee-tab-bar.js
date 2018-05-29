@@ -13,7 +13,8 @@ class EmployeeTabBar extends Component {
   }
 
   static propTypes = {
-    indexOn: PropTypes.number
+    indexOn: PropTypes.number,
+    handleProfile: PropTypes.func
   }
 
 
@@ -21,30 +22,29 @@ class EmployeeTabBar extends Component {
 
   }
 
-  // bottomBar() {
-  //   return(
-  //     <View style={styles.bottomBar} />
-  //   )
-  // }
+  handleTabPress(path) {
+    this.props.handleProfile(path);
+    this.props.dispatch({ type: path });
+  }
 
   render() {
 
     return(
       <View style={styles.container} >
 
-        <TouchableOpacity onPress={() => {  this.props.dispatch({type: EmpActions.OPEN_PROFILE_INFO}) }} style={(this.props.indexOn === 0) ? styles.buttonOn : styles.buttonOff} >
+        <TouchableOpacity onPress={() => this.handleTabPress(EmpActions.OPEN_PROFILE_INFO)} style={(this.props.indexOn === 0) ? styles.buttonOn : styles.buttonOff} >
           <Text color={'black'} style={(this.props.indexOn === 0) ? styles.buttonTextOn : styles.buttonTextOff}>Profile</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => { this.props.dispatch({type: EmpActions.OPEN_LOCATIONS}) }} style={(this.props.indexOn === 1) ? styles.buttonOn : styles.buttonOff} >
+        <TouchableOpacity onPress={() => this.handleTabPress(EmpActions.OPEN_LOCATIONS)} style={(this.props.indexOn === 1) ? styles.buttonOn : styles.buttonOff} >
           <Text color={'black'} style={(this.props.indexOn === 1) ? styles.buttonTextOn : styles.buttonTextOff}>Locations</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => { this.props.dispatch({type: EmpActions.OPEN_DISCOUNTS}) }} style={(this.props.indexOn === 2) ? styles.buttonOn : styles.buttonOff} >
+        <TouchableOpacity onPress={() => this.handleTabPress(EmpActions.OPEN_DISCOUNTS)} style={(this.props.indexOn === 2) ? styles.buttonOn : styles.buttonOff} >
           <Text color={'black'} style={(this.props.indexOn === 2) ? styles.buttonTextOn : styles.buttonTextOff}>Discounts</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => { this.props.dispatch({type: EmpActions.OPEN_NOTES}) }} style={(this.props.indexOn === 3) ? styles.buttonOn : styles.buttonOff} >
+        <TouchableOpacity onPress={() => { this.props.handleProfile(); this.props.dispatch({type: EmpActions.OPEN_NOTES}) }} style={(this.props.indexOn === 3) ? styles.buttonOn : styles.buttonOff} >
           <Text color={'black'} style={(this.props.indexOn === 3) ? styles.buttonTextOn : styles.buttonTextOff}>Notes</Text>
         </TouchableOpacity>
 

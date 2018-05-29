@@ -55,25 +55,39 @@ class UserPermissionModal extends Component {
   }
 
   positionSelected = (index) => {
-    OptionView.selected(this.state.positionOptions, index, (arr) => {
+    OptionViewSplit.selectedMultiple(this.state.positionOptions, index, (arr) => {
       this.setState({ positionOptions: arr, positionSelected: this.state.positionOptions[index] });
     })
   }
 
+  dismiss = () => {
+    this.submit();
+  }
+
   submit = () => {
-    let position = this.state.positionOptions.find((option) => { return option.selected });
-    this.props.updatePermission(this.state.roleSelected.index, this.props.location, position.value);
+    let positions = [];
+    let positionObjs = this.state.positionOptions.forEach((option) => {
+      if(option.selected) {
+        positions.push(option.value);
+      }
+    });
+
+    this.props.updatePermission(this.state.roleSelected.index, this.props.location, positions);
     this.props.dismiss();
   }
 
   render() {
     return(
       <View style={styles.container} >
+        <View style={styles.backButton} >
+          <RoundButton onPress={this.dismiss} imagePath={require('../../assets/icons/cancel.png')} />
+        </View>
+        <View style={styles.confirmButton} >
+          <RoundButton onPress={this.dismiss} imagePath={require('../../assets/icons/check.png')} />
+        </View>
         <ScrollView style={styles.container} >
+          <View style={{height:116}} />
 
-          <View style={styles.backButton} >
-            <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/down.png')} />
-          </View>
 
           <Text style={styles.nameHeader}>{this.props.employee.first_name} {this.props.employee.last_name}</Text>
 
@@ -95,11 +109,11 @@ class UserPermissionModal extends Component {
               selectOption={(index) => this.positionSelected(index)}
             />
           </View>
-
+          {/*
           <View style={styles.submitButton} >
             <SubmitButton title={'UPDATE'} onPress={() => this.submit()} />
           </View>
-
+          */}
         </ScrollView>
 
 
@@ -116,13 +130,16 @@ const styles = StyleSheet.create({
     marginBottom: 32, marginLeft: 32, marginRight: 32, height: 64
   },
   backButton: {
-    marginLeft: 16, marginTop: 32, marginBottom: 32
+    position: 'absolute', left:16,top: 40, zIndex: 100000
+  },
+  confirmButton: {
+    position: 'absolute', right:16,top: 40, zIndex: 100000
   },
   headerBold: {
     fontSize: 24, fontFamily: 'roboto-bold', marginTop: 8, marginBottom: 8,
   },
   header: {
-    fontSize: 16, fontFamily: 'roboto-regular', marginBottom: 8, color: Colors.DARK_GREY
+    fontSize: 16, fontFamily: 'roboto-regular', color: Colors.DARK_GREY
   },
   locationContainer: {
     flex: 1, flexDirection: 'column', flexWrap: 'wrap',
@@ -135,7 +152,7 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto-bold', textAlign: 'right',
   },
   nameHeader: {
-    fontSize: 24, marginTop: 8,
+    fontSize: 32, marginTop: 8,
     fontFamily: 'roboto-bold', textAlign: 'center'
   },
   optionContainer: {

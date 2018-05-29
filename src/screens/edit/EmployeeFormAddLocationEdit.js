@@ -7,6 +7,7 @@ import { findSelectedPositions } from '../../api/data-builder';
 import * as API from '../../api/api';
 import * as Colors from '../../constants/colors';
 import * as DetailActions from '../../action-types/detail-action-types';
+import * as PermissionManager from '../../util/permission-manager'; // try the function
 
 import SubmitButton from '../../ui-elements/submit-button';
 import RoundButton from '../../ui-elements/round-button';
@@ -59,34 +60,41 @@ class EmployeeFormAddLocationEdit extends Component {
   componentDidMount() {
     this.roleSelected(this.props.role);
 
+    // get all locations of a group
     this.getGroupLocations((places) => {
 
+      // assign relation from props.locations, to state.places
+      // locations on props are old, but have the relation to the detail user, so
+      // we loop through the newly fetched places and assign the relations to the
+      // new places
       this.props.locations.forEach(employeePlace => {
         places.forEach(groupPlace => {
           if(employeePlace._id === groupPlace._id) {
             groupPlace.selected = true;
             groupPlace.relation = employeePlace.relation;
-
-            // build position objects
-            // groupPlace.positions.forEach((position,index) => {
-            //   debugger;
-            //   position = { value: position, selected: false, index: index }
-            //   // groupPlace.positions[index] = { value: groupPlace.positions[index], selected: false, index: index }
-            // })
           }
         })
       });
 
+      // set just for funsies, doesnt have to bet set here
       this.setState({ places: places }, () => {
-        this.state.places.forEach(place => {
-          if(place.selected) {
-            place.positions.forEach((position, index) => {
-              if(position.value === place.relation.position) {
-                position.selected = true;
+
+        // the PermissionManager function only takes 1 place, so loop through them
+        // to assign positions, that are found on props.locations, to the
+        // newly created state.places
+        let placesWithPositions = [];
+        for(let i = 0; i < this.props.locations.length; i++) {
+          PermissionManager.assignSinglePlacePositionToUser(this.props.locations[i], (place) => {
+            placesWithPositions.push(place);
+            for(let j = 0; j < this.state.places.length; j++) {
+              if(this.state.places[j]._id === place._id) {
+                this.state.places[j].positions = place.positions;
+                break;
               }
-            })
-          }
-        })
+            }
+          });
+        }
+
         this.setState({ places: this.state.places });
       });
     });
@@ -138,10 +146,13 @@ class EmployeeFormAddLocationEdit extends Component {
     this.state.places.forEach((place, index) => {
       // if its selected and doesnt have a relation, add it
       if(place.selected && place.relation == null) {
-        let position = place.positions.find((_position) => {
-          return _position.selected === true;
+        let positions = [];
+        let position = place.positions.forEach((_position) => {
+          if(_position.selected) {
+            positions.push(_position.value);
+          }
         });
-        relationsToCreate.push({ 'placeID': place._id, 'userID': this.props.employeeID, 'role': 0, 'position': position.value });
+        relationsToCreate.push({ 'placeID': place._id, 'userID': this.props.employeeID, 'role': 0, 'positions': positions });
       }
       if(!place.selected && place.relation != null) {
         relationsToDelete.push({ 'relationID': place.relation._id });
@@ -158,9 +169,12 @@ class EmployeeFormAddLocationEdit extends Component {
         if(err) {
           console.log(err);
           deletesComplete = true;
+          console.log('naaaahhh');
+          this.props.dismiss();
         } else {
           console.log(results);
           deletesComplete = true;
+          this.requestsComplete(createsComplete, deletesComplete);
         }
       });
     } else {
@@ -175,8 +189,11 @@ class EmployeeFormAddLocationEdit extends Component {
         if(err) {
           console.log(err);
           createsComplete = true;
+          console.log('naaaaah');
+          this.props.dismiss();
         } else {
           createsComplete = true;
+          this.requestsComplete(createsComplete, deletesComplete);
         }
       });
     } else {
@@ -184,6 +201,12 @@ class EmployeeFormAddLocationEdit extends Component {
     }
     if(createsComplete && deletesComplete) {
       console.log('yuuuuup');
+      this.props.dismiss();
+    }
+  }
+
+  requestsComplete(createComplete, deleteComplete) {
+    if(createComplete && deleteComplete) {
       this.props.dismiss();
     }
   }
