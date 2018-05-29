@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 
 import * as API from '../api/api';
@@ -52,6 +52,7 @@ class EmployeeFormAddLocation extends Component {
       for(let i = 0; i < this.state.places.length; i++) {
         this.state.places[i].selected = false;
         this.state.places[i].index = i;
+        this.state.places[i].animation = 1;
       }
 
       this.state.positionOptions = [];
@@ -79,6 +80,19 @@ class EmployeeFormAddLocation extends Component {
   }
 
   selectPlace = (place) => {
+    var animationProps = {
+      type: 'timing',
+      // springDamping: 0.8,
+      property: 'opacity'
+    }
+
+    var animationConfig = {
+      duration: 250,
+      create: animationProps,
+      update: animationProps
+    }
+    LayoutAnimation.configureNext(animationConfig);
+
     this.state.places[place.index].selected = !this.state.places[place.index].selected;
     this.setState({ places: this.state.places });
   }
@@ -122,12 +136,12 @@ class EmployeeFormAddLocation extends Component {
 
           <View style={styles.buttonContainer} >
             {(this.state) ? this.state.places.map((place) => (
-              <View style={(place.selected) ? styles.placeContainerOn : styles.placeContainerOff} key={place._id} >
+              <Animated.View style={(place.selected) ? [styles.placeContainerOn, {flex: place.animation}] : styles.placeContainerOff} key={place._id} >
                 <TouchableOpacity
                   onPress={() => this.selectPlace(place) }
-                  style={ ((place.selected) ? styles.buttonOn : styles.buttonOff) }
+                  style={[styles.buttonOff, (place.selected) ? styles.buttonOn : {}]}
                   key={place._id} >
-                  <Text style={(place.selected) ? styles.textOn : styles.textOff} >
+                  <Text style={[styles.textOff, (place.selected) ? styles.textOn : {}]} >
                     {place.name}
                   </Text>
                 </TouchableOpacity>
@@ -137,7 +151,7 @@ class EmployeeFormAddLocation extends Component {
                     </View>
                   : null
                 }
-              </View>
+              </Animated.View>
             )) : null}
           </View>
 
@@ -181,10 +195,6 @@ const styles = StyleSheet.create({
     marginBottom: 8, marginLeft: 4, marginRight: 4,
     flex: 1,
   },
-  textHeader: {
-    fontSize: 16, marginLeft: 16, marginBottom: 12,
-    color: 'black'
-  },
   buttonContainer: {
     flex: 1
   },
@@ -197,7 +207,7 @@ const styles = StyleSheet.create({
   buttonOff: {
     height: 64,
     // borderRadius: 24,
-    marginRight: 32, marginLeft: 32, marginBottom: 32, marginTop: 8,
+    marginRight: 0, marginLeft: 0, marginBottom: 16, marginTop: 0,
     backgroundColor: 'transparent', //Colors.MID_GREY,
     justifyContent: 'center'
   },
@@ -205,16 +215,16 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginLeft: 16, marginRight: 16,
     color: 'white', textAlign: 'center',
-    fontFamily: 'roboto-bold'
+    fontFamily: 'roboto-bold', backgroundColor: 'transparent'
   },
   textOff: {
     fontSize: 28,
     marginLeft: 16, marginRight: 16,
     color: Colors.DARK_GREY, textAlign: 'center',
-    fontFamily: 'roboto-bold'
+    fontFamily: 'roboto-bold', backgroundColor: 'transparent'
   },
   backButton: {
-    marginLeft: 16, marginTop: 32, marginBottom: 32
+    marginLeft: 16, marginTop: 48, marginBottom: 32
   },
 });
 
