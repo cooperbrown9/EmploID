@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Alert, Dimensions } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 import { findSelectedPositions } from '../../api/data-builder';
 
@@ -72,6 +72,8 @@ class EmployeeFormAddLocationEdit extends Component {
           if(employeePlace._id === groupPlace._id) {
             groupPlace.selected = true;
             groupPlace.relation = employeePlace.relation;
+            // set animation value here, poorly named, think of that
+            groupPlace.animation = 0;
           }
         })
       });
@@ -133,6 +135,18 @@ class EmployeeFormAddLocationEdit extends Component {
 
   // switcher, on -> off, off -> on
   selectPlace = (place) => {
+    var animationProps = {
+      type: 'timing',
+      property: 'opacity'
+    }
+
+    var animationConfig = {
+      duration: 250,
+      create: animationProps,
+      update: animationProps
+    }
+    LayoutAnimation.configureNext(animationConfig);
+
     this.state.places[place.index].selected = !this.state.places[place.index].selected;
     this.setState({ places: this.state.places });
   }
@@ -233,6 +247,7 @@ class EmployeeFormAddLocationEdit extends Component {
                   place={place}
                   selectPlace={(place) => this.selectPlace(place)}
                   positionSelected={(index, place) => this.positionSelected(index, place)}
+                  animation={place.animation}
                 />
               )) : null}
             </View>
