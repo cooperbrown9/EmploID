@@ -74,14 +74,14 @@ class LoginScreen extends Component {
     this.setState({ forgotPWPresented: true });
   }
 
-  textInputFactory(placeholder, onTextChange, value, canEdit = true, keyboard = 'default') {
+  textInputFactory(placeholder, onTextChange, value, canEdit=true, keyboard='default', secure=false) {
     return (
       <TextInput
         placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
         selectionColor={Colors.BLUE} style={styles.input}
         autoCorrect={false} autoCapitalize={false}
         onChangeText={(text) => onTextChange(text)}
-        value={value}
+        value={value} secureTextEntry={password}
         editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
       />
     )
@@ -111,7 +111,7 @@ class LoginScreen extends Component {
               {this.textInputFactory('Email', (text) => {this.setState({email: text})}, this.state.email)}
             </View>
             <View style={styles.inputView} >
-              {this.textInputFactory('Password', (text) => this.setState({password:text}), this.state.password)}
+              {this.textInputFactory('Password', (text) => this.setState({password:text}), this.state.password, true)}
             </View>
           </View>
 

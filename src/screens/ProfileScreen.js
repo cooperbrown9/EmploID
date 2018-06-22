@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Animated, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, RefreshControl, Dimensions, Alert, LayoutAnimation, NativeModules } from 'react-native';
 import { connect } from 'react-redux';
+import { Camera, Permissions } from 'expo';
 import EmployeeTabBar from '../ui-elements/employee-tab-bar.js';
 import RoundButton from '../ui-elements/round-button.js';
 
@@ -16,6 +17,8 @@ import DiscountModal from './DiscountModal';
 import UserPermissionModal from './UserPermissionModal';
 import CreateUserNoteForm from './CreateUserNoteForm';
 import ImageScreen from './ImageScreen';
+
+import { uploadImage } from '../api/image-handler';
 
 import * as Parser from '../api/data-builder';
 import * as NavActions from '../action-types/nav-action-types';
@@ -38,6 +41,12 @@ class ProfileScreen extends Component {
     gesturesEnabled: false
   }
 
+  constructor() {
+    super();
+
+    this.uploadImage = uploadImage.bind(this);
+  }
+
   state = {
     editModalPresented: false,
     discountModalPresented: false,
@@ -48,6 +57,9 @@ class ProfileScreen extends Component {
     isRefreshing: false,
     userPermissionModel: {},
     canEditProfile: false,
+    cameraPermission: false,
+    newImageURI: null,
+    cameraType: Camera.Constants.Type.back,
     beforeY: FRAME.height / 2,
     afterY: 3 * FRAME.height / 4,
     onProfile: true,
@@ -163,6 +175,34 @@ class ProfileScreen extends Component {
     })
   }
 
+  updateImage() {
+    var img = new FormData();
+    img.append('file', {
+      uri: this.state.newImageURI,
+      type: 'image/png',
+      name: 'testpic'
+    });
+    this.uploadImage(img, (e1, newImage) => {
+      if(e1) {
+        console.log(e1);
+      } else {
+        const data = {
+          'userID': this.props.employee._id,
+          'imageURL': newImage
+        }
+        API.updateUserImage(data, (e2, user) => {
+          if(e2) {
+            console.log(e2);
+          } else {
+            console.log(user);
+
+            this.props.dispatch({ type: DetailActions.SET_USER, user: user });
+          }
+        })
+      }
+    })
+  }
+
   _dismissFormModal = () => {
     this.setState({editModalPresented: false});
   }
@@ -258,6 +298,16 @@ class ProfileScreen extends Component {
     }
   }
 
+  profilePicButton() {
+    if(!this.props.employee.image_url) {
+      return (
+        <View style={styles.cameraButton} >
+          <RoundButton imagePath={require('../../assets/icons/camera.png')} onPress={() => this.getCameraPermission()} />
+        </View>
+      )
+    }
+  }
+
   _handleProfileTab(path) {
     var animationProps = {
       type: 'spring',
@@ -281,6 +331,28 @@ class ProfileScreen extends Component {
     } else if(path !== EmployeeActions.OPEN_PROFILE_INFO) {
       // totally different path
       this.setState({ animation: 0 });
+    }
+  }
+
+  getCameraPermission = async() => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+
+    this.setState({ cameraPermission: status === 'granted' });
+  }
+
+  takePicture = async() => {
+    if(this.camera) {
+      await this.camera.takePictureAsync()
+        .then((data) => {
+          console.log(data);
+          this.setState({ newImageURI: data.uri, cameraPermission: false }, () => {
+            this.updateImage();
+          })
+        })
+        .catch(e => {
+          console.log(e);
+          this.setState({ cameraPermission: false });
+        })
     }
   }
 
@@ -315,7 +387,7 @@ class ProfileScreen extends Component {
               </View>
 
               {this.editProfileButton()}
-
+              {this.profilePicButton()}
 
             </TouchableOpacity>
           </View>
@@ -377,6 +449,22 @@ class ProfileScreen extends Component {
           <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} onDismiss={() => this.refreshUser()}>
             <UserPermissionModal updatePermission={(role, location, positions) => this._updateUserPermissions(role, location, positions)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
           </Modal>
+
+          {(this.state.cameraPermission)
+            ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0, zIndex:11000}}>
+                <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
+                  <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
+                    <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >
+                      <Image style={{height:32, width:32,tintColor:'white'}} source={require('../../assets/icons/cancel.png')} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.takePicture} style={{height:64,width:128,borderRadius:16, backgroundColor:Colors.BLUE,justifyContent:'center',alignItems:'center' }} >
+                      <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../assets/icons/camera.png')} />
+                    </TouchableOpacity>
+                  </View>
+                </Camera>
+              </View>
+            : null
+          }
         </View>
     )
   }
@@ -442,6 +530,9 @@ const styles = StyleSheet.create({
   optionsButton: {
     position: 'absolute', right: 20, top: 32,
     zIndex: 1001
+  },
+  cameraButton: {
+    position: 'absolute', right: 20, top: 108, zIndex: 1001
   },
   addNote: {
     position: 'absolute',

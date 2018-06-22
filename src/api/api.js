@@ -30,6 +30,7 @@ const CREATE_USER_NOTE = '/create-user-note';
 const CREATE_PLACE_NOTE = '/create-place-note';
 
 const UPDATE_USER = '/update-user';
+const UPDATE_USER_IMAGE = '/update-user-image';
 const UPDATE_LOCATION = '/update-place';
 const UPDATE_DISCOUNT = '/update-discount';
 const UPDATE_USER_PLACES = '/update-user-places';
@@ -168,6 +169,12 @@ export function updateDiscount(discount, callback) {
 
 export function updateUser(data, callback) {
   axios.post(BASE + UPDATE_USER, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function updateUserImage(data, callback) {
+  axios.post(BASE + UPDATE_USER_IMAGE, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

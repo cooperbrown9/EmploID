@@ -71,10 +71,10 @@ class EmployeeForm extends Component {
         imageURI: null
       },
       selectedPlaces: [],
-      cameraPermission: false,
       formIncomplete: false,
-      errorMessage: '',
-      cameraType: Camera.Constants.Type.back
+      cameraPermission: false,
+      cameraType: Camera.Constants.Type.back,
+      errorMessage: ''
     };
   }
 
