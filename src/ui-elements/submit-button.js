@@ -5,7 +5,7 @@ import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { BLUE } from '../constants/colors';
 
 const SubmitButton = props => (
-  <TouchableOpacity onPress={() => props.onPress()} style={(props.hasBGColor) ? styleWithBG(props.bgColor) : styles.container}>
+  <TouchableOpacity onPress={() => props.onPress()} style={[styles.container, {backgroundColor:props.bgColor}]}>
     <Text style={styles.text}>{props.title}</Text>
   </TouchableOpacity>
 )
@@ -17,7 +17,7 @@ SubmitButton.propTypes = {
   bgColor: PropTypes.string
 }
 
-SubmitButton.defaultPropTypes = {
+SubmitButton.defaultProps = {
   title: 'Submit',
   hasBGColor: false,
   bgColor: BLUE

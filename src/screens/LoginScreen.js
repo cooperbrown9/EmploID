@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, TextInput, StyleSheet, Alert, AsyncStorage } from 'react-native';
+import { View, ScrollView, Text, TextInput, Image, StyleSheet, Alert, AsyncStorage, Modal } from 'react-native';
 import axios from 'axios';
 
 import { connect } from 'react-redux';
 
 import { BLUE, DARK_GREY, BACKGROUND_GREY, MID_GREY } from '../constants/colors';
-// import { loginOwner, loginEmployee, getOwner, getEmployee } from '../api/api';
+import * as Colors from '../constants/colors';
 import * as API from '../api/api';
+import { handleLoginError } from '../util/error-manager';
 
 import OptionView from '../ui-elements/option-view';
 import SubmitButton from '../ui-elements/submit-button';
+import ForgotPassword from './ForgotPassword';
 
 import * as Keys from '../constants/keys';
 import * as NavActions from '../action-types/nav-action-types';
@@ -20,15 +22,12 @@ class LoginScreen extends Component {
   constructor() {
     super();
 
-    // this.loginOwner = loginOwner.bind(this);
-    // this.loginEmployee = loginEmployee.bind(this);
-    // this.getOwner = getOwner.bind(this);
-    // this.getEmployee = getEmployee.bind(this);
+    this.handleLoginError = handleLoginError.bind(this);
 
     this.state = {
       email: '',
       password: '',
-      isOwner: true,
+      forgotPWPresented: false,
       options: [
         { value: 'Owner', selected: true, index: 0},
         { value: 'Employee', selected: false, index: 1}
@@ -52,8 +51,9 @@ class LoginScreen extends Component {
     }
     API.login(data, async(err, response) => {
       if(err) {
-        debugger;
-        Alert.alert('LOGIN ERROR ' + err.message);
+        this.handleLoginError(err.response.status, (message) => {
+          Alert.alert(message);
+        });
       } else {
         await AsyncStorage.setItem(Keys.USER_ID, response.user._id);
         await AsyncStorage.setItem(Keys.SESSION_ID, response.session_id);
@@ -70,15 +70,21 @@ class LoginScreen extends Component {
     })
   }
 
-  _positionSelected = (index) => {
-    OptionView.selectedExclusive(this.state.options, index, (arr) => {
-      this.setState({ options: arr });
-      if(arr[0].selected) {
-        this.setState({ isOwner: true });
-      } else {
-        this.setState({ isOwner: false });
-      }
-    });
+  forgotPassword() {
+    this.setState({ forgotPWPresented: true });
+  }
+
+  textInputFactory(placeholder, onTextChange, value, canEdit = true, keyboard = 'default') {
+    return (
+      <TextInput
+        placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
+        selectionColor={Colors.BLUE} style={styles.input}
+        autoCorrect={false} autoCapitalize={false}
+        onChangeText={(text) => onTextChange(text)}
+        value={value}
+        editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
+      />
+    )
   }
 
   render() {
@@ -86,35 +92,41 @@ class LoginScreen extends Component {
       <ScrollView style={styles.scrollContainer} >
         <View style={styles.container} >
 
+          <View style={styles.logoContainer} >
+            <Image style={styles.logo} source={require('../../assets/images/logo-1.png')} resizeMode={'center'} />
+          </View>
+
+          {/*
           <View style={styles.headerView}>
             <Text style={styles.loginText}>Login</Text>
           </View>
+          */}
 
           {/*<View style={styles.optionView} >
             <OptionView options={this.state.options} selectOption={(index) => this._positionSelected(index)} />
           </View>*/}
 
-          <View style={styles.inputView} >
-            <TextInput
-              selectionColor={BLUE}
-              style={styles.input}
-              autoCorrect={false} autoCapitalize={'none'}
-              placeholder={'Email'} placeholderTextColor={DARK_GREY}
-              onChangeText={(text) => this.setState({ email: text })}
-            />
-            <TextInput
-              selectionColor={BLUE}
-              style={styles.input}
-              autoCorrect={false} autoCapitalize={'none'}
-              placeholder={'Password'} placeholderTextColor={DARK_GREY}
-              secureTextEntry={false}
-              onChangeText={(text) => this.setState({ password: text })}
-            />
+          <View style={styles.inputContainer} >
+            <View style={styles.inputView} >
+              {this.textInputFactory('Email', (text) => {this.setState({email: text})}, this.state.email)}
+            </View>
+            <View style={styles.inputView} >
+              {this.textInputFactory('Password', (text) => this.setState({password:text}), this.state.password)}
+            </View>
           </View>
 
+          <Text onPress={() => this.forgotPassword()} style={styles.forgotPW}>Forgot Password?</Text>
+
           <View style={styles.buttonContainer} >
-            <SubmitButton onPress={this.login} title={'LOGIN'} />
+            <SubmitButton bgColor={'black'} onPress={this.login} title={'LOGIN'} />
           </View>
+
+          <Modal animationType={'slide'} transparent={false} visible={this.state.forgotPWPresented} >
+            <ForgotPassword
+              email={this.state.email}
+              setEmail={(email) => this.setState({ email: email })}
+            />
+          </Modal>
 
         </View>
       </ScrollView>
@@ -125,12 +137,19 @@ class LoginScreen extends Component {
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
-    backgroundColor: BACKGROUND_GREY
+    backgroundColor: Colors.BACKGROUND_GREY
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: BACKGROUND_GREY
+    backgroundColor: Colors.BACKGROUND_GREY
+  },
+  logoContainer: {
+    marginTop: 64, marginLeft: 32, marginRight: 32,
+    height: 200,
+    justifyContent: 'center', alignItems: 'center'
+  },
+  logo: {
+    flex: 1
   },
   optionView: {
     marginTop: 32, marginLeft: 32, marginRight: 32
@@ -141,28 +160,46 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginLeft: 32, marginRight: 32, marginTop: 64
   },
-  input: {
-    flex: 1,
-    fontSize: 24,
-    borderBottomColor: 'black', borderBottomWidth: 2,
-    marginLeft: 32, marginRight: 32, marginBottom: 48,
-    color: 'black',
-    fontFamily: 'roboto-regular'
+  forgotPW: {
+    textAlign: 'center',
+    fontSize: 18, fontFamily: 'roboto-regular',
+    color: 'white'
   },
-  inputView: {
+  // input: {
+  //   flex: 1,
+  //   fontSize: 24,
+  //   borderBottomColor: 'black', borderBottomWidth: 2,
+  //   marginLeft: 32, marginRight: 32, marginBottom: 48,
+  //   color: 'black',
+  //   fontFamily: 'roboto-regular'
+  // },
+  inputContainer: {
     marginLeft: 16, marginRight: 16, marginTop: 64
   },
   loginText: {
-    fontSize: 32,
+    fontSize: 40,
     textAlign: 'center',
-    fontWeight: 'bold',
-    fontFamily: 'roboto-regular'
+    fontFamily: 'roboto-bold',
+    color: 'white'
   },
   headerView: {
     flex: 1,
     marginTop: 120,
     justifyContent: 'center'
-  }
+  },
+  input: {
+    marginLeft: 16,
+    fontSize: 18,
+    color: 'black',
+    fontFamily: 'roboto-regular'
+  },
+  inputView: {
+    borderRadius: 8,
+    marginBottom: 16, marginRight: 8, marginLeft: 8,
+    height: 56,
+    backgroundColor: 'white',
+    justifyContent: 'center'
+  },
 });
 
 var mapStateToProps = state => {

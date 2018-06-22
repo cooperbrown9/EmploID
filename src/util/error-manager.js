@@ -19,3 +19,18 @@ export function handleCreateError(status, callback) {
       break;
   }
 }
+
+export function handleLoginError(status, callback) {
+  debugger;
+  switch(status) {
+    case 401:
+      callback('Invalid username or password');
+      break;
+
+    case 503:
+      callback('Server is having trouble processing requests right now!')
+
+    default:
+      callback('');
+  }
+}

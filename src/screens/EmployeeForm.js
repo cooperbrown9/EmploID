@@ -369,7 +369,9 @@ class EmployeeForm extends Component {
 
 
           <View style={styles.submitContainer} >
-            <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addLocationsPresented: true }) } />
+            <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addLocationsPresented: true }) } >
+              <View style={{position:'absolute',right:16,height:16,top:8,backgroundColor:'yellow'}}></View>
+            </SubmitButton>
           </View>
           <View style={styles.submitContainer} >
             <SubmitButton

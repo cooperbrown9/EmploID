@@ -38,6 +38,19 @@ export function toPhoneNumber(num) {
   return number;
 }
 
+export function textInputFactory(placeholder, onTextChange, value, canEdit = true, keyboard = 'default') {
+  return (
+    <TextInput
+      placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
+      selectionColor={Colors.BLUE} style={styles.input}
+      autoCorrect={false} autoCapitalize={false}
+      onChangeText={(text) => onTextChange(text)}
+      value={value}
+      editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
+    />
+  )
+}
+
 export function alphabetizeUsers(users) {
   let sorted = _.sortBy(users, 'first_name');
   return sorted;
