@@ -158,7 +158,8 @@ const styles = StyleSheet.create({
     marginTop: 32, marginLeft: 32, marginRight: 32
   },
   buttonContainer: {
-    marginLeft: 32, marginRight: 32, marginTop: 64
+    marginLeft: 32, marginRight: 32, marginTop: 64,
+    justifyContent: 'flex-end'
   },
   forgotPW: {
     textAlign: 'center',

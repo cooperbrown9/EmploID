@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl } from 'react-native';
 import {SearchBar} from 'react-native-elements';
-import { BLUE, DARK_GREY } from '../constants/colors';
+import { BLUE, DARK_GREY, BACKGROUND_GREY, MID_GREY } from '../constants/colors';
 import { callPhoneNumber } from '../util';
 
 const RestaurantScreen = (props) => (
@@ -27,12 +27,8 @@ const RestaurantScreen = (props) => (
             </View>
             <View style={styles.rightContainer} >
               <TouchableOpacity style={styles.phoneContainer} onPress={() => callPhoneNumber(place.phone)} >
-                <Image style={styles.phone} resizeMode={'contain'} source={require('../../assets/icons/phone-circle.png')} />
+                <Image style={styles.phone} resizeMode={'contain'} source={require('../../assets/icons/phone-flat.png')} />
               </TouchableOpacity>
-              <View style={{flexDirection: 'row'}} >
-                <Image style={styles.userImage} source={require('../../assets/icons/users.png')} />
-                <Text style={styles.userCount}>: 100</Text>
-              </View>
             </View>
           </TouchableOpacity>
         ))}
@@ -41,6 +37,12 @@ const RestaurantScreen = (props) => (
 
     </View>
 )
+// this goes right below the right container
+  // <View style={{flexDirection: 'row'}} >
+  // <Image style={styles.userImage} source={require('../../assets/icons/users.png')} />
+  // <Text style={styles.userCount}>: 100</Text>
+  // </View>
+
 
 RestaurantScreen.propTypes = {
   places: PropTypes.array,
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
     height: 64, width: 64
   },
   phone: {
-    height: 48, tintColor: BLUE
+    height: 48, width:48, tintColor: 'black'
   },
   restaurantImage: {
   height: 100, width: 100,
