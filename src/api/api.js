@@ -20,6 +20,7 @@ const GET_RELATIONS = '/get-relations';
 const GET_RELATIONS_BY_PLACES = '/get-relations-by-places';
 const GET_USER_NOTES = '/get-user-notes/';
 const GET_PLACE_NOTES = '/get-place-notes/';
+const GET_USER_COUNT = '/get-user-count';
 
 const CREATE_USER = '/create-user';
 const CREATE_PLACE = '/create-place';
@@ -109,6 +110,12 @@ export function createPlaceNote(data, callback) {
 
 export function getUserNotes(creatorID, employeeID, callback) {
   axios.get(BASE + GET_USER_NOTES + creatorID + '/' + employeeID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function getUserCount(placeID, callback) {
+  axios.get(BASE + GET_USER_COUNT + '/' + placeID)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

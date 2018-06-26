@@ -64,9 +64,7 @@ class HomeScreen extends Component {
 
   // figure out why locations and employees dont update
   componentDidMount() {
-    // if(this.props.screenDepthReloaded > )
     this.loadData();
-    console.log('yeeee')
   }
 
   loadData() {
@@ -79,7 +77,6 @@ class HomeScreen extends Component {
     // this gets all location IDs of user (me)
     API.getRelationsByUser(this.props.userID, (e1, relations) => {
       if(e1) {
-        console.log(e1);
         this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
       } else {
         let places = [];
@@ -93,7 +90,6 @@ class HomeScreen extends Component {
 
         API.getPlaces(sender, (e2, locations) => {
           if(e2) {
-            console.log(e2);
             this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
           } else {
             DataBuilder.assignRelationsToPlaces(relations, locations, (locationsWithRelations) => {
@@ -101,6 +97,7 @@ class HomeScreen extends Component {
 
               this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: sortedLocationsWithRelations });
               this.getUsers();
+              // this.getUserCount();
             })
           }
         })
@@ -121,13 +118,13 @@ class HomeScreen extends Component {
     // COMBAK to keep all a user's data local, give them an array of their relations
     API.getRelationsByPlaces(sender, (err, relations) => {
       if(err) {
-        console.log(err);
         this.setState({ isRefreshing: false }, () => {
           this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
           Alert.alert('Error loading Users');
         });
       } else {
 
+        // pull userIDs off so it can be sent to the server
         let userIDs = [];
         for(let i = 0; i < relations.length; i++) {
           userIDs.push({ 'userID': relations[i].user_id });
@@ -137,14 +134,12 @@ class HomeScreen extends Component {
         }
         API.getUsers(sender, (err, users) => {
           if(err) {
-            console.log(err);
             this.setState({ isRefreshing: false }, () => {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
             this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
             this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
-            console.log(users);
 
             this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
@@ -153,6 +148,31 @@ class HomeScreen extends Component {
         })
       }
     })
+  }
+
+  // takes locations on redux and puts their user count on them
+  // deprecated
+  getUserCount() {
+    let places = [];
+    let place = {};
+    let itCount = 0;
+    for(let i = 0; i < this.props.places.length; i++) {
+      place = this.props.places[i];
+      API.getUserCount(this.props.places[i]._id, (err, count) => {
+        if(err) {
+          place.userCount = 0;
+        } else {
+          place.userCount = count.user_count;
+        }
+        places.push(place);
+        itCount++;
+        if(itCount === this.props.places.length) {
+          this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
+
+        }
+      })
+    }
+
   }
 
   uniqueArray(val, index, self) {
