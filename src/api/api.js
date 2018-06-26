@@ -48,6 +48,8 @@ const QUERY_BY_POSITION = '/query-by-position';
 
 const LOGIN_USER = '/login';
 
+const FORGOT_PASSWORD = '/forgot-password';
+
 export function getUser(userID, callback) {
   axios.get(BASE + GET_USER + userID)
     .then(response => callback(null, response.data))
@@ -262,6 +264,12 @@ export function queryWithPlace(data, callback) {
 
 export function queryByPosition(data, callback) {
   axios.post(BASE + QUERY_BY_POSITION, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function resetPassword(email, callback) {
+  axios.post(BASE + FORGOT_PASSWORD, email)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

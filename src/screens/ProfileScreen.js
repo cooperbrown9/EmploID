@@ -279,9 +279,13 @@ class ProfileScreen extends Component {
     let myPlaces = this.props.myLocations;
     let presentedPlace = myPlaces.find(d => d._id === model._id);
 
-    if(presentedPlace.relation.role === 1 || presentedPlace.relation.role === 2) {
-      this.setState({ userPermissionModalPresented: true, userPermissionModel: model });
-    } else {
+    try {
+      if(presentedPlace.relation.role === 1 || presentedPlace.relation.role === 2) {
+        this.setState({ userPermissionModalPresented: true, userPermissionModel: model });
+      } else {
+        Alert.alert('You do not have permission to edit this user!');
+      }
+    } catch(e) {
       Alert.alert('You do not have permission to edit this user!');
     }
   }

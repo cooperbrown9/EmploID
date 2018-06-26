@@ -70,8 +70,30 @@ class LoginScreen extends Component {
     })
   }
 
-  forgotPassword() {
+  presentForgotPassword() {
     this.setState({ forgotPWPresented: true });
+  }
+
+  resetPassword() {
+    let email = {
+      'email': this.state.email
+    }
+    API.resetPassword(email, (err, status) => {
+      if(err) {
+        this.setState({ forgotPWPresented: false }, () => {
+          setTimeout(() => {
+            Alert.alert('Your password could not be reset at this time!');
+
+          }, 1000)
+        })
+      } else {
+        this.setState({ forgotPWPresented: false }, () => {
+          setTimeout(() => {
+            Alert.alert('Check your email for instructions!');
+          }, 1000)
+        })
+      }
+    })
   }
 
   textInputFactory(placeholder, onTextChange, value, canEdit=true, keyboard='default', secure=false) {
@@ -115,7 +137,7 @@ class LoginScreen extends Component {
             </View>
           </View>
 
-          <Text onPress={() => this.forgotPassword()} style={styles.forgotPW}>Forgot Password?</Text>
+          <Text onPress={() => this.presentForgotPassword()} style={styles.forgotPW}>Forgot Password?</Text>
 
           <View style={styles.buttonContainer} >
             <SubmitButton bgColor={'black'} onPress={this.login} title={'LOGIN'} />
@@ -125,6 +147,8 @@ class LoginScreen extends Component {
             <ForgotPassword
               email={this.state.email}
               setEmail={(email) => this.setState({ email: email })}
+              resetPassword={this.resetPassword.bind(this)}
+              dismiss={() => this.setState({ forgotPWPresented: false })}
             />
           </Modal>
 
@@ -164,7 +188,7 @@ const styles = StyleSheet.create({
   forgotPW: {
     textAlign: 'center',
     fontSize: 18, fontFamily: 'roboto-regular',
-    color: 'white'
+    color: 'black'
   },
   // input: {
   //   flex: 1,
