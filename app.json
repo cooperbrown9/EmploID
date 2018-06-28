@@ -6,9 +6,9 @@
     "privacy": "public",
     "sdkVersion": "24.0.0",
     "platforms": ["ios", "android"],
-    "version": "1.2.3",
+    "version": "1.2.4",
     "orientation": "portrait",
-    "icon": "./assets/images/logo-1.png",
+    "icon": "./assets/images/logo-1-no-alpha.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
