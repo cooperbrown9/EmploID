@@ -32,9 +32,6 @@ import { Camera, Permissions } from 'expo';
 
 class HomeScreen extends Component {
 
-
-// TODO
-
 // TODO if cant create, change Alert from clicking employee tab without
 // locations to say "you need to be added to restaurants"
   constructor() {
@@ -83,6 +80,10 @@ class HomeScreen extends Component {
         for(let i = 0; i < relations.length; i++) {
           places.push({ 'placeID': relations[i].place_id });
         }
+        // debugger
+
+
+
 
         let sender = {
           "places": places
@@ -92,10 +93,22 @@ class HomeScreen extends Component {
           if(e2) {
             this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
           } else {
+            // isToggled is used for determining if the item is open or not
+            locations.map((l) => { l.isToggled = false });
+
             DataBuilder.assignRelationsToPlaces(relations, locations, (locationsWithRelations) => {
               let sortedLocationsWithRelations = this.alphabetizePlaces(locationsWithRelations);
 
               this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: sortedLocationsWithRelations });
+              // FIXME poor mans finding if user can add employees
+              // it just checks to see if the user is a manager or owner at any of
+              // their locations
+              // let canCreateUsers = relations.find((r) => {
+              //   return r.role >= 1;
+              // })
+              // // if(canCreateUsers)
+              //
+              // this.props.dispatch({ type: AuthActions.UPDATE_USER_CAN_CREATE, canCreate: (canCreateUsers != null)})
               this.getUsers();
               // this.getUserCount();
             })
@@ -215,6 +228,28 @@ class HomeScreen extends Component {
     }
   }
 
+  _toggleLocationOptions = (place) => {
+    for(let i = 0; i < this.props.places.length; i++) {
+      if(this.props.places[i].relation.place_id === place._id) {
+        this.props.places[i].isToggled = !this.props.places[i].isToggled;
+        // debugger;
+        // var animationProps = {
+        //   type: 'timing',
+        //   // springDamping: 0.8,
+        //   property: 'opacity'
+        // }
+        //
+        // var animationConfig = {
+        //   duration: 250,
+        //   create: animationProps,
+        //   update: animationProps
+        // }
+        // LayoutAnimation.configureNext(animationConfig);
+        this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: this.props.places });
+      }
+    }
+  }
+
   _dismissEmployeeModal = () => {
     this.setState({ employeeFormPresented: false });
   }
@@ -225,11 +260,9 @@ class HomeScreen extends Component {
 
   addPressed = () => {
     if(this.props.indexOn === 0) {
-      // this.setState({ placeFormPresented: true });
       this.props.dispatch({ type: NavActions.RESTAURANT_FORM, onBack: () => this.refreshData() });
     } else {
       this.props.dispatch({ type: NavActions.EMPLOYEE_FORM, onBack: () => this.refreshData() });
-      // this.setState({ employeeFormPresented: true });
     }
   }
 
@@ -371,11 +404,11 @@ class HomeScreen extends Component {
             ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ textAlign:'center', fontSize: 20, fontFamily: 'roboto-bold', color: Colors.MID_GREY}}>Add a Restaurant before you add employees!</Text>
               </View>
-            : <RestaurantScreen search={(text) => this._searchLocations(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
+            : <RestaurantScreen toggleOptions={(place) => this._toggleLocationOptions(place)} search={(text) => this._searchLocations(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
           : <EmployeeScreen search={(text) => this._searchEmployees(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
         }
 
-        {(this.props.role === 1)
+        {(this.props.role >= 1)
           ? <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
               <Image style={{height:64,width:64, tintColor:'black'}} source={require('../../assets/icons/plus.png')} />
             </TouchableOpacity>

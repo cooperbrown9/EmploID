@@ -1,25 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl, Animated, LayoutAnimation } from 'react-native';
 import {SearchBar} from 'react-native-elements';
 import { BLUE, DARK_GREY, BACKGROUND_GREY, MID_GREY } from '../constants/colors';
 import { callPhoneNumber } from '../util';
 
 const RestaurantScreen = (props) => (
+  <View style={styles.container}>
+    <SearchBar lightTheme placeholder='Search' style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />
+    <ScrollView
+      contentContainerStyle={{marginRight: 8, marginLeft: 8}}
+      refreshControl={
+        <RefreshControl refreshing={props.isRefreshing} onRefresh={props.onRefresh} />
+      }
+    >
 
-
-    <View style={styles.container}>
-      <SearchBar lightTheme placeholder='Search' style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />
-      <ScrollView
-        contentContainerStyle={{marginRight: 8, marginLeft: 8}}
-        refreshControl={
-          <RefreshControl refreshing={props.isRefreshing} onRefresh={props.onRefresh} />
-        }
-      >
-
-        {props.places.map((place) => (
-          <TouchableOpacity style={styles.restaurantItem} key={place._id} onPress={() => props.openProfile(place)} >
+      {props.places.map((place) => (
+          <TouchableOpacity style={styles.restaurantItem} onPress={() => props.openProfile(place)} >
 
             <View style={styles.restaurantInfo}>
               <Text style={styles.nameText}>{place.name}</Text>
@@ -31,11 +29,11 @@ const RestaurantScreen = (props) => (
               </TouchableOpacity>
             </View>
           </TouchableOpacity>
-        ))}
+      ))}
 
-      </ScrollView>
+    </ScrollView>
 
-    </View>
+  </View>
 )
 // this goes right below the right container
   // <View style={{flexDirection: 'row'}} >
@@ -43,13 +41,29 @@ const RestaurantScreen = (props) => (
   // <Text style={styles.userCount}>: 100</Text>
   // </View>
 
+RestaurantScreen.toggleOptions = function(place, props) {
+  props.toggleOptions(place);
+  var animationProps = {
+    type: 'timing',
+    // springDamping: 0.8,
+    property: 'opacity'
+  }
+
+  var animationConfig = {
+    duration: 250,
+    create: animationProps,
+    update: animationProps
+  }
+  LayoutAnimation.configureNext(animationConfig);
+}
 
 RestaurantScreen.propTypes = {
   places: PropTypes.array,
   openProfile: PropTypes.func,
   isRefreshing: PropTypes.bool,
   onRefresh: PropTypes.func,
-  search: PropTypes.func
+  search: PropTypes.func,
+  toggleOptions: PropTypes.func
 };
 
 const styles = StyleSheet.create({

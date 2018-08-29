@@ -51,7 +51,8 @@ class LoadScreen extends Component {
           user: response.user,
           sessionID: response.session_id,
           userID: response.user._id,
-          role: response.user.can_create_places
+          role: response.user.can_create_places,
+          canCreatePlaces: response.user.can_create_places
         });
         return this.props.dispatch({ type: 'START_HOME' });
       }

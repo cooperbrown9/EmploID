@@ -12,3 +12,4 @@ export const SET_EMPLOYEES = 'data/set-employees';
 export const SET_LOCATIONS = 'data/set-locations';
 export const SET_DISCOUNTS = 'data/set-discounts';
 export const SET_LOCATIONS_RELATIONS = 'data/set-location-relations';
+export const UPDATE_USER_CAN_CREATE = 'data/update-user-can-create';

@@ -23,9 +23,12 @@ import * as DataBuilder from '../api/data-builder';
 import * as ErrorManager from '../util/error-manager';
 
 import SubmitButton from '../ui-elements/submit-button';
+import DataButton from '../ui-elements/data-button';
 import SubmitButtonCounter from '../ui-elements/submit-button-counter';
 import RoundButton from '../ui-elements/round-button';
 import LoadingOverlay from '../ui-elements/loading-overlay';
+
+import CameraScreen from '../camera/camera-screen';
 
 class EmployeeForm extends Component {
   static navigationOptions = {
@@ -281,6 +284,11 @@ class EmployeeForm extends Component {
     }
   }
 
+  setCameraRef(ref) {
+    debugger;
+    this.camera = ref;
+  }
+
   render() {
     return(
       <View style={{flex: 1}}>
@@ -369,9 +377,10 @@ class EmployeeForm extends Component {
 
 
           <View style={styles.submitContainer} >
-            <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addLocationsPresented: true }) } >
-              <View style={{position:'absolute',right:16,height:16,top:8,backgroundColor:'yellow'}}></View>
-            </SubmitButton>
+            <DataButton title={'ADD RESTAURANTS'} onPress={() => this.setState({addLocationsPresented:true})} data={this.state.selectedPlaces.length} />
+            {/*<SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addLocationsPresented: true }) } >
+              <View style={{height:64,width:64,backgroundColor:'yellow',zIndex:11000}}></View>
+            </SubmitButton>*/}
           </View>
           <View style={styles.submitContainer} >
             <SubmitButton
@@ -382,8 +391,6 @@ class EmployeeForm extends Component {
             />
           </View>
 
-
-
           <View style={{height: 64}}/>
         </KeyboardAwareScrollView>
         {(this.props.isLoading)
@@ -392,18 +399,11 @@ class EmployeeForm extends Component {
         }
       </ScrollView>
       {(this.state.cameraPermission)
-        ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
-            <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
-              <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
-                <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >
-                  <Image style={{height:32, width:32,tintColor:'white'}} source={require('../../assets/icons/cancel.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this.takePicture} style={{height:64,width:128,borderRadius:16, backgroundColor:Colors.BLUE,justifyContent:'center',alignItems:'center' }} >
-                  <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../assets/icons/camera.png')} />
-                </TouchableOpacity>
-              </View>
-            </Camera>
-          </View>
+        ? <CameraScreen
+            setRef={(ref) => this.setCameraRef(ref)}
+            onCancel={() => this.setState({cameraPermission:false})}
+            onSnap={this.takePicture.bind(this)}
+          />
         : null
       }
     </View>

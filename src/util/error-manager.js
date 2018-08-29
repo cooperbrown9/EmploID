@@ -21,7 +21,6 @@ export function handleCreateError(status, callback) {
 }
 
 export function handleLoginError(status, callback) {
-  debugger;
   switch(status) {
     case 401:
       callback('Invalid username or password');

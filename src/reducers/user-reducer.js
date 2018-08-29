@@ -57,6 +57,14 @@ export default function user (state = initialState, action) {
         myDiscounts: action.discounts
       }
 
+    // this was put in literally just to handle updating the canCreateEmployees
+    // functionality, this will change eventually
+    case UserActions.UPDATE_USER_CAN_CREATE:
+      return {
+        ...state,
+        canCreateUsers: action.canCreate
+      }
+
     default:
       return state;
   }

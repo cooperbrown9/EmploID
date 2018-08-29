@@ -16,6 +16,7 @@ import * as API from '../api/api';
 
 import RestaurantFormAddEmployee from './RestaurantFormAddEmployee';
 import SubmitButton from '../ui-elements/submit-button';
+import DataButton from '../ui-elements/data-button';
 import RoundButton from '../ui-elements/round-button';
 import { checkEmail } from '../util';
 
@@ -100,26 +101,6 @@ class RestaurantForm extends Component {
     }
 
     this.submitHelper(data);
-
-    // if(data.imageURI == null) {
-    //   this.submitHelper(data);
-    // } else {
-    //   var img = new FormData();
-    //   img.append('file', {
-    //     uri: data.imageURI,
-    //     type: 'image/png',
-    //     name: 'testpic'
-    //   });
-    //   API.uploadImage(img, (err, newImage) => {
-    //     if(err) {
-    //       console.log(err);
-    //       this.props.dispatch({ type: LoadingActions.STOP_LOADING });
-    //     } else {
-    //       data.imageURL = newImage;
-    //       this.submitHelper(data);
-    //     }
-    //   })
-    // }
   }
 
   submitHelper = (data) => {
@@ -272,27 +253,11 @@ class RestaurantForm extends Component {
             <OptionViewSplit options={this.state.positionOptions} selectOption={(index) => this.positionSelected(index)} />
           </View>
 
-          {/*
-          <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
-            {(this.state.place.imageURI == null)
-              ? <Image source={require('../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
-            : <Image source={{uri:this.state.place.imageURI}} style={styles.image} />
-
-            }
-          </TouchableOpacity>
-          <Text style={styles.imageText}>Upload Restaurant Image</Text>
-
-          <View style={styles.submitContainer} >
-            <SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addEmployeeFormPresented: true }) } />
-          </View>
-          */}
-
           <TouchableOpacity style={styles.submitContainer} >
-            <SubmitButton
+            <DataButton
               title={'ADD EMPLOYEES'}
               onPress={() => this.handleAddEmployees()}
-              hasBGColor={true}
-              bgColor={Colors.BLUE}
+              data={this.state.employees.length}
             />
           </TouchableOpacity>
 
