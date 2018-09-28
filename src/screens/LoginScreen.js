@@ -16,6 +16,7 @@ import ForgotPassword from './ForgotPassword';
 import * as Keys from '../constants/keys';
 import * as NavActions from '../action-types/nav-action-types';
 import * as AuthActions from '../action-types/auth-action-types';
+import * as PermissionActions from '../action-types/permission-action-types';
 
 class LoginScreen extends Component {
 
@@ -65,6 +66,8 @@ class LoginScreen extends Component {
           userID: response.user._id,
           role: response.user.can_create_places
         });
+        this.props.dispatch({ type: PermissionActions.SET_IS_PLACE_CREATOR, isCreator: response.user.can_create_places });
+
         this.props.dispatch({ type: NavActions.HOME });
       }
     })

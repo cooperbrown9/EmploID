@@ -27,9 +27,11 @@ const LocationsTab = (props) => (
               <Text style={styles.nameText}>{model.name}</Text>
               <Text style={styles.addyText}>{model.address}</Text>
             </View>
+            {/*
             <TouchableOpacity style={styles.phoneContainer} onPress={() => callPhoneNumber(model.phone)} >
               <Image style={styles.phone} resizeMode={'containg'} source={require('../../../assets/icons/phone-circle.png')} />
             </TouchableOpacity>
+            */}
 
           </TouchableOpacity>
         )}

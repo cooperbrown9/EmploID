@@ -232,7 +232,9 @@ var mapStateToProps = state => {
   return {
     user: state.user.user,
     sessionID: state.user.sessionID,
-    places: state.user.myLocations
+    places: state.user.myLocations.filter((loc) => {
+      return loc.relation.role >= 1;
+    })
   }
 }
 

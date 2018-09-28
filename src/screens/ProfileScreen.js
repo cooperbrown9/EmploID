@@ -17,6 +17,7 @@ import DiscountModal from './DiscountModal';
 import UserPermissionModal from './UserPermissionModal';
 import CreateUserNoteForm from './CreateUserNoteForm';
 import ImageScreen from './ImageScreen';
+import EmployeeFormAddLocationEdit from './edit/EmployeeFormAddLocationEdit';
 
 import { uploadImage } from '../api/image-handler';
 
@@ -48,6 +49,7 @@ class ProfileScreen extends Component {
   }
 
   state = {
+    editPlacesPresented: false,
     editModalPresented: false,
     discountModalPresented: false,
     userPermissionModalPresented: false,
@@ -290,6 +292,21 @@ class ProfileScreen extends Component {
     }
   }
 
+  _presentEditPlaces() {
+    this.setState({ editPlacesPresented: true });
+  }
+
+  editPlacesButton() {
+    return null;
+    if(this.props.indexOn === 1 && this.state.canEdit) {
+      return(
+        <View style={styles.editPlaces} >
+          <RoundButton onPress={() => this._presentEditPlaces()} imagePath={require('../../assets/icons/pencil.png')} />
+        </View>
+      )
+    }
+  }
+
   addNoteButton() {
     if(this.props.indexOn === 3) {
       return (
@@ -417,7 +434,8 @@ class ProfileScreen extends Component {
             >
 
               <View style={styles.screenContainer} >
-                {this.addNoteButton()}
+              {this.addNoteButton()}
+              {this.editPlacesButton()}
              {(this.props.indexOn === 0)
                 ? <ProfileTab />
                 : (this.props.indexOn === 1)
@@ -453,6 +471,15 @@ class ProfileScreen extends Component {
           <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} onDismiss={() => this.refreshUser()}>
             <UserPermissionModal updatePermission={(role, location, positions) => this._updateUserPermissions(role, location, positions)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
           </Modal>
+
+          {/*
+          <Modal animationType={'slide'} transparent={false} visible={this.state.editPlacesPresented} >
+            <EmployeeFormAddLocationEdit
+              dismiss={() => this.setState({ editPlacesPresented: false })}
+              addLocation={(places) => this.updatePlaces(places)}
+            />
+          </Modal>
+          */}
 
           {(this.state.cameraPermission)
             ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0, zIndex:11000}}>
@@ -536,7 +563,7 @@ const styles = StyleSheet.create({
     zIndex: 1001
   },
   cameraButton: {
-    position: 'absolute', right: 20, top: 108, zIndex: 1001
+    position: 'absolute', right: 20, top: 116, zIndex: 1001
   },
   addNote: {
     position: 'absolute',

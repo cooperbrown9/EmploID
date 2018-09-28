@@ -12,6 +12,7 @@ import locationTab from './location-tab-reducer';
 import loading from './loading-reducer';
 import detail from './detail-reducer';
 import spotlight from './spotlight-reducer';
+import permission from './permission-reducer';
 
 export default MainReducer = combineReducers({
   nav,
@@ -24,5 +25,6 @@ export default MainReducer = combineReducers({
   locationTab,
   loading,
   detail,
-  spotlight
+  spotlight,
+  permission
 });

@@ -285,11 +285,11 @@ class EmployeeFormEdit extends Component {
             </TouchableOpacity>
             <Text style={styles.imageText}>Upload Employee Image</Text>
 
-            {/*
+            {/**/
             <View style={styles.submitContainer} >
               <SubmitButton title={'EDIT RESTAURANTS'} onPress={() => this.setState({ addLocationsPresented: true }) } />
             </View>
-            */}
+            /**/}
             <View style={styles.submitContainer} >
               <SubmitButton title={'UPDATE EMPLOYEE'} onPress={() => this.submit()} />
             </View>

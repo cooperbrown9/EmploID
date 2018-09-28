@@ -53,6 +53,16 @@ export function toPhoneNumber(num) {
 //   )
 // }
 
+export function checkCanCreateUsers(relations) {
+  let canCreate = false;
+  relations.forEach((r) => {
+    if(r.role >= 1) {
+      canCreate = true;
+    }
+  });
+  return canCreate;
+}
+
 export function alphabetizeUsers(users) {
   let sorted = _.sortBy(users, 'first_name');
   return sorted;

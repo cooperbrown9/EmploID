@@ -6,6 +6,7 @@ import axios from 'axios';
 import * as Keys from '../constants/keys';
 import * as AuthActions from '../action-types/auth-action-types';
 import * as NavActions from '../action-types/nav-action-types';
+import * as PermissionActions from '../action-types/permission-action-types';
 import * as API from '../api/api';
 
 class LoadScreen extends Component {
@@ -54,6 +55,7 @@ class LoadScreen extends Component {
           role: response.user.can_create_places,
           canCreatePlaces: response.user.can_create_places
         });
+        this.props.dispatch({ type: PermissionActions.SET_IS_PLACE_CREATOR, isCreator: response.user.can_create_places });
         return this.props.dispatch({ type: 'START_HOME' });
       }
     })

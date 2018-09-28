@@ -153,6 +153,10 @@ class EmployeeForm extends Component {
 
   roleSelected = (index) => {
     OptionView.selected(this.state.roleOptions, index, (arr) => {
+      // if it was the 1st index (YES), then make it 2 because that indicates owner
+      if(index === 1) {
+        index = 2;
+      }
       this.setState({ roleOptions: arr, employee: {...this.state.employee, role: index } });
     });
   }
@@ -285,7 +289,6 @@ class EmployeeForm extends Component {
   }
 
   setCameraRef(ref) {
-    debugger;
     this.camera = ref;
   }
 

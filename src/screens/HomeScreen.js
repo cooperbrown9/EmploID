@@ -10,13 +10,14 @@ import * as NavActions from '../action-types/nav-action-types';
 import * as AuthActions from '../action-types/auth-action-types';
 import * as ProfileActions from '../action-types/employee-profile-action-types';
 import * as DetailActions from '../action-types/detail-action-types';
+import * as PermissionActions from '../action-types/permission-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
 import * as Keys from '../constants/keys';
 import * as ErrorManager from '../util/error-manager';
 import * as SpotlightActions from '../action-types/spotlight-action-types';
-
+import * as util from '../util';
 import axios from 'axios';
 
 import EmployeeScreen from './EmployeeScreen.js';
@@ -41,6 +42,7 @@ class HomeScreen extends Component {
     this.alphabetizePlaces = alphabetizePlaces.bind(this);
 
     this.state = {
+      canCreateUsers: false,
       filterPresented: false,
       employeeFormPresented: false,
       placeFormPresented: false,
@@ -76,14 +78,15 @@ class HomeScreen extends Component {
       if(e1) {
         this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
       } else {
+        // checks if user is manager or owner at any of their locations
+        let canCreateUsers = util.checkCanCreateUsers(relations);
+        this.props.dispatch({ type: PermissionActions.SET_IS_USER_CREATOR, isCreator: canCreateUsers });
+
         let places = [];
         for(let i = 0; i < relations.length; i++) {
           places.push({ 'placeID': relations[i].place_id });
+
         }
-        // debugger
-
-
-
 
         let sender = {
           "places": places
@@ -359,6 +362,24 @@ class HomeScreen extends Component {
     });
   }
 
+  checkCreatePermission() {
+    // loop thru all relations and check if any of them are >= 1
+    // if so, display the add icon only on employees
+    let addButton = (
+      <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
+          <Image style={{height:64,width:64, tintColor:'black'}} source={require('../../assets/icons/plus.png')} />
+      </TouchableOpacity>
+    );
+
+    if(this.props.indexOn === 0 && this.props.canCreatePlaces) {
+      return addButton;
+    }
+
+    if(this.props.indexOn === 1 && this.props.canCreateUsers) {
+      return addButton;
+    }
+  }
+
   clearKeys() {
     // return;
     AsyncStorage.removeItem(Keys.SESSION_ID, () => {
@@ -409,12 +430,14 @@ class HomeScreen extends Component {
           : <EmployeeScreen search={(text) => this._searchEmployees(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
         }
 
-        {(this.props.role >= 1)
+        {this.checkCreatePermission()}
+
+        {/*(this.props.role >= 1)
           ? <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
               <Image style={{height:64,width:64, tintColor:'black'}} source={require('../../assets/icons/plus.png')} />
             </TouchableOpacity>
           : null
-        }
+        */}
 
         {
         <TouchableOpacity onPress={() => this._presentFilterModal()} style={styles.filterButton} >
@@ -481,7 +504,9 @@ var mapStateToProps = state => {
     needReload: state.loading.needReload,
     isLoading: state.loading.isLoading,
     spotlightOn: state.spotlight.isOn,
-    spotlightUsers: state.spotlight.users
+    spotlightUsers: state.spotlight.users,
+    canCreateUsers: state.permission.isUserCreator,
+    canCreatePlaces: state.permission.isPlaceCreator
   }
 }
 
