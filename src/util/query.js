@@ -3,21 +3,26 @@ import * as _ from 'lodash';
 import * as API from '../api/api';
 
 export function query(data, callback) {
+  // filter out duplicate IDs
   data.userIDs = _.uniqBy(data.userIDs, 'userID');
+
+  // simplify the array to just the IDs, rather than the whole object
   data.userIDs = _.map(data.userIDs, (u) => {
     return u.userID;
-  })
-  if(data.location != null) {
-    queryWithLocation(data, callback);
-  } else {
-    queryWithoutLocation(data, callback);
-  }
+  });
+
+  queryWithLocation(data, callback);
+
+  // logic is complex because of database, so different functions for querying
+  // with or without location
+  // if(data.location != null) {
+  //   queryWithLocation(data, callback);
+  // } else {
+  //   queryWithLocation(data, callback);
+  // }
 }
 
-function queryWithoutLocation(data, callback) {
-
-}
-
+// this header is misleading
 function queryWithLocation(data, callback) {
   let sender = {
     'users': data.userIDs,
@@ -25,7 +30,7 @@ function queryWithLocation(data, callback) {
     'placeID': data.location
   }
 
-  API.queryByPosition(sender, (e1, relations) => {
+  API.queryUsersWithPlace(sender, (e1, relations) => {
     if(e1) {
       console.log(e1);
       callback(e1);

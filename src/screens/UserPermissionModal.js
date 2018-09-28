@@ -86,7 +86,7 @@ class UserPermissionModal extends Component {
           <RoundButton onPress={this.dismiss} imagePath={require('../../assets/icons/check.png')} />
         </View>
         <ScrollView style={styles.container} >
-          <View style={{height:116}} />
+          <View style={{height:140}} />
 
 
           <Text style={styles.nameHeader}>{this.props.employee.first_name} {this.props.employee.last_name}</Text>

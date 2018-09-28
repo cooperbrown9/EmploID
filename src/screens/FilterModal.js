@@ -95,11 +95,11 @@ class FilterModal extends Component {
     }
 
     query.query(data, (err, users) => {
-      this.filterCleanup(err, users);
+      this.dispatchResults(err, users);
     })
   }
 
-  filterCleanup(err, users) {
+  dispatchResults(err, users) {
     if(err) {
       Alert.alert('There was a problem filtering! Please check your connection and try again.');
     } else {

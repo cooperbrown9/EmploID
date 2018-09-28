@@ -45,6 +45,7 @@ const VERIFY_SESSION_GET_USER = '/verify-session-get-user';
 
 const QUERY_WITH_PLACE = '/query-with-place';
 const QUERY_BY_POSITION = '/query-by-position';
+const QUERY_USERS_WITH_PLACE = '/query-users-with-place';
 
 const LOGIN_USER = '/login';
 
@@ -264,6 +265,12 @@ export function queryWithPlace(data, callback) {
 
 export function queryByPosition(data, callback) {
   axios.post(BASE + QUERY_BY_POSITION, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function queryUsersWithPlace(data, callback) {
+  axios.post(BASE + QUERY_USERS_WITH_PLACE, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

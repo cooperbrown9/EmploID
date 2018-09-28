@@ -138,6 +138,7 @@ class HomeScreen extends Component {
       } else {
 
         // pull userIDs off so it can be sent to the server
+        // userIDs of all the relations
         let userIDs = [];
         for(let i = 0; i < relations.length; i++) {
           userIDs.push({ 'userID': relations[i].user_id });
