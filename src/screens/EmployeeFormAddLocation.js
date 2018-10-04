@@ -172,7 +172,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'//Colors.BACKGROUND_GREY
   },
   submitButton: {
-    marginLeft: 32, marginRight: 32, marginBottom: 32
+    marginLeft: 32, marginRight: 32, marginBottom: 32,
+    shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
   },
   container: {
     flex: 1

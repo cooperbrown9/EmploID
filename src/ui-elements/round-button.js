@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     width: 72,
     borderRadius: 36,
     backgroundColor: LIGHT_BLUE,    //'#155ade',
-  //  shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
+    shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
     alignItems: 'center',
     justifyContent: 'center',
   },

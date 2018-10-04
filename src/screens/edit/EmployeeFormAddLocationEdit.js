@@ -152,8 +152,6 @@ class EmployeeFormAddLocationEdit extends Component {
   }
 
   submit() {
-    // this.setState({ loading: true });
-
     let relationsToDelete = [];
     let relationsToCreate = [];
 

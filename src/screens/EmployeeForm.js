@@ -414,8 +414,6 @@ class EmployeeForm extends Component {
   }
 }
 
-
-
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,

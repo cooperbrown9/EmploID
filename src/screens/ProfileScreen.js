@@ -242,6 +242,7 @@ class ProfileScreen extends Component {
       this.props.dismiss();
     } else {
       this.props.dispatch({ type: NavActions.BACK });
+      this.props.dispatch({ type: EmployeeActions.RESET });
     }
   }
 
@@ -297,10 +298,9 @@ class ProfileScreen extends Component {
   }
 
   editPlacesButton() {
-    return null;
     if(this.props.indexOn === 1 && this.state.canEdit) {
       return(
-        <View style={styles.editPlaces} >
+        <View style={styles.editPlacesButton} >
           <RoundButton onPress={() => this._presentEditPlaces()} imagePath={require('../../assets/icons/pencil.png')} />
         </View>
       )
@@ -397,7 +397,7 @@ class ProfileScreen extends Component {
               {(this.props.employee.image_url)
                 ? <Image style={styles.profilePic} source={{ uri: this.props.employee.image_url }} />
                 : <View style={styles.profilePicEmpty}>
-                    <Text style={{fontSize:32,fontFamily:'roboto-bold',textAlign:'center', color:'gray'}}>No Image</Text>
+                    <Text style={{fontSize:32,fontFamily:'roboto-bold',textAlign:'center', color:'gray'}}></Text>
                   </View>
               }
 
@@ -472,14 +472,14 @@ class ProfileScreen extends Component {
             <UserPermissionModal updatePermission={(role, location, positions) => this._updateUserPermissions(role, location, positions)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
           </Modal>
 
-          {/*
+          {
           <Modal animationType={'slide'} transparent={false} visible={this.state.editPlacesPresented} >
             <EmployeeFormAddLocationEdit
               dismiss={() => this.setState({ editPlacesPresented: false })}
               addLocation={(places) => this.updatePlaces(places)}
             />
           </Modal>
-          */}
+          }
 
           {(this.state.cameraPermission)
             ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0, zIndex:11000}}>
@@ -529,6 +529,7 @@ const styles = StyleSheet.create({
   infoContainer0: {
     position: 'absolute',
     left: 16, right: 16, top: -150,
+    // bottom: 100,
     zIndex: 1001
   },
   infoContainer: {
@@ -539,6 +540,10 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     flexDirection: 'column'
+  },
+  editPlacesButton: {
+    position: 'absolute',
+    right: 16, top: 16, zIndex: 10001
   },
   profilePicContainer: {
     // height: FRAME.height / 2 + 32, backgroundColor:'yellow'

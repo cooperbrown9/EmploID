@@ -36,14 +36,15 @@ const styles = StyleSheet.create({
     flex: 1, borderRadius: 8,
     marginLeft: 12, marginRight: 12, marginBottom: 64,
     backgroundColor: Colors.MID_GREY,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
   },
   placeContainerOn: {
     flex: 1, borderRadius: 8,
     marginLeft: 12, marginRight: 12, marginBottom: 64,
     backgroundColor: 'white',//Colors.BACKGROUND_GREY,
     overflow: 'hidden',
-    shadowColor: Colors.DARK_GREY, shadowOffset: { width: 0, height: 32 }, shadowRadius: 16, shadowOpacity: 1.0
+    shadowColor: Colors.DARK_GREY, shadowOffset: { width: 0, height: 32 }, shadowRadius: 16, shadowOpacity: 0.2
   },
   optionContainer: {
     justifyContent: 'center',

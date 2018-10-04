@@ -473,7 +473,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
     left: 16, bottom: 16, borderRadius: 32,
     height: 64, width: FRAME.width / 2 - 32,
-    backgroundColor: Colors.MID_GREY
+    backgroundColor: Colors.MID_GREY,
+    shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
   },
   filterText: {
     fontFamily: 'roboto-bold', fontSize: 18,
@@ -484,7 +485,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
     right: 16, bottom: 16,
     height: 64, width: 64,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
   },
   tabContainer: {
     height: (FRAME.height === 812) ? 84 : 72

@@ -209,12 +209,13 @@ class EmployeeFormEdit extends Component {
           <View style={{height:124}} />
           <View style={styles.container} >
 
-            <Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
+            {/*<Modal animationType={'slide'} transparent={false} visible={this.state.addLocationsPresented} >
               <EmployeeFormAddLocationEdit
                 dismiss={(callback) => this.setState({ addLocationsPresented: false }) }
                 addLocations={(places) => this.setState({ employee: { ...this.state.employee, places: places }}) }
               />
             </Modal>
+            */}
 
 
             <Text style={styles.textHeader} >First Name</Text>
@@ -285,11 +286,11 @@ class EmployeeFormEdit extends Component {
             </TouchableOpacity>
             <Text style={styles.imageText}>Upload Employee Image</Text>
 
-            {/**/
+            {/*
             <View style={styles.submitContainer} >
               <SubmitButton title={'EDIT RESTAURANTS'} onPress={() => this.setState({ addLocationsPresented: true }) } />
             </View>
-            /**/}
+            */}
             <View style={styles.submitContainer} >
               <SubmitButton title={'UPDATE EMPLOYEE'} onPress={() => this.submit()} />
             </View>

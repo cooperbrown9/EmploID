@@ -45,11 +45,13 @@ export default function employeeTab(state = initialState, action) {
         editOpen: true
       }
 
+    case EmpActions.RESET:
+      return initialState;
+
     case EmpActions.GET_EMPLOYEE_ID:
       return {
         ...state,
         employeeID: action.employeeID
-
       }
 
     default:

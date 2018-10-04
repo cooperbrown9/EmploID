@@ -5,5 +5,6 @@ export const OPEN_NOTES = 'emp/notes';
 
 export const GO_BACK = 'emp/back';
 export const EDIT_PROFILE = 'emp/edit_profile';
+export const RESET = 'emp/clear';
 
-export const GET_EMPLOYEE_ID = 'emp/get_employee_id'; 
+export const GET_EMPLOYEE_ID = 'emp/get_employee_id';

@@ -41,7 +41,8 @@ const styles =  StyleSheet.create({
     borderRadius: 16,
     backgroundColor: BLUE,
     justifyContent: 'center',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
   },
   text: {
     textAlign: 'center',
