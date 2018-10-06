@@ -29,6 +29,7 @@ class RestaurantForm extends Component {
     super();
 
     this.checkEmail = checkEmail.bind(this);
+    this.inputs = [];
 
     this.state = {
       place: {
@@ -174,7 +175,7 @@ class RestaurantForm extends Component {
 
   }
 
-  textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default') {
+  textInputFactory(placeholder, onTextChange, value, capitalize = true, keyboard = 'default', inputIndex) {
     return (
       <TextInput
         placeholder={placeholder}
@@ -184,8 +185,16 @@ class RestaurantForm extends Component {
         autoCorrect={false} autoCapitalize={(capitalize) ? 'words' : 'none'}
         onChangeText={(text) => onTextChange(text)}
         value={(this.props.edit) ? value : null}
+        onSubmitEditing={() => this.nextInput(inputIndex)}
+        ref={ref => this.inputs.push(ref)}
       />
     )
+  }
+
+  nextInput = (index) => {
+    if(index !== 3) {
+      this.inputs[index + 1].focus();
+    }
   }
 
   getCameraPermission = async() => {
@@ -227,25 +236,25 @@ class RestaurantForm extends Component {
           <Text style={styles.textHeader} >Restaurant Name</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Name', (text) => this.setState({ place: {...this.state.place, name: text}}), this.state.place.name)
+              this.textInputFactory('Name', (text) => this.setState({ place: {...this.state.place, name: text}}), this.state.place.name, undefined, undefined, 0)
             }
           </View>
 
           <Text style={styles.textHeader} >Address</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Address', (text) => this.setState({ place: {...this.state.place, address: text}}), this.state.place.address)
+              this.textInputFactory('Address', (text) => this.setState({ place: {...this.state.place, address: text}}), this.state.place.address, undefined, undefined, 1)
             }
           </View>
 
           <Text style={styles.textHeader} >Email</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('hello@restaurant.com', (text) => this.setState({ place: {...this.state.place, email: text}, incomplete: false}), this.state.place.email, false, 'email-address')}
+            {this.textInputFactory('hello@restaurant.com', (text) => this.setState({ place: {...this.state.place, email: text}, incomplete: false}), this.state.place.email, false, 'email-address', 2)}
           </View>
 
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone, true, 'numeric')}
+            {this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone, true, 'numeric', 3)}
           </View>
 
           <Text style={styles.textHeader}>Choose Positions</Text>

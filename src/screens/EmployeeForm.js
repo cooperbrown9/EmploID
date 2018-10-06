@@ -39,6 +39,7 @@ class EmployeeForm extends Component {
     super();
 
     this.checkEmail = checkEmail.bind(this);
+    this.inputs = [];
 
     this.state = {
       addLocationsPresented: false,
@@ -243,7 +244,7 @@ class EmployeeForm extends Component {
     });
   }
 
-  textInputFactory(placeholder, onTextChange, value, canEdit, capitalize = true, keyboard = 'default') {
+  textInputFactory(placeholder, onTextChange, value, canEdit, capitalize = true, keyboard = 'default', inputIndex) {
     return (
       <TextInput
         placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
@@ -252,24 +253,36 @@ class EmployeeForm extends Component {
         onChangeText={(text) => onTextChange(text)}
         value={(this.props.edit) ? value : null}
         editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
+        ref={ref => this.inputs.push(ref)}
+        onSubmitEditing={() => this.nextInput(inputIndex)}
       />
     )
   }
 
-  phoneInputFactory(placeholder, onTextChange, value, canEdit, capitalize = true, keyboard = 'default') {
-    return (
-      <MaskedInput
-        mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-        placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
-        selectionColor={Colors.BLUE} style={styles.input}
-        autoCorrect={false} autoCapitalize={(capitalize ? 'words' : 'none')}
-        onChangeText={(formatted, extracted) => onTextChange(extracted)}
-        value={(this.props.edit) ? value : null}
-        editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
-        mask={'+1([000][000]-[0000])'}
-      />
-    )
+  nextInput = (index) => {
+    if(index === 2) {
+      return;
+    }
+    
+    if(index !== 3) {
+      this.inputs[index + 1].focus();
+    }
   }
+
+  // phoneInputFactory(placeholder, onTextChange, value, canEdit, capitalize = true, keyboard = 'default') {
+  //   return (
+  //     <MaskedInput
+  //       mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+  //       placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
+  //       selectionColor={Colors.BLUE} style={styles.input}
+  //       autoCorrect={false} autoCapitalize={(capitalize ? 'words' : 'none')}
+  //       onChangeText={(formatted, extracted) => onTextChange(extracted)}
+  //       value={(this.props.edit) ? value : null}
+  //       editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
+  //       mask={'+1([000][000]-[0000])'}
+  //     />
+  //   )
+  // }
 
   getCameraPermission = async() => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -314,21 +327,21 @@ class EmployeeForm extends Component {
           <Text style={styles.textHeader} >First Name</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('First Name', (text) => this.setState({ employee: {...this.state.employee, firstName: text},formIncomplete:false}), this.state.employee.firstName, true)
+              this.textInputFactory('First Name', (text) => this.setState({ employee: {...this.state.employee, firstName: text},formIncomplete:false}), this.state.employee.firstName, true, undefined, undefined, 0)
             }
           </View>
 
           <Text style={styles.textHeader} >Last Name</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Last Name', (text) => this.setState({ employee: {...this.state.employee, lastName: text},formIncomplete:false}), this.state.employee.lastName, true)
+              this.textInputFactory('Last Name', (text) => this.setState({ employee: {...this.state.employee, lastName: text},formIncomplete:false}), this.state.employee.lastName, true, undefined, undefined, 1)
             }
           </View>
 
           <Text style={styles.textHeader} >Email</Text>
           <View style={styles.inputView} >
             {
-              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text},formIncomplete:false}), this.state.employee.email, true, false, 'email-address')
+              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text},formIncomplete:false}), this.state.employee.email, true, false, 'email-address', 2)
             }
           </View>
 
@@ -343,7 +356,7 @@ class EmployeeForm extends Component {
 
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text }}), this.state.employee.phone, true, false, 'phone-pad')}
+            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text }}), this.state.employee.phone, true, false, 'phone-pad', 3)}
           </View>
 
           <Text style={styles.textHeader} >Hire Date</Text>

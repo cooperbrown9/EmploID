@@ -11,7 +11,10 @@ const EmployeesTab = (props) => (
     <View style={styles.container}>
 
       {props.employees.map(model =>
-        <TouchableOpacity style={(model.relation.role === 0) ? styles.employeeItem : (model.relation.role === 1) ? styles.employeeItemManager : styles.employeeItemOwner} key={model._id} >
+        <TouchableOpacity
+          style={(model.relation.role === 0) ? styles.employeeItem : (model.relation.role === 1) ? styles.employeeItemManager : styles.employeeItemOwner} key={model._id}
+          onPress={() => props.onPress(model)}
+        >
           <Image style={styles.employeeImage} source={(model.image_url != "" || model.image_url != null ) ? { uri: model.image_url } : require('../../../assets/images/chef1.png')} />
           <View style={styles.employeeInfo}>
             <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.first_name} {model.last_name}</Text>
@@ -27,11 +30,13 @@ const EmployeesTab = (props) => (
 )
 
 EmployeesTab.propTypes = {
-  employees: PropTypes.array
+  employees: PropTypes.array,
+  onPress: PropTypes.func
 };
 
-EmployeesTab.defaultPropTypes = {
-  employees: []
+EmployeesTab.defaultProps = {
+  employees: [],
+  onPress: () => {}
 };
 
 const styles = StyleSheet.create({

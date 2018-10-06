@@ -68,7 +68,12 @@ export default function nav(state = loadState, action) {
 
     case NavActions.EMPLOYEE_PROFILE:
       newState = AppNavigator.router.getStateForAction(
-        NavigationActions.navigate({ routeName: 'Profile'}),
+        NavigationActions.navigate({
+          routeName: 'Profile',
+          params: {
+            dispatchFromPlace: (action.dispatchFromPlace != null) ? action.dispatchFromPlace : false
+          }
+        }),
         state
       );
       return newState;

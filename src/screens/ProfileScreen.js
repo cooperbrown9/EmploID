@@ -36,6 +36,9 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 
 const FRAME = Dimensions.get('window');
 
+// TODO make phone number not in touch zone
+// TODO make pressing enter go to next field on forms
+
 class ProfileScreen extends Component {
   static navigationOptions = {
     header: null,
@@ -60,6 +63,7 @@ class ProfileScreen extends Component {
     userPermissionModel: {},
     canEditProfile: false,
     cameraPermission: false,
+    dispatchFromPlace: false,
     newImageURI: null,
     cameraType: Camera.Constants.Type.back,
     beforeY: FRAME.height / 2,
@@ -70,7 +74,8 @@ class ProfileScreen extends Component {
 
   static propTypes = {
     dismiss: PropTypes.func,
-    isMyProfile: PropTypes.bool
+    isMyProfile: PropTypes.bool,
+    dispatchFromPlace: PropTypes.bool
   }
 
   // if something breaks check this out
@@ -84,15 +89,23 @@ class ProfileScreen extends Component {
       places: [],
       position: ''
     },
-    isMyProfile: false
+    isMyProfile: false,
+    dispatchFromPlace: false
   }
 
   componentDidMount () {
     this.getPlaces();
+    this.setState({ dispatchFromPlace: this.props.dispatchFromPlace });
   }
 
   componentWillUnmount() {
-    this.props.dispatch({ type: DetailActions.CLEAR });
+    // goBack() sets dispatchFromPlace to false prematurely, so put dispatchFromPlace
+    // on the state when props are ready, then just dont touch dispatchFromPlace on state
+    if(this.state.dispatchFromPlace) {
+      this.props.dispatch({ type: EmployeeActions.RESET });
+    } else {
+      this.props.dispatch({ type: DetailActions.CLEAR });
+    }
   }
 
   refreshUser = () => {
@@ -585,12 +598,21 @@ const styles = StyleSheet.create({
 });
 
 var mapStateToProps = state => {
+  // navigation with redux can mess up routes if they goback() or something,
+  // so putting these checks in here so it doesnt break
+  let dispatchFromPlace = false;
+
+  if(state.nav.routes[state.nav.routes.length-1].params != undefined) {
+    dispatchFromPlace = state.nav.routes[state.nav.routes.length-1].params.dispatchFromPlace;
+  }
+
   return {
     indexOn: state.employeeTab.indexOn,
     me: state.user.user,
     employee: state.detail.user,
     myLocations: state.user.myLocations,
-    locations: state.detail.locations
+    locations: state.detail.locations,
+    dispatchFromPlace: dispatchFromPlace
   }
 }
 

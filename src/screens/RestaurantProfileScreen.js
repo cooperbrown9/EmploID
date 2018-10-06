@@ -187,6 +187,12 @@ class RestaurantProfileScreen extends Component {
     return number;
   }
 
+  onSelectEmployee(employee) {
+    console.log(employee);
+    this.props.dispatch({ type: DetailActions.SET_USER, user: employee });
+    this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE, dispatchFromPlace: true });
+  }
+
   editProfileButton() {
     if(this.props.location.relation.role === 2 || this.props.location.relation.role === 1) {
       return (
@@ -261,7 +267,7 @@ class RestaurantProfileScreen extends Component {
           <View style={styles.screenContainer} >
             {this.addButton()}
        {(this.props.indexOn === 0)
-          ? <EmployeesTab />
+          ? <EmployeesTab onPress={(employee) => this.onSelectEmployee(employee)} />
           : (this.props.indexOn === 1)
             ? <DiscountsTab selectDiscount={(discount) => this._presentDiscountModal(discount)} />
             : (this.props.indexOn === 2)
@@ -312,6 +318,12 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto-bold', fontSize: 38,
     color: 'white',
     marginBottom: 16
+  },
+  infoContainer0: {
+    position: 'absolute',
+    left: 16, right: 16, top: -150,
+    // bottom: 100,
+    zIndex: 1001
   },
   infoContainer: {
     position: 'absolute',
