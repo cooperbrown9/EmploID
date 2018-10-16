@@ -488,7 +488,7 @@ class ProfileScreen extends Component {
           {
           <Modal animationType={'slide'} transparent={false} visible={this.state.editPlacesPresented} >
             <EmployeeFormAddLocationEdit
-              dismiss={() => this.setState({ editPlacesPresented: false })}
+              dismiss={() => this.setState({ editPlacesPresented: false }, () => this.refreshUser() )}
               addLocation={(places) => this.updatePlaces(places)}
             />
           </Modal>

@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     flex: 1,
-    marginTop: (FRAME.height === 812) ? 16 : 8
+    marginTop: (FRAME.height === 812 || FRAME.height === 896) ? 24 : 8
   },
   image: {
     width: 24, height: 24,

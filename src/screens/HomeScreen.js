@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert, Dimensions, AsyncStorage, Animated, LayoutAnimation } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert,
+  Dimensions, AsyncStorage, Animated, LayoutAnimation, Platform
+} from 'react-native';
 
 import { connect } from 'react-redux';
 
@@ -23,6 +25,7 @@ import axios from 'axios';
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
 
+import LoadingOverlay from '../ui-elements/loading-overlay';
 import FilterModal from './FilterModal';
 import EmployeeForm from './EmployeeForm';
 import PlaceForm from './RestaurantForm';
@@ -63,6 +66,8 @@ class HomeScreen extends Component {
 
   // figure out why locations and employees dont update
   componentDidMount() {
+    // console.log(Platform);
+    // console.log(FRAME.height)
     this.loadData();
   }
 
@@ -453,6 +458,12 @@ class HomeScreen extends Component {
           <ProfileScreen dismiss={() => this.setState({ myProfilePresented: false })} isMyProfile={true} />
         </Modal>
 
+        {/*(this.props.isLoading && !this.state.isRefreshing)
+          ? <LoadingOverlay />
+          : null
+        */}
+
+
       </View>
     )
   }
@@ -489,7 +500,7 @@ const styles = StyleSheet.create({
     shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
   },
   tabContainer: {
-    height: (FRAME.height === 812) ? 84 : 72
+    height: (FRAME.height === 812 || FRAME.height === 896) ? 84 : 72
   }
 });
 

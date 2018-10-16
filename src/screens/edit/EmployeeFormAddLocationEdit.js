@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
-    backgroundColor: Colors.BACKGROUND_GREY
+    backgroundColor: Colors.BACKGROUND_GREY, marginTop: 16
   },
   optionContainer: {
     justifyContent: 'center',

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+  import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, StyleSheet, Modal, TextInput, Image } from 'react-native';
 
@@ -279,9 +279,9 @@ class EmployeeFormEdit extends Component {
             </View>
 
             <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
-              {(this.state.employee.imageURL == null)
-                ? <Image source={require('../../../assets/icons/camera.png')} resizeMode={'center'} style={styles.imageEmpty} />
-              : <Image source={{uri:this.state.employee.imageURL}} style={styles.image} />
+              {(this.state.employee.imageURL == null || this.state.employee.imageURL == '')
+                ? <Image source={require('../../../assets/icons/camera.png')} resizeMode={'contain'} style={styles.imageEmpty} />
+                : <Image source={{uri:this.state.employee.imageURL}} style={styles.image} />
               }
             </TouchableOpacity>
             <Text style={styles.imageText}>Upload Employee Image</Text>
@@ -342,8 +342,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   imageEmpty: {
-    width: 140, height: 140,
-    borderRadius: 70,
+    width: 100, height: 100,
+    // borderRadius: 70,
     tintColor: Colors.BLUE
   },
   image: {
