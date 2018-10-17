@@ -211,14 +211,22 @@ class RestaurantProfileScreen extends Component {
       if(this.props.myRole === 1 || this.props.myRole === 2) {
         return(
           <View style={styles.addDiscount} >
-            <RoundButton onPress={() => this._presentDiscountForm()} imagePath={require('../../assets/icons/plus.png')} />
+            <RoundButton
+              onPress={() => this._presentDiscountForm()}
+              imagePath={require('../../assets/icons/plus.png')}
+              color={Colors.LIGHT_BLUE}
+            />
           </View>
         )
       }
     } else if(this.props.indexOn === 2) {
       return(
         <View style={styles.addDiscount} >
-          <RoundButton onPress={() => this._presentNoteForm()} imagePath={require('../../assets/icons/plus.png')} />
+          <RoundButton
+            onPress={() => this._presentNoteForm()}
+            imagePath={require('../../assets/icons/plus.png')}
+            color={Colors.LIGHT_BLUE}
+          />
         </View>
       )
     } else {
@@ -248,7 +256,7 @@ class RestaurantProfileScreen extends Component {
             <Text style={styles.infoText}>{this.props.location.address}</Text>
             <Text style={styles.infoText}>{this.props.location.email}</Text>
           </View>
-
+          {this.addButton()}
         </View>
 
 
@@ -265,7 +273,7 @@ class RestaurantProfileScreen extends Component {
           <ScrollView style={{display: 'float', backgroundColor:'transparent', zIndex: 20000}}>
 
           <View style={styles.screenContainer} >
-            {this.addButton()}
+            {/*this.addButton()*/}
        {(this.props.indexOn === 0)
           ? <EmployeesTab onPress={(employee) => this.onSelectEmployee(employee)} />
           : (this.props.indexOn === 1)
@@ -359,8 +367,9 @@ const styles = StyleSheet.create({
   },
   addDiscount: {
     position: 'absolute',
-    right: 16, top: 8,
-    zIndex: 1000
+    right: 16, bottom: 16,
+    // right: 16, top: 8,
+    zIndex: 10000
   }
 });
 

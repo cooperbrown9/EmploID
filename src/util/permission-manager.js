@@ -29,6 +29,6 @@ export function assignSinglePlacePositionToUser (place, callback) {
         place.positions[o].selected = true;
       }
     }
-  };
+  }
   callback(place);
 }

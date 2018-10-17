@@ -1,4 +1,15 @@
 
+export function assignPositionsToEmployees(myPlaces, employeePlaces, callback) {
+
+}
+
+export function findSimilarPlaces(myPlaces, employeePlaces) {
+  // debugger;
+  let similarPlaces = myPlaces.filter((myPlace, myIndex) => {
+
+  })
+}
+
 export function findSelectedPositions(place, positionOptions, callback) {
   for(let i = 0; i < place.positions.length; i++) {
     for(let j = 0; j < positionOptions.length; j++) {

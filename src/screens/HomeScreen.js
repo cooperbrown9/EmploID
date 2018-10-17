@@ -160,6 +160,12 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
+            // COMBAK find similar places and assign positions here
+            // debugger
+            // DataBuilder.assignPositionsToEmployees(this.props.places, users, (usersWithPosition) => {
+
+            // });
+
             this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
             this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
 

@@ -34,6 +34,7 @@ export function toPhoneNumber(num) {
   let number = '(';
   number += num.slice(0,3);
   number += ') ';
+  // number += '.';
   number += num.slice(3,6);
   number += '-';
   number += num.slice(6,10);

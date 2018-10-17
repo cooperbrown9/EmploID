@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl, Animated } from 'react-native';
-import {SearchBar} from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
+import { findSimilarPlaces } from '../api/data-builder';
 
 import * as NavActions from '../action-types/nav-action-types';
-
 import * as Colors from '../constants/colors';
+
+// TODO make employee positions correct on this screen
 
 const EmployeeScreen = (props) => (
 
-    <View style={styles.container}>
+    <View style={styles.container} >
       <SearchBar lightTheme placeholder={'Search'} style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />
 
       <ScrollView
@@ -84,14 +86,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: 'transparent',
     marginLeft: 20
-
-    }
-
+  }
 });
 
 var mapStateToProps = state => {
   return {
     employees: state.user.myEmployees,
+    myPlaces: state.user.myLocations,
     myID: state.user.userID,
     spotlightOn: state.spotlight.isOn,
     spotlightUsers: state.spotlight.users

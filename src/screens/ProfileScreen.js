@@ -436,6 +436,8 @@ class ProfileScreen extends Component {
                 <TouchableOpacity onPress={() => util.callPhoneNumber(this.props.employee.phone)}>
                   <Text style={styles.infoText}>{util.toPhoneNumber(this.props.employee.phone)}</Text>
                 </TouchableOpacity>
+                {this.editPlacesButton()}
+                {this.addNoteButton()}
               </View>
             <View style={{height: 64, paddingBottom: 8}} >
               <EmployeeTabBar handleProfile={(callback) => this._handleProfileTab(callback)} />
@@ -447,8 +449,8 @@ class ProfileScreen extends Component {
             >
 
               <View style={styles.screenContainer} >
-              {this.addNoteButton()}
-              {this.editPlacesButton()}
+              {/*this.addNoteButton()*/}
+              {/*this.editPlacesButton()*/}
              {(this.props.indexOn === 0)
                 ? <ProfileTab />
                 : (this.props.indexOn === 1)
@@ -556,7 +558,8 @@ const styles = StyleSheet.create({
   },
   editPlacesButton: {
     position: 'absolute',
-    right: 16, top: 16, zIndex: 10001
+    right: 0, bottom: 16, zIndex: 10001
+    // right: 16, top: 16, zIndex: 10001
   },
   profilePicContainer: {
     // height: FRAME.height / 2 + 32, backgroundColor:'yellow'
@@ -585,7 +588,8 @@ const styles = StyleSheet.create({
   },
   addNote: {
     position: 'absolute',
-    right: 16, top: 8,
+    right: 0, bottom: 16,
+    // right: 16, top: 8,
     zIndex: 1000
   },
   tabContainer: {
