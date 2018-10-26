@@ -55,9 +55,13 @@ export function assignRolesToDiscounts(places, discounts, callback) {
       if(discounts[i].place_id === places[j]._id) {
         discounts[i].location = places[j].name;
 
+        // COMBAK called from ProfileScreen on getting discounts
         if(discounts[i].exclusive && (places[j].relation.role !== 2 && places[j].relation.role !== 1)) {
           discounts.splice(i, 1);
           i--;
+          // if(discounts.length === 0) {
+            // callback(discounts);
+          // }
         }
       }
     }

@@ -342,6 +342,20 @@ class ProfileScreen extends Component {
     }
   }
 
+  fireEmployee(model) {
+    var sender = {
+      'relationID': model.relation._id
+    }
+    API.deleteRelation(sender, (err, result) => {
+      if(err) {
+        console.log(err)
+      } else {
+        console.log(result);
+        this.refreshUser();
+      }
+    })
+  }
+
   _handleProfileTab(path) {
     var animationProps = {
       type: 'spring',
@@ -484,7 +498,12 @@ class ProfileScreen extends Component {
           </Modal>
 
           <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} onDismiss={() => this.refreshUser()}>
-            <UserPermissionModal updatePermission={(role, location, positions) => this._updateUserPermissions(role, location, positions)} location={this.state.userPermissionModel} dismiss={() => this.setState({ userPermissionModalPresented: false })} />
+            <UserPermissionModal
+              updatePermission={(role, location, positions) => this._updateUserPermissions(role, location, positions)}
+              location={this.state.userPermissionModel}
+              onFire={() => this.fireEmployee(this.state.userPermissionModel)}
+              dismiss={() => this.setState({ userPermissionModalPresented: false })}
+            />
           </Modal>
 
           {

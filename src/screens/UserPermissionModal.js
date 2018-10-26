@@ -21,7 +21,8 @@ class UserPermissionModal extends Component {
   static propTypes = {
     dismiss: PropTypes.func,
     location: PropTypes.object,
-    updatePermission: PropTypes.func
+    updatePermission: PropTypes.func,
+    onFire: PropTypes.func
   }
 
   constructor() {
@@ -30,6 +31,7 @@ class UserPermissionModal extends Component {
     this.assignSinglePlacePositionToUser = assignSinglePlacePositionToUser.bind(this);
 
     this.state = {
+      firePressed: false,
       roleOptions: [
         { value: 'Employee', selected: false, index: 0 },
         { value: 'Manager', selected: false, index: 1 },
@@ -58,6 +60,16 @@ class UserPermissionModal extends Component {
     OptionViewSplit.selectedMultiple(this.state.positionOptions, index, (arr) => {
       this.setState({ positionOptions: arr, positionSelected: this.state.positionOptions[index] });
     })
+  }
+
+  fire = () => {
+    if(this.state.firePressed) {
+      // actually fire now
+      this.props.dismiss();
+      this.props.onFire();
+    } else {
+      this.setState({ firePressed: true });
+    }
   }
 
   dismiss = () => {
@@ -109,6 +121,18 @@ class UserPermissionModal extends Component {
               selectOption={(index) => this.positionSelected(index)}
             />
           </View>
+
+          <View style={styles.fireContainer} >
+            {this.state.firePressed ? <Text style={styles.confirmFireText}>{this.state.firePressed ? 'Are you sure?' : ''}</Text> : null}
+            <View style={styles.fireOption}>
+              <SubmitButton title='Fire' bgColor={Colors.RED} onPress={() => this.fire()} />
+            </View>
+
+        {(this.state.firePressed)
+          ? <View style={styles.fireOption}><SubmitButton title='Nevermind' bgColor={Colors.BLUE} onPress={() => this.setState({ firePressed: false })}/></View>
+          : null
+        }
+          </View>
           {/*
           <View style={styles.submitButton} >
             <SubmitButton title={'UPDATE'} onPress={() => this.submit()} />
@@ -125,6 +149,16 @@ class UserPermissionModal extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1, backgroundColor: Colors.BACKGROUND_GREY
+  },
+  fireContainer: {
+    height: 200, marginLeft: 32, marginRight: 32, marginTop: 32,
+    // shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
+  },
+  fireOption: {
+    height: 64, marginBottom: 8
+  },
+  confirmFireText: {
+    fontSize: 18, fontFamily: 'roboto-regular', marginBottom: 8
   },
   submitButton: {
     marginBottom: 32, marginLeft: 32, marginRight: 32, height: 64
