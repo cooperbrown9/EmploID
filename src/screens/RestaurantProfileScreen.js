@@ -12,6 +12,7 @@ import RestaurantFormEdit from './RestaurantFormEdit.js';
 import CreateDiscountForm from './CreateDiscountForm';
 import DiscountModal from './DiscountModal';
 import CreatePlaceNoteForm from './CreatePlaceNoteForm';
+import AddEmployeesToRestaurant from './AddEmployeesToRestaurant';
 
 import * as API from '../api/api';
 import * as DetailActions from '../action-types/detail-action-types';
@@ -30,6 +31,7 @@ class RestaurantProfileScreen extends Component {
   state = {
     formModal: false,
     discountModalPresented: false,
+    addEmployeesFormPresented: false,
     noteFormPresented: false,
     createDiscountModalPresented: false,
     isRefreshing: false,
@@ -131,6 +133,23 @@ class RestaurantProfileScreen extends Component {
     })
   }
 
+  _hireEmployees = (employees) => {
+    const sender = {
+      'relations': employees
+    }
+
+    API.createRelations(sender, (err, result) => {
+      if(err) {
+        console.log(err);
+        Alert.alert('We encountered an error!');
+      } else {
+        console.log(result);
+        this.refreshLocation();
+      }
+    });
+
+  }
+
   // wrapper for getUpdatedLocation so it can setState
   refreshLocation = () => {
     this.setState({ isRefreshing: true}, () => {
@@ -147,6 +166,13 @@ class RestaurantProfileScreen extends Component {
     })
   }
 
+  _presentAddEmployeeForm = () => {
+    this.setState({ addEmployeesFormPresented: true });
+  }
+
+  _dismissAddEmployeeForm = () => {
+    this.setState({ addEmployeesFormPresented: false });
+  }
 
   _presentFormModal = () => {
     this.setState({ formModal: true });
@@ -194,7 +220,7 @@ class RestaurantProfileScreen extends Component {
   }
 
   editProfileButton() {
-    if(this.props.location.relation.role === 2 || this.props.location.relation.role === 1) {
+    if(this.props.myRole === 2) {
       return (
         <View style={styles.optionsButton}>
           <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')} color={Colors.LIGHT_BLUE}/>
@@ -202,6 +228,20 @@ class RestaurantProfileScreen extends Component {
       )
     } else {
       return null;
+    }
+  }
+
+  editPlacesButton() {
+    if(this.props.indexOn === 0 && this.props.myRole >= 1) {
+      return(
+        <View style={styles.editPlacesButton} >
+          <RoundButton
+            onPress={() => this._presentAddEmployeeForm()}
+            imagePath={require('../../assets/icons/pencil.png')}
+            color={Colors.LIGHT_BLUE}
+          />
+        </View>
+      )
     }
   }
 
@@ -219,7 +259,7 @@ class RestaurantProfileScreen extends Component {
           </View>
         )
       }
-    } else if(this.props.indexOn === 2) {
+    } else if(this.props.indexOn === 2 && this.props.myRole >= 1) {
       return(
         <View style={styles.addDiscount} >
           <RoundButton
@@ -256,7 +296,9 @@ class RestaurantProfileScreen extends Component {
             <Text style={styles.infoText}>{this.props.location.address}</Text>
             <Text style={styles.infoText}>{this.props.location.email}</Text>
           </View>
+          {this.editProfileButton()}
           {this.addButton()}
+          {this.editPlacesButton()}
         </View>
 
 
@@ -264,7 +306,6 @@ class RestaurantProfileScreen extends Component {
             <RoundButton onPress={this._goBack} imagePath={require('../../assets/icons/back.png')} color={Colors.LIGHT_BLUE} />
           </View>
 
-          {this.editProfileButton()}
 
           {/*<View style={{height:FRAME.height / 4, backgroundColor:'transparent'}}/>*/}
           <View style={{height: 64, paddingBottom: 8}}>
@@ -300,6 +341,14 @@ class RestaurantProfileScreen extends Component {
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} >
           <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} myRole={this.props.location.relation.role} />
+        </Modal>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.addEmployeesFormPresented} >
+          <AddEmployeesToRestaurant
+            dismiss={() => this._dismissAddEmployeeForm()}
+            place={this.props.location}
+            addEmployees={(employees) => this._hireEmployees(employees)}
+          />
         </Modal>
 
       </View>
@@ -355,11 +404,16 @@ const styles = StyleSheet.create({
     fontSize: 32, fontFamily: 'roboto-bold', textAlign: 'center', justifyContent: 'center', alignItems: 'center'
   },
   backButton: {
-    position: 'absolute', left: 20, top: (FRAME.height === 812) ? 40 : 24,
+    position: 'absolute', left: 20, top: (FRAME.height >= 812) ? 40 : 24,
     zIndex: 1001
   },
+  editPlacesButton: {
+    position: 'absolute',
+    right: 16, bottom: 16, zIndex: 10001
+    // right: 16, top: 16, zIndex: 10001
+  },
   optionsButton: {
-    position: 'absolute', right: 20, top: (FRAME.height === 812) ? 40 : 24,
+    position: 'absolute', right: 20, top: (FRAME.height >= 812) ? 40 : 24,
     zIndex: 1001
   },
   tabContainer: {

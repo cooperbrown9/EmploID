@@ -595,15 +595,15 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto-bold', textAlign: 'center', justifyContent: 'center', alignItems: 'center'
   },
   backButton: {
-    position: 'absolute', left: 20, top: 32,
+    position: 'absolute', left: 20, top: 40,
     zIndex: 1001
   },
   optionsButton: {
-    position: 'absolute', right: 20, top: 32,
+    position: 'absolute', right: 20, top: 40,
     zIndex: 1001
   },
   cameraButton: {
-    position: 'absolute', right: 20, top: 116, zIndex: 1001
+    position: 'absolute', right: 20, top: 124, zIndex: 1001
   },
   addNote: {
     position: 'absolute',
