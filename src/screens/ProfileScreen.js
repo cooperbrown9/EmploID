@@ -22,7 +22,6 @@ import EmployeeFormAddLocationEdit from './edit/EmployeeFormAddLocationEdit';
 import { uploadImage } from '../api/image-handler';
 
 import * as Parser from '../api/data-builder';
-import * as NavActions from '../action-types/nav-action-types';
 import * as DetailActions from '../action-types/detail-action-types';
 import * as Colors from '../constants/colors';
 import * as EmployeeActions from '../action-types/employee-profile-action-types';
@@ -254,7 +253,8 @@ class ProfileScreen extends Component {
     if(this.props.isMyProfile) {
       this.props.dismiss();
     } else {
-      this.props.dispatch({ type: NavActions.BACK });
+      this.props.navigation.goBack();
+      // this.props.dispatch({ type: NavActions.BACK });
       this.props.dispatch({ type: EmployeeActions.RESET });
     }
   }
@@ -275,20 +275,17 @@ class ProfileScreen extends Component {
   }
 
   editProfileButton() {
-    // FIXME fix THIS
+    // FIXME COMBAK atleast figure out how this works
 
-    // Parser.checkPermissionForEmployeeEdit(this.props.myLocations, this.props.locations, (role) => {
-      // if( === 1 || role === 2) {
-      if(this.state.canEdit) {
-        return (
-          <View style={styles.optionsButton}>
-            <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
-          </View>
-        )
-      } else {
-        return null;
-      }
-    // });
+    if(this.state.canEdit) {
+      return (
+        <View style={styles.optionsButton}>
+          <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
+        </View>
+      )
+    } else {
+      return null;
+    }
   }
 
   _presentUserPermissionModal = (model) => {

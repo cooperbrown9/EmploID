@@ -10,7 +10,6 @@ import OptionViewSplit from '../ui-elements/option-view-split';
 
 import * as Colors from '../constants/colors';
 import * as LoadingActions from '../action-types/loading-action-types';
-import * as NavActions from '../action-types/nav-action-types';
 import * as DataBuilder from '../api/data-builder';
 import * as API from '../api/api';
 
@@ -143,9 +142,11 @@ class RestaurantForm extends Component {
               }
               // create relations for all the employees
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: true });
-              this.props.dispatch({ type: NavActions.BACK });
+              this.props.navigation.goBack();
               Alert.alert('Success!');
-              this.props.onBack();
+              this.props.navigation.getParam('onBack', 'onBack')();
+              // debugger
+              // onBack();
             }
           });
         }
@@ -217,7 +218,7 @@ class RestaurantForm extends Component {
     return(
       <View style={{flex: 1}} >
         <View style={styles.backButton} >
-          <RoundButton onPress={() => this.props.dispatch({ type: NavActions.BACK })} imagePath={require('../../assets/icons/back.png')} />
+          <RoundButton onPress={() => this.props.navigation.goBack()} imagePath={require('../../assets/icons/back.png')} />
         </View>
       <ScrollView style={styles.scrollContainer} >
 
@@ -366,7 +367,6 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    onBack: state.nav.onBack,
     me: state.user.user,
     isLoading: state.loading.isLoading,
     sessionID: state.user.sessionID

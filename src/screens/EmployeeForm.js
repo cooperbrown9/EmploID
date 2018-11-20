@@ -68,6 +68,7 @@ class EmployeeForm extends Component {
         email: "",
         groupID: "",
         role: 0,
+        canCreatePlaces: false,
         gender: 0,
         hairColor: 0,
         birthday: new Date(1997, 8, 3).toDateString(),
@@ -154,11 +155,14 @@ class EmployeeForm extends Component {
 
   roleSelected = (index) => {
     OptionView.selected(this.state.roleOptions, index, (arr) => {
-      // if it was the 1st index (YES), then make it 2 because that indicates owner
-      if(index === 1) {
-        index = 2;
-      }
-      this.setState({ roleOptions: arr, employee: {...this.state.employee, role: index } });
+      this.setState({
+        roleOptions: arr,
+        employee: {
+          ...this.state.employee,
+          role: index,
+          canCreatePlaces: (index == true)
+        }
+      });
     });
   }
 
@@ -231,10 +235,11 @@ class EmployeeForm extends Component {
                   Alert.alert('Success!');
 
                   this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: true });
-                  this.props.dispatch({ type: NavActions.BACK });
+                  this.props.navigation.goBack();
 
                   // COMBAK still need to run HomeScreen.getPlaces()
-                  this.props.onBack();
+                  // this.props.navigation.onBack();
+                  this.props.navigation.getParam('onBack', 'onBack')();
                 }
               }
             })
@@ -309,7 +314,7 @@ class EmployeeForm extends Component {
     return(
       <View style={{flex: 1}}>
         <View style={styles.backButton} >
-          <RoundButton onPress={() => this.props.dispatch({type:NavActions.BACK})} imagePath={require('../../assets/icons/back.png')} />
+          <RoundButton onPress={() => this.props.navigation.goBack()} imagePath={require('../../assets/icons/back.png')} />
         </View>
       <ScrollView style={styles.scrollContainer} >
         <KeyboardAwareScrollView style={styles.container} >

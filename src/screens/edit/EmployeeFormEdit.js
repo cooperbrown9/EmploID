@@ -63,7 +63,6 @@ class EmployeeFormEdit extends Component {
     submitForm: PropTypes.func,
     places: PropTypes.array,
     edit: PropTypes.bool,
-    isOwner: PropTypes.bool,
     updateEmployee: PropTypes.func
   }
   static defaultPropTypes = {
@@ -399,7 +398,6 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = state => {
   return {
-    isOwner: state.user.isOwner,
     places: state.user.myLocations,
     employee: state.detail.user,
     userID: state.detail.user._id

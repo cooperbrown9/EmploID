@@ -154,6 +154,7 @@ export function buildEmployeeForm(data, callback) {
     "phone": data.phone,
     "gender": data.gender,
     "role": data.role,
+    "canCreatePlaces": data.canCreatePlaces,
     "hair": data.hairColor,
     "birthday": data.birthday,
     "hireDate": data.hireDate,

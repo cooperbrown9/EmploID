@@ -1,8 +1,8 @@
 
-export const LOGIN = 'nav/login';
-export const HOME = 'nav/home';
-export const BACK = 'nav/back';
-export const EMPLOYEE_PROFILE = 'nav/profile';
-export const LOCATION_PROFILE = 'nav/location-profile';
-export const EMPLOYEE_FORM = 'nav/employee-form';
-export const RESTAURANT_FORM = 'nav/restaurant-form';
+export const LOGIN = 'Login';
+export const HOME = 'Home';
+export const BACK = 'Back';
+export const EMPLOYEE_PROFILE = 'Profile';
+export const LOCATION_PROFILE = 'LocationProfile';
+export const EMPLOYEE_FORM = 'EmployeeForm';
+export const RESTAURANT_FORM = 'RestaurantForm';

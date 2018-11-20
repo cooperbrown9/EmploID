@@ -28,11 +28,11 @@ class EmployeeFormAddLocationEdit extends Component {
       places: [
         { name: 'ABC', _id: '123', selected: false }
       ],
-      roleOptions: [
-        { value: 'Employee', selected: true, index: 0 },
-        { value: 'Manager', selected: false, index: 1 },
-        { value: 'Owner', selected: false, index: 2 }
-      ],
+      // roleOptions: [
+      //   { value: 'Employee', selected: true, index: 0 },
+      //   { value: 'Manager', selected: false, index: 1 },
+      //   { value: 'Owner', selected: false, index: 2 }
+      // ],
       positionOptions: [
         { value: 'Server', selected: false, index: 0 },
         { value: 'Bartender', selected: false, index: 1 },
@@ -58,7 +58,7 @@ class EmployeeFormAddLocationEdit extends Component {
 
   // action is by default 0. If its added, its 1, if deleted its -1
   componentDidMount() {
-    this.roleSelected(this.props.role);
+    // this.roleSelected(this.props.role);
 
     // get all locations of a group
     this.getGroupLocations((places) => {
@@ -223,11 +223,11 @@ class EmployeeFormAddLocationEdit extends Component {
     }
   }
 
-  roleSelected = (index) => {
-    OptionView.selected(this.state.roleOptions, index, (arr) => {
-      this.setState({ roleOptions: arr, role: index });
-    });
-  }
+  // roleSelected = (index) => {
+  //   OptionView.selected(this.state.roleOptions, index, (arr) => {
+  //     this.setState({ roleOptions: arr, role: index });
+  //   });
+  // }
 
   render() {
     return(

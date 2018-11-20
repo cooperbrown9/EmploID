@@ -7,7 +7,9 @@ import { Provider, connect } from 'react-redux';
 
 import { Font } from 'expo';
 import MainReducer from './src/reducers/main-reducer';
-import AppNavigatorWithState from './src/navigation/app-navigator';
+// import AppNavigatorWithState from './src/navigation/app-navigator';
+import AppNavigator from './src/navigation/app-navigator';
+
 import * as Keys from './src/constants/keys';
 
 import { FONT_LOADED } from './src/action-types/setup-action-types';
@@ -96,7 +98,7 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={this.store} >
-        {(this.state.fontLoaded) ? <AppNavigatorWithState /> : <View><ActivityIndicator/></View> }
+        {(this.state.fontLoaded) ? <AppNavigator /> : <View><ActivityIndicator/></View> }
       </Provider>
     );
   }

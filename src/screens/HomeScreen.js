@@ -224,11 +224,13 @@ class HomeScreen extends Component {
   }
 
   _presentAddEmployeeModal = () => {
-    this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
+    // this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
+    this.props.navigation.navigate(NavActions.EMPLOYEE_PROFILE);
   }
   _openEmployeeProfile = (employee) => {
     this.props.dispatch({ type: DetailActions.SET_USER, user: employee });
-    this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
+    // this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
+    this.props.navigation.navigate(NavActions.EMPLOYEE_PROFILE);
   }
 
   // role based on user (me)'s role for that location
@@ -237,7 +239,8 @@ class HomeScreen extends Component {
     for(let i = 0; i < this.props.places.length; i++) {
       if(this.props.places[i].relation.place_id === place._id) {
         this.props.dispatch({ type: DetailActions.SET_LOCATION, location: place, myRole: this.props.places[i].relation.role });
-        this.props.dispatch({ type: NavActions.LOCATION_PROFILE });
+        // this.props.dispatch({ type: NavActions.LOCATION_PROFILE });
+        this.props.navigation.navigate(NavActions.LOCATION_PROFILE);
         break;
       }
     }
@@ -275,9 +278,14 @@ class HomeScreen extends Component {
 
   addPressed = () => {
     if(this.props.indexOn === 0) {
-      this.props.dispatch({ type: NavActions.RESTAURANT_FORM, onBack: () => this.refreshData() });
+      // this.props.dispatch({ type: NavActions.RESTAURANT_FORM, onBack: () => this.refreshData() });
+      this.props.navigation.navigate(NavActions.RESTAURANT_FORM, {
+        onBack: () => this.refreshData()
+      });
     } else {
-      this.props.dispatch({ type: NavActions.EMPLOYEE_FORM, onBack: () => this.refreshData() });
+      this.props.navigation.navigate(NavActions.EMPLOYEE_FORM, {
+        onBack: () => this.refreshData()
+      });
     }
   }
 
@@ -347,14 +355,15 @@ class HomeScreen extends Component {
     var sessionObj = { 'userID': this.props.userID, sessionID: this.props.sessionID };
     API.verifySession(sessionObj, (err, response) => {
       if(err) {
-        this.props.dispatch({ type: 'START_LOGIN' });
+        this.props.navigation.navigate(NavActions.LOGIN);
       } else {
         this.props.dispatch({
           type: AuthActions.LOGIN_SUCCESS,
           user: response.user,
           sessionID: response.session_id,
           userID: response.user._id,
-          role: response.user.role
+          role: response.user.role,
+          canCreatePlaces: response.user.can_create_places
         });
         // AFTER OWNER IS UPDATED ON REDUX, REFRESH EMPLOYEES OR LOCATIONS
         callback();
@@ -364,7 +373,8 @@ class HomeScreen extends Component {
 
   presentMyProfile = () => {
     this.props.dispatch({ type: DetailActions.SET_USER, user: this.props.me });
-    this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
+    // this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
+    this.props.navigation.push(NavActions.EMPLOYEE_PROFILE);
   }
 
   refreshData = () => {
@@ -382,11 +392,11 @@ class HomeScreen extends Component {
       </TouchableOpacity>
     );
 
-    if(this.props.indexOn === 0 && this.props.canCreatePlaces) {
+    if(this.props.indexOn === 0 && this.props.me.can_create_places) {
       return addButton;
     }
 
-    if(this.props.indexOn === 1 && this.props.canCreateUsers) {
+    if(this.props.indexOn === 1 && this.props.me.can_create_places) {
       return addButton;
     }
   }
@@ -443,13 +453,6 @@ class HomeScreen extends Component {
 
         {this.checkCreatePermission()}
 
-        {/*(this.props.role >= 1)
-          ? <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
-              <Image style={{height:64,width:64, tintColor:'black'}} source={require('../../assets/icons/plus.png')} />
-            </TouchableOpacity>
-          : null
-        */}
-
         {
         <TouchableOpacity onPress={() => this._presentFilterModal()} style={styles.filterButton} >
           <Text style={styles.filterText}>Filter</Text>
@@ -464,10 +467,10 @@ class HomeScreen extends Component {
           <ProfileScreen dismiss={() => this.setState({ myProfilePresented: false })} isMyProfile={true} />
         </Modal>
 
-        {/*(this.props.isLoading && !this.state.isRefreshing)
+        {(this.props.isLoading && !this.state.isRefreshing)
           ? <LoadingOverlay />
           : null
-        */}
+        }
 
 
       </View>
@@ -525,7 +528,7 @@ var mapStateToProps = state => {
     spotlightOn: state.spotlight.isOn,
     spotlightUsers: state.spotlight.users,
     canCreateUsers: state.permission.isUserCreator,
-    canCreatePlaces: state.permission.isPlaceCreator
+    canCreatePlaces: state.permission.isCreator
   }
 }
 
