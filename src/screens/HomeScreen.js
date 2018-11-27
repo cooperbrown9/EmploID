@@ -160,12 +160,6 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
-            // COMBAK find similar places and assign positions here
-            // debugger
-            // DataBuilder.assignPositionsToEmployees(this.props.places, users, (usersWithPosition) => {
-
-            // });
-
             this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
             this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
 
@@ -278,7 +272,6 @@ class HomeScreen extends Component {
 
   addPressed = () => {
     if(this.props.indexOn === 0) {
-      // this.props.dispatch({ type: NavActions.RESTAURANT_FORM, onBack: () => this.refreshData() });
       this.props.navigation.navigate(NavActions.RESTAURANT_FORM, {
         onBack: () => this.refreshData()
       });
@@ -392,6 +385,7 @@ class HomeScreen extends Component {
       </TouchableOpacity>
     );
 
+    // debugger
     if(this.props.indexOn === 0 && this.props.me.can_create_places) {
       return addButton;
     }

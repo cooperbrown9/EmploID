@@ -38,10 +38,6 @@ class DiscountModal extends Component {
     }
   }
 
-  componentDidMount() {
-
-  }
-
   presentEditDiscount = () => {
     this.setState({ editDiscountPresented: true });
   }
@@ -57,7 +53,6 @@ class DiscountModal extends Component {
   }
 
   canEdit = () => {
-
     if(this.props.myRole === 1 || this.props.myRole === 2) {
       return (
         <RoundButton onPress={this.presentEditDiscount} imagePath={require('../../assets/icons/pencil.png')} />
@@ -87,7 +82,6 @@ class DiscountModal extends Component {
         <View style={styles.buttonContainer}>
           <View style={{ height: 64 }}>
             <RainbowButton title={'REDEEM'} onPress={this.props.dismiss} />
-            {/*<SubmitButton title={'REDEEM'} onPress={this.props.dismiss} hasBGColor={true} bgColor={'rgb(' + red + ',' + green + ',' + blue +')'}/>*/}
           </View>
         </View>
 
@@ -111,12 +105,13 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: 'roboto-bold', fontSize: 32,
-    color: 'white',
+    color: 'black',
     textAlign: 'center'
   },
   offer: {
-    fontFamily: 'roboto-regular', fontSize: 24,
-    color: 'white',
+    fontFamily: 'roboto-bold', fontSize: 24,
+    marginLeft: 16, marginRight: 16,
+    color: 'black',
     textAlign: 'center'
   },
   containerView: {

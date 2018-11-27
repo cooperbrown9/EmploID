@@ -188,6 +188,7 @@ export function buildUpdateEmployeeForm(data, callback) {
     "places": data.places,
     "position": data.position,
     "phone": data.phone,
+    "canCreatePlaces": data.canCreatePlaces,
     "gender": data.gender,
     "hair": data.hairColor,
     "birthday": data.birthday,

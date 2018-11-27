@@ -160,7 +160,7 @@ class RestaurantProfileScreen extends Component {
   _presentNoteForm = () => {
     this.setState({ noteFormPresented: true });
   }
-  _dismissNoteForm = (needUpdate) => {
+  _dismissNoteForm = (didCreate) => {
     this.setState({ noteFormPresented: false, isRefreshing: true }, () => {
       this.getUpdatedLocation();
     })
@@ -194,12 +194,15 @@ class RestaurantProfileScreen extends Component {
     this.setState({ discountModalPresented: false });
   }
 
-  _dismissDiscountForm = () => {
+  _dismissDiscountForm = (didCreateDiscount) => {
+    if(didCreateDiscount) {
+      this.refreshLocation();
+    }
     this.setState({ createDiscountModalPresented: false });
   }
 
   _goBack = () => {
-    this.props.dispatch({ type: NavActions.BACK });
+    this.props.navigation.goBack();
   }
 
 
@@ -214,9 +217,9 @@ class RestaurantProfileScreen extends Component {
   }
 
   onSelectEmployee(employee) {
-    console.log(employee);
     this.props.dispatch({ type: DetailActions.SET_USER, user: employee });
-    this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE, dispatchFromPlace: true });
+    // this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE, dispatchFromPlace: true });
+    this.props.navigation.push(NavActions.EMPLOYEE_PROFILE, { dispatchFromPlace: true });
   }
 
   editProfileButton() {
@@ -232,6 +235,7 @@ class RestaurantProfileScreen extends Component {
   }
 
   editPlacesButton() {
+    return null;
     if(this.props.indexOn === 0 && this.props.myRole >= 1) {
       return(
         <View style={styles.editPlacesButton} >
@@ -314,7 +318,6 @@ class RestaurantProfileScreen extends Component {
           <ScrollView style={{display: 'float', backgroundColor:'transparent', zIndex: 20000}}>
 
           <View style={styles.screenContainer} >
-            {/*this.addButton()*/}
        {(this.props.indexOn === 0)
           ? <EmployeesTab onPress={(employee) => this.onSelectEmployee(employee)} />
           : (this.props.indexOn === 1)
@@ -332,11 +335,11 @@ class RestaurantProfileScreen extends Component {
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.createDiscountModalPresented} >
-          <CreateDiscountForm dismiss={() => this._dismissDiscountForm()} />
+          <CreateDiscountForm dismiss={(didCreate) => this._dismissDiscountForm(didCreate)} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.noteFormPresented} >
-          <CreatePlaceNoteForm dismiss={(needsUpdate) => this._dismissNoteForm(needsUpdate)} />
+          <CreatePlaceNoteForm dismiss={(didCreate) => this._dismissNoteForm(didCreate)} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} >

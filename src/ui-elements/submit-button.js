@@ -27,7 +27,7 @@ let styleWithBG = function(color) {
   return {
     flex: 1,
     height: 64,
-    borderRadius: 16,
+    borderRadius: 8,
     backgroundColor: color,
     justifyContent: 'center',
     overflow: 'hidden'
@@ -38,7 +38,7 @@ const styles =  StyleSheet.create({
   container: {
     flex: 1,
     height: 64,
-    borderRadius: 16,
+    borderRadius: 8,
     backgroundColor: BLUE,
     justifyContent: 'center',
     overflow: 'hidden',

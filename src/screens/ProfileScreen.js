@@ -94,7 +94,7 @@ class ProfileScreen extends Component {
 
   componentDidMount () {
     this.getPlaces();
-    this.setState({ dispatchFromPlace: this.props.dispatchFromPlace });
+    this.setState({ dispatchFromPlace: this.props.navigation.getParam('dispatchFromPlace', 'dispatchFromPlace') });
   }
 
   componentWillUnmount() {

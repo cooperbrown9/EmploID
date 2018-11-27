@@ -56,10 +56,10 @@ class CreateDiscountForm extends Component {
 
     API.createDiscount(discountData, (err, response) => {
       if(err) {
-        console.log(err);
+        this.props.dismiss(false);
+        Alert.alert('Connection error: 503');
       } else {
-        console.log(response);
-        this.props.dismiss();
+        this.props.dismiss(true);
       }
     });
   }
@@ -77,9 +77,10 @@ class CreateDiscountForm extends Component {
     API.updateDiscount(data, (e1, discount) => {
       if(e1) {
         console.log(e1);
+        Alert.alert('Can not update discount at this time');
+        this.props.dismiss(false);
       } else {
-        console.log(discount);
-        this.props.dismiss();
+        this.props.dismiss(true);
       }
     })
   }
@@ -90,9 +91,9 @@ class CreateDiscountForm extends Component {
     } else {
       API.deleteDiscount(this.props.discount._id, (err, res) => {
         if(err) {
-          console.log(err)
+          console.log(err);
         } else {
-          this.props.dismiss();
+          this.props.dismiss(true);
         }
       })
     }
@@ -120,7 +121,7 @@ class CreateDiscountForm extends Component {
     return(
       <View style={styles.mainContainer} >
         <View style={styles.backButton} >
-          <RoundButton imagePath={require('../../assets/icons/down.png')} onPress={this.props.dismiss} />
+          <RoundButton imagePath={require('../../assets/icons/down.png')} onPress={() => this.props.dismiss(false)} />
         </View>
         <ScrollView style={styles.scrollContainer} >
           <View style={styles.container} >

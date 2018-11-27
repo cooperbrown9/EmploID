@@ -72,7 +72,8 @@ class EmployeeFormEdit extends Component {
   componentWillMount() {
     this.setState({ employee: {
       ...this.props.employee, firstName: this.props.employee.first_name, role: this.props.employee.role,
-      lastName: this.props.employee.last_name, imageURL: this.props.employee.image_url, hireDate: this.props.employee.hire_date
+      lastName: this.props.employee.last_name, imageURL: this.props.employee.image_url, hireDate: this.props.employee.hire_date,
+      canCreatePlaces: this.props.employee.can_create_places
     }});
   }
 
@@ -147,7 +148,14 @@ class EmployeeFormEdit extends Component {
 
   roleSelected = (index) => {
     OptionView.selected(this.state.roleOptions, index, (arr) => {
-      this.setState({ roleOptions: arr, employee: {...this.state.employee, role: index} });
+      this.setState({
+        roleOptions: arr,
+        employee: {
+          ...this.state.employee,
+          role: index,
+          canCreatePlaces: (index == true)
+        }
+      });
     });
   }
 
