@@ -4,7 +4,6 @@ import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity,
   ActivityIndicator, StyleSheet, Modal, TextInput,
   Image, Alert, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
 
-// import TextInputMask from 'react-native-text-input-mask';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { connect } from 'react-redux';
@@ -13,22 +12,18 @@ import { checkEmail } from '../util';
 
 import EmployeeFormAddLocation from './EmployeeFormAddLocation';
 import OptionView from '../ui-elements/option-view';
-import OptionViewSplit from '../ui-elements/option-view-split';
 
 import * as Colors from '../constants/colors';
 import * as LoadingActions from '../action-types/loading-action-types';
-import * as NavActions from '../action-types/nav-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as ErrorManager from '../util/error-manager';
 
 import SubmitButton from '../ui-elements/submit-button';
 import DataButton from '../ui-elements/data-button';
-import SubmitButtonCounter from '../ui-elements/submit-button-counter';
 import RoundButton from '../ui-elements/round-button';
 import LoadingOverlay from '../ui-elements/loading-overlay';
 
-import CameraScreen from '../camera/camera-screen';
 
 class EmployeeForm extends Component {
   static navigationOptions = {
@@ -274,21 +269,6 @@ class EmployeeForm extends Component {
     }
   }
 
-  // phoneInputFactory(placeholder, onTextChange, value, canEdit, capitalize = true, keyboard = 'default') {
-  //   return (
-  //     <MaskedInput
-  //       mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-  //       placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
-  //       selectionColor={Colors.BLUE} style={styles.input}
-  //       autoCorrect={false} autoCapitalize={(capitalize ? 'words' : 'none')}
-  //       onChangeText={(formatted, extracted) => onTextChange(extracted)}
-  //       value={(this.props.edit) ? value : null}
-  //       editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
-  //       mask={'+1([000][000]-[0000])'}
-  //     />
-  //   )
-  // }
-
   getCameraPermission = async() => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
 
@@ -399,9 +379,6 @@ class EmployeeForm extends Component {
 
           <View style={styles.submitContainer} >
             <DataButton title={'ADD RESTAURANTS'} onPress={() => this.setState({addLocationsPresented:true})} data={this.state.selectedPlaces.length} />
-            {/*<SubmitButton title={'ADD RESTAURANTS'} onPress={() => this.setState({ addLocationsPresented: true }) } >
-              <View style={{height:64,width:64,backgroundColor:'yellow',zIndex:11000}}></View>
-            </SubmitButton>*/}
           </View>
           <View style={styles.submitContainer} >
             <SubmitButton

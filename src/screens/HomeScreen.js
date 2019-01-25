@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert,
-  Dimensions, AsyncStorage, Animated, LayoutAnimation, Platform
+  Dimensions, AsyncStorage, LayoutAnimation, Platform
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -10,18 +10,14 @@ import * as LoadingActions from '../action-types/loading-action-types';
 import * as TabActions from '../action-types/tab-action-types';
 import * as NavActions from '../action-types/nav-action-types';
 import * as AuthActions from '../action-types/auth-action-types';
-import * as ProfileActions from '../action-types/employee-profile-action-types';
 import * as DetailActions from '../action-types/detail-action-types';
 import * as PermissionActions from '../action-types/permission-action-types';
 import * as API from '../api/api';
 import * as DataBuilder from '../api/data-builder';
 import * as Colors from '../constants/colors';
 import * as Keys from '../constants/keys';
-import * as ErrorManager from '../util/error-manager';
 import * as SpotlightActions from '../action-types/spotlight-action-types';
 import * as util from '../util';
-import axios from 'axios';
-
 import EmployeeScreen from './EmployeeScreen.js';
 import RestaurantScreen from './RestaurantScreen.js';
 
@@ -31,8 +27,6 @@ import EmployeeForm from './EmployeeForm';
 import PlaceForm from './RestaurantForm';
 import ProfileScreen from './ProfileScreen';
 import { alphabetizeUsers, alphabetizePlaces } from '../util';
-
-import { Camera, Permissions } from 'expo';
 
 class HomeScreen extends Component {
 
@@ -194,7 +188,6 @@ class HomeScreen extends Component {
         }
       })
     }
-
   }
 
   uniqueArray(val, index, self) {
@@ -244,19 +237,6 @@ class HomeScreen extends Component {
     for(let i = 0; i < this.props.places.length; i++) {
       if(this.props.places[i].relation.place_id === place._id) {
         this.props.places[i].isToggled = !this.props.places[i].isToggled;
-        // debugger;
-        // var animationProps = {
-        //   type: 'timing',
-        //   // springDamping: 0.8,
-        //   property: 'opacity'
-        // }
-        //
-        // var animationConfig = {
-        //   duration: 250,
-        //   create: animationProps,
-        //   update: animationProps
-        // }
-        // LayoutAnimation.configureNext(animationConfig);
         this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: this.props.places });
       }
     }

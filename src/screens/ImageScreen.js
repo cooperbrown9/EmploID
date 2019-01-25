@@ -17,8 +17,6 @@ export default class ImageScreen extends Component {
   }
 
   componentDidMount() {
-    if(!this.props.image) {
-    }
   }
 
 

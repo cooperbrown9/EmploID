@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, ActivityIndicator, AsyncStorage } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, AsyncStorage } from 'react-native';
 
 import { connect } from 'react-redux';
-import axios from 'axios';
 import * as Keys from '../constants/keys';
 import * as AuthActions from '../action-types/auth-action-types';
 import * as NavActions from '../action-types/nav-action-types';

@@ -8,8 +8,6 @@ import { findSimilarPlaces } from '../api/data-builder';
 import * as NavActions from '../action-types/nav-action-types';
 import * as Colors from '../constants/colors';
 
-// TODO make employee positions correct on this screen
-
 const EmployeeScreen = (props) => (
 
     <View style={styles.container} >

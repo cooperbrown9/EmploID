@@ -16,7 +16,6 @@ export default function permission(state=initialState, action) {
         ...state,
         isUserCreator: action.isCreator
       }
-
     case PermissionActions.SET_IS_PLACE_CREATOR:
       if(action.isCreator === 2) {
         action.isCreator = true;

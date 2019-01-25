@@ -121,16 +121,6 @@ class LoginScreen extends Component {
             <Image style={styles.logo} source={require('../../assets/images/logo-1.png')} resizeMode={'center'} />
           </View>
 
-          {/*
-          <View style={styles.headerView}>
-            <Text style={styles.loginText}>Login</Text>
-          </View>
-          */}
-
-          {/*<View style={styles.optionView} >
-            <OptionView options={this.state.options} selectOption={(index) => this._positionSelected(index)} />
-          </View>*/}
-
           <View style={styles.inputContainer} >
             <View style={styles.inputView} >
               {this.textInputFactory('Email', (text) => {this.setState({email: text})}, this.state.email)}
