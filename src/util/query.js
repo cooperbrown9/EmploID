@@ -1,3 +1,6 @@
+// NOTE this file is for preparing data from the FilterModal
+//      so that it is properly packaged when it is sent to the server
+//      So yeah, it's probably a bit janky because it is so specific
 
 import * as _ from 'lodash';
 import * as API from '../api/api';
@@ -12,14 +15,6 @@ export function query(data, callback) {
   });
 
   queryWithLocation(data, callback);
-
-  // logic is complex because of database, so different functions for querying
-  // with or without location
-  // if(data.location != null) {
-  //   queryWithLocation(data, callback);
-  // } else {
-  //   queryWithLocation(data, callback);
-  // }
 }
 
 // this header is misleading

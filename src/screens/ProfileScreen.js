@@ -36,7 +36,6 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 const FRAME = Dimensions.get('window');
 
 // TODO make phone number not in touch zone
-// TODO make pressing enter go to next field on forms
 
 class ProfileScreen extends Component {
   static navigationOptions = {
@@ -60,14 +59,10 @@ class ProfileScreen extends Component {
     selectedDiscount: null,
     isRefreshing: false,
     userPermissionModel: {},
-    canEditProfile: false,
     cameraPermission: false,
     dispatchFromPlace: false,
     newImageURI: null,
     cameraType: Camera.Constants.Type.back,
-    beforeY: FRAME.height / 2,
-    afterY: 3 * FRAME.height / 4,
-    onProfile: true,
     animation: (FRAME.height/2) - 100 //(FRAME.height / 2 + 32)
   }
 
@@ -77,7 +72,6 @@ class ProfileScreen extends Component {
     dispatchFromPlace: PropTypes.bool
   }
 
-  // if something breaks check this out
   static defaultProps = {
     employee: {
       name: '',
@@ -150,7 +144,7 @@ class ProfileScreen extends Component {
     })
   }
 
-  // might change this to if owner or manager, you can see all discounts,
+  // IDEA might change this to if owner or manager, you can see all discounts,
   // if employee, only see ones you have
   getDiscounts() {
     let placeIDs = [];
@@ -254,7 +248,6 @@ class ProfileScreen extends Component {
       this.props.dismiss();
     } else {
       this.props.navigation.goBack();
-      // this.props.dispatch({ type: NavActions.BACK });
       this.props.dispatch({ type: EmployeeActions.RESET });
     }
   }
@@ -275,8 +268,6 @@ class ProfileScreen extends Component {
   }
 
   editProfileButton() {
-    // FIXME COMBAK atleast figure out how this works
-
     if(this.state.canEdit) {
       return (
         <View style={styles.optionsButton}>

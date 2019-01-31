@@ -23,13 +23,6 @@ const RestaurantScreen = (props) => (
               <Text style={styles.nameText}>{place.name}</Text>
               <Text style={styles.addyText}>{place.address}</Text>
             </View>
-            {/*
-            <View style={styles.rightContainer} >
-              <TouchableOpacity style={styles.phoneContainer} onPress={() => callPhoneNumber(place.phone)} >
-                <Image style={styles.phone} resizeMode={'contain'} source={require('../../assets/icons/phone-flat.png')} />
-              </TouchableOpacity>
-            </View>
-            */}
           </TouchableOpacity>
       ))}
 
@@ -80,12 +73,12 @@ const styles = StyleSheet.create({
     fontSize: 18, fontFamily: 'roboto-bold',
     color: 'gray'
   },
-  userCount: {
-    fontSize: 16, fontFamily: 'roboto-bold', color: DARK_GREY
-  },
-  userImage: {
-    height:16, width: 16, tintColor: DARK_GREY
-  },
+  // userCount: {
+    // fontSize: 16, fontFamily: 'roboto-bold', color: DARK_GREY
+  // },
+  // userImage: {
+    // height:16, width: 16, tintColor: DARK_GREY
+  // },
   rightContainer: {
     flex: 1, flexDirection: 'column',
     justifyContent: 'center', alignItems: 'center'
