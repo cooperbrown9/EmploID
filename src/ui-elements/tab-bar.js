@@ -10,9 +10,11 @@ import { ROBOTO } from '../constants/font';
 const TabBar = props => (
   <View style={styles.container} >
     <View style={styles.subContainer} >
+      {/*
       <TouchableOpacity onPress={() => props.leftOnPress()} style={styles.leftIcon} >
         <Image style={styles.image} source={require('../../assets/icons/search.png')} />
       </TouchableOpacity>
+      */}
 
       <View style={styles.elementContainer} >
         <TouchableOpacity onPress={() => props.changeTab(0)}
@@ -28,9 +30,11 @@ const TabBar = props => (
         </TouchableOpacity>
       </View>
 
+      {/*
       <TouchableOpacity onPress={() => props.rightOnPress()} style={styles.rightIcon} >
         <Image style={styles.image} source={require('../../assets/icons/profile-male.png')} />
       </TouchableOpacity>
+      */}
     </View>
   </View>
 )
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
     tintColor: 'white'
   },
   text: {
-    fontSize: 20,
+    fontSize: 24,
     color: 'white', fontFamily: 'roboto-bold',
     textAlign: 'center'
   },
@@ -78,14 +82,14 @@ const styles = StyleSheet.create({
     marginRight: 16, marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomColor: 'white', borderBottomWidth: 4
+    borderBottomColor: 'white', borderBottomWidth: 6
   },
   rightButtonOn: {
     flex: 1,
     marginLeft: 16, marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomColor: 'white', borderBottomWidth: 4
+    borderBottomColor: 'white', borderBottomWidth: 6
   },
   leftIcon: {
     position: 'absolute',
@@ -101,8 +105,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'stretch',
-    marginLeft: 72, marginRight: 72
+    alignItems: 'stretch'
   }
 });
 

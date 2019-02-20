@@ -11,7 +11,7 @@ import * as Colors from '../constants/colors';
 const EmployeeScreen = (props) => (
 
     <View style={styles.container} >
-      <SearchBar lightTheme placeholder={'Search'} style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />
+      {/*<SearchBar lightTheme placeholder={'Search'} style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />*/}
 
       <ScrollView
         contentContainerStyle={{marginRight: 8, marginLeft: 8}}

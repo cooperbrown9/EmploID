@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert,
-  Dimensions, AsyncStorage, LayoutAnimation, Platform
+  Dimensions, AsyncStorage, LayoutAnimation, Platform, StatusBar
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -154,6 +154,7 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
+            this.cacheImages(users)
             this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
             this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
 
@@ -164,6 +165,12 @@ class HomeScreen extends Component {
         })
       }
     })
+  }
+
+  // NOTE image_url like users[0].image_url
+  // NOTE called on line 157
+  cacheImages(users) {
+
   }
 
   // takes locations on redux and puts their user count on them
@@ -365,7 +372,6 @@ class HomeScreen extends Component {
       </TouchableOpacity>
     );
 
-    // debugger
     if(this.props.indexOn === 0 && this.props.me.can_create_places) {
       return addButton;
     }
@@ -412,6 +418,7 @@ class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container} >
+        <StatusBar hidden={false} barStyle={'light-content'} />
         <View style={styles.tabContainer} >
           <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this.clearKeys() } rightOnPress={() => this.presentMyProfile()} />
         </View>
@@ -483,7 +490,12 @@ const styles = StyleSheet.create({
     shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
   },
   tabContainer: {
-    height: (FRAME.height === 812 || FRAME.height === 896) ? 84 : 72
+    marginBottom: 16,
+    height: (FRAME.height === 812 || FRAME.height === 896) ? 90 : 72,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
   }
 });
 
