@@ -66,9 +66,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'white',
     height: 100,
-    marginTop: 4, marginBottom: 4, borderRadius: 4,
+    marginTop: 4, marginBottom: 8, borderRadius: 4,
     backgroundColor: 'white',
-    overflow: 'hidden'
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   employeeImage: {
     height: 100,

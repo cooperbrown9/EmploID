@@ -36,29 +36,12 @@ const RestaurantScreen = (props) => (
   // <Text style={styles.userCount}>: 100</Text>
   // </View>
 
-RestaurantScreen.toggleOptions = function(place, props) {
-  props.toggleOptions(place);
-  var animationProps = {
-    type: 'timing',
-    // springDamping: 0.8,
-    property: 'opacity'
-  }
-
-  var animationConfig = {
-    duration: 250,
-    create: animationProps,
-    update: animationProps
-  }
-  LayoutAnimation.configureNext(animationConfig);
-}
-
 RestaurantScreen.propTypes = {
   places: PropTypes.array,
   openProfile: PropTypes.func,
   isRefreshing: PropTypes.bool,
   onRefresh: PropTypes.func,
-  search: PropTypes.func,
-  toggleOptions: PropTypes.func
+  search: PropTypes.func
 };
 
 const styles = StyleSheet.create({
@@ -90,9 +73,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'white',
     height: 100,
-    marginTop: 4, marginBottom: 4, borderRadius: 4,
+    marginTop: 4, marginBottom: 8, borderRadius: 4,
     backgroundColor: 'white',
-    overflow: 'hidden'
+    // overflow: 'hidden',
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   phoneContainer: {
     height: 64, width: 64

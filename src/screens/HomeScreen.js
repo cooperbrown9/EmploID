@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert,
-  Dimensions, AsyncStorage, LayoutAnimation, Platform, StatusBar
+  Dimensions, AsyncStorage, LayoutAnimation, Platform, StatusBar, Animated
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -26,12 +26,13 @@ import FilterModal from './FilterModal';
 import EmployeeForm from './EmployeeForm';
 import PlaceForm from './RestaurantForm';
 import ProfileScreen from './ProfileScreen';
+import MyDiscountScreen from './MyDiscountScreen';
 import { alphabetizeUsers, alphabetizePlaces } from '../util';
+
+// import AnimatedButtons from '../ui-elements/animated-buttons';
 
 class HomeScreen extends Component {
 
-// TODO if cant create, change Alert from clicking employee tab without
-// locations to say "you need to be added to restaurants"
   constructor() {
     super();
 
@@ -42,6 +43,7 @@ class HomeScreen extends Component {
       canCreateUsers: false,
       filterPresented: false,
       employeeFormPresented: false,
+      myDiscountsPresented: false,
       placeFormPresented: false,
       myProfilePresented: false,
       places: [],
@@ -49,7 +51,9 @@ class HomeScreen extends Component {
       employeeMatches: [],
       employeeIDs: [],
       isRefreshing: false,
-      animation: 1
+      animation: 1,
+      optionButtonAnimation: new Animated.Value(-100),
+      isOptionsAvailable: false
     }
   }
 
@@ -58,10 +62,7 @@ class HomeScreen extends Component {
     gesturesEnabled: false
   }
 
-  // figure out why locations and employees dont update
   componentDidMount() {
-    // console.log(Platform);
-    // console.log(FRAME.height)
     this.loadData();
   }
 
@@ -102,17 +103,7 @@ class HomeScreen extends Component {
               let sortedLocationsWithRelations = this.alphabetizePlaces(locationsWithRelations);
 
               this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: sortedLocationsWithRelations });
-              // FIXME poor mans finding if user can add employees
-              // it just checks to see if the user is a manager or owner at any of
-              // their locations
-              // let canCreateUsers = relations.find((r) => {
-              //   return r.role >= 1;
-              // })
-              // // if(canCreateUsers)
-              //
-              // this.props.dispatch({ type: AuthActions.UPDATE_USER_CAN_CREATE, canCreate: (canCreateUsers != null)})
               this.getUsers();
-              // this.getUserCount();
             })
           }
         })
@@ -128,9 +119,8 @@ class HomeScreen extends Component {
     const sender = {
       'places': places
     }
-    // gets relations of all employees who are at my locations
 
-    // COMBAK to keep all a user's data local, give them an array of their relations
+    // NOTE gets relations of all employees who are at my locations
     API.getRelationsByPlaces(sender, (err, relations) => {
       if(err) {
         this.setState({ isRefreshing: false }, () => {
@@ -209,6 +199,10 @@ class HomeScreen extends Component {
     }
   }
 
+  _presentMyDiscounts = () => {
+    this.setState({ myDiscountsPresented: true });
+  }
+
   _presentFilterModal = () => {
     this.setState({ filterPresented: true });
   }
@@ -218,33 +212,20 @@ class HomeScreen extends Component {
   }
 
   _presentAddEmployeeModal = () => {
-    // this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
     this.props.navigation.navigate(NavActions.EMPLOYEE_PROFILE);
   }
   _openEmployeeProfile = (employee) => {
     this.props.dispatch({ type: DetailActions.SET_USER, user: employee });
-    // this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
     this.props.navigation.navigate(NavActions.EMPLOYEE_PROFILE);
   }
 
   // role based on user (me)'s role for that location
   _openLocationProfile = (place) => {
-    // TODO get full relation object with full user and location
     for(let i = 0; i < this.props.places.length; i++) {
       if(this.props.places[i].relation.place_id === place._id) {
         this.props.dispatch({ type: DetailActions.SET_LOCATION, location: place, myRole: this.props.places[i].relation.role });
-        // this.props.dispatch({ type: NavActions.LOCATION_PROFILE });
         this.props.navigation.navigate(NavActions.LOCATION_PROFILE);
         break;
-      }
-    }
-  }
-
-  _toggleLocationOptions = (place) => {
-    for(let i = 0; i < this.props.places.length; i++) {
-      if(this.props.places[i].relation.place_id === place._id) {
-        this.props.places[i].isToggled = !this.props.places[i].isToggled;
-        this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: this.props.places });
       }
     }
   }
@@ -258,15 +239,17 @@ class HomeScreen extends Component {
   }
 
   addPressed = () => {
-    if(this.props.indexOn === 0) {
-      this.props.navigation.navigate(NavActions.RESTAURANT_FORM, {
-        onBack: () => this.refreshData()
-      });
-    } else {
-      this.props.navigation.navigate(NavActions.EMPLOYEE_FORM, {
-        onBack: () => this.refreshData()
-      });
-    }
+    this.onOptions()
+    return;
+    // if(this.props.indexOn === 0) {
+    //   this.props.navigation.navigate(NavActions.RESTAURANT_FORM, {
+    //     onBack: () => this.refreshData()
+    //   });
+    // } else {
+    //   this.props.navigation.navigate(NavActions.EMPLOYEE_FORM, {
+    //     onBack: () => this.refreshData()
+    //   });
+    // }
   }
 
   _submitPlaceForm(data) {
@@ -353,7 +336,6 @@ class HomeScreen extends Component {
 
   presentMyProfile = () => {
     this.props.dispatch({ type: DetailActions.SET_USER, user: this.props.me });
-    // this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE });
     this.props.navigation.push(NavActions.EMPLOYEE_PROFILE);
   }
 
@@ -367,8 +349,8 @@ class HomeScreen extends Component {
     // loop thru all relations and check if any of them are >= 1
     // if so, display the add icon only on employees
     let addButton = (
-      <TouchableOpacity onPress={this.addPressed} style={styles.addButton} >
-          <Image style={{height:64,width:64, tintColor:'black'}} source={require('../../assets/icons/plus.png')} />
+      <TouchableOpacity onPress={this.addPressed} style={[styles.addButton, {backgroundColor:Colors.BLACK}]} >
+          <Image style={{height:48,width:48, tintColor:'white'}} source={require('../../assets/icons/ellipsis.png')} />
       </TouchableOpacity>
     );
 
@@ -378,6 +360,27 @@ class HomeScreen extends Component {
 
     if(this.props.indexOn === 1 && this.props.me.can_create_places) {
       return addButton;
+    }
+  }
+
+  renderOptionToggle = () => {
+    let toggle = (
+      <TouchableOpacity onPress={this.addPressed} style={[styles.addButton, {backgroundColor:Colors.BLACK}]} >
+          <Image style={{height:48,width:48, tintColor:'white'}} source={require('../../assets/icons/ellipsis.png')} />
+      </TouchableOpacity>
+    );
+    return toggle;
+  }
+
+  onAdd = () => {
+    if(this.props.indexOn === 0) {
+      this.props.navigation.navigate(NavActions.RESTAURANT_FORM, {
+        onBack: () => this.refreshData()
+      });
+    } else {
+      this.props.navigation.navigate(NavActions.EMPLOYEE_FORM, {
+        onBack: () => this.refreshData()
+      });
     }
   }
 
@@ -415,9 +418,18 @@ class HomeScreen extends Component {
     this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: matches });
   }
 
+  onOptions = () => {
+    Animated.timing(this.state.optionButtonAnimation,
+    {
+      toValue: (this.state.onOptions) ? - 72 : 16,
+      duration: 250
+    }).start()
+    this.setState({ onOptions: !this.state.onOptions })
+  }
+
   render() {
     return (
-      <View style={styles.container} >
+      <Animated.View style={styles.container} >
         <StatusBar hidden={false} barStyle={'light-content'} />
         <View style={styles.tabContainer} >
           <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this.clearKeys() } rightOnPress={() => this.presentMyProfile()} />
@@ -428,11 +440,28 @@ class HomeScreen extends Component {
             ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ textAlign:'center', fontSize: 20, fontFamily: 'roboto-bold', color: Colors.MID_GREY}}>Add a Restaurant before you add employees!</Text>
               </View>
-            : <RestaurantScreen toggleOptions={(place) => this._toggleLocationOptions(place)} search={(text) => this._searchLocations(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
+            : <RestaurantScreen search={(text) => this._searchLocations(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
           : <EmployeeScreen search={(text) => this._searchEmployees(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
         }
 
-        {this.checkCreatePermission()}
+        {this.renderOptionToggle()}
+
+        <Animated.View style={[styles.addButton, { bottom: 170, right: this.state.optionButtonAnimation, backgroundColor:'transparent'}]} >
+          {(this.props.me.can_create_places)
+            ? <TouchableOpacity style={styles.optionTouch} onPress={this.onAdd} >
+                <Image source={require('../../assets/icons/add.png')} style={{width:32, height: 32,tintColor:'white'}}/>
+              </TouchableOpacity>
+            : null
+          }
+          <TouchableOpacity style={styles.optionTouch} onPress={this.presentMyProfile}>
+            <Image source={require('../../assets/icons/profile.png')} style={{width:32, height: 32,tintColor:'white'}}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.optionTouch} onPress={this._presentMyDiscounts}>
+            <Image source={require('../../assets/icons/card.png')} style={{width:32, height: 32,tintColor:'white'}}/>
+          </TouchableOpacity>
+
+
+        </Animated.View>
 
         {
         <TouchableOpacity onPress={() => this._presentFilterModal()} style={styles.filterButton} >
@@ -448,13 +477,16 @@ class HomeScreen extends Component {
           <ProfileScreen dismiss={() => this.setState({ myProfilePresented: false })} isMyProfile={true} />
         </Modal>
 
+        <Modal animationType={'slide'} transparent={true} visible={this.state.myDiscountsPresented} >
+          <MyDiscountScreen onDismiss={() => this.setState({ myDiscountsPresented: false })} />
+        </Modal>
+
         {(this.props.isLoading && !this.state.isRefreshing)
           ? <LoadingOverlay />
           : null
         }
 
-
-      </View>
+      </Animated.View>
     )
   }
 }
@@ -485,9 +517,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center', alignItems: 'center',
     right: 16, bottom: 16,
-    height: 64, width: 64,
+    height: 72, width: 72, borderRadius: 36,
     backgroundColor: 'transparent',
-    shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
+    shadowColor: Colors.BLACK, shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
   },
   tabContainer: {
     marginBottom: 16,
@@ -496,6 +528,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 4,
+  },
+  optionTouch: {
+    borderRadius:32, height: 64, width: 64, marginBottom: 12,
+    backgroundColor: Colors.YELLOW,
+    justifyContent:'center',alignItems:'center'
   }
 });
 

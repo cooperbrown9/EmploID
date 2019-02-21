@@ -407,7 +407,7 @@ class ProfileScreen extends Component {
         <View style={{flex:1}} >
 
           <View style={styles.profilePicContainer} >
-            <TouchableOpacity style={{flex:1}} onPress={() => this.setState({ imagePresented: true })}>
+            {/*<TouchableOpacity style={{flex:1}} onPress={() => this.setState({ imagePresented: true })}>*/}
 
               {(this.props.employee.image_url)
                 ? <Image style={styles.profilePic} source={{ uri: this.props.employee.image_url }} />
@@ -425,7 +425,7 @@ class ProfileScreen extends Component {
               {this.editProfileButton()}
               {this.profilePicButton()}
 
-            </TouchableOpacity>
+            {/*</TouchableOpacity>*/}
           </View>
 
           <View style={styles.bottomContainer}>
@@ -469,9 +469,11 @@ class ProfileScreen extends Component {
           </Animated.View>
         </View>
 
+        {/*
           <Modal animationType={'slide'} transparent={false} visible={this.state.imagePresented} styles={{marginTop: 0}} >
             <ImageScreen image={this.props.employee.image_url} dismiss={() => this.setState({ imagePresented: false })} />
           </Modal>
+          */}
 
           <Modal animationType={'slide'} transparent={false} visible={this.state.editModalPresented} styles={{marginTop: 0}} onDismiss={() => this.refreshUser()}>
             <EmployeeFormEdit dismiss={this._dismissFormModal} />
