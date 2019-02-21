@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl, Animated, LayoutAnimation } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl, Dimensions, LayoutAnimation } from 'react-native';
 import {SearchBar} from 'react-native-elements';
 import { BLUE, DARK_GREY, BACKGROUND_GREY, MID_GREY } from '../constants/colors';
 import { callPhoneNumber } from '../util';
@@ -10,7 +10,7 @@ const RestaurantScreen = (props) => (
   <View style={styles.container}>
     {/*<SearchBar lightTheme placeholder='Search' style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />*/}
     <ScrollView
-      contentContainerStyle={{marginRight: 8, marginLeft: 8}}
+      contentContainerStyle={{flex: 1, marginRight: 8, marginLeft: 8}}
       refreshControl={
         <RefreshControl refreshing={props.isRefreshing} onRefresh={props.onRefresh} />
       }
@@ -46,7 +46,7 @@ RestaurantScreen.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   nameText: {
     fontSize: 24, marginBottom: 6,

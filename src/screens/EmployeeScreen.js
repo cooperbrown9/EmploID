@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
 });
 
 var mapStateToProps = state => {
+  console.log("here")
   return {
     employees: state.user.myEmployees,
     myPlaces: state.user.myLocations,

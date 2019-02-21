@@ -53,6 +53,7 @@ class HomeScreen extends Component {
       isRefreshing: false,
       animation: 1,
       optionButtonAnimation: new Animated.Value(-100),
+      tabAnimation: new Animated.Value(0),
       isOptionsAvailable: false
     }
   }
@@ -197,6 +198,7 @@ class HomeScreen extends Component {
     } else {
       this.props.dispatch({ type: (index === 0) ? TabActions.LOCATION_TAB : TabActions.EMPLOYEE_TAB });
     }
+    this.onTabSwitch();
   }
 
   _presentMyDiscounts = () => {
@@ -427,7 +429,16 @@ class HomeScreen extends Component {
     this.setState({ onOptions: !this.state.onOptions })
   }
 
+  onTabSwitch() {
+    Animated.timing(this.state.tabAnimation,
+    {
+      toValue: (this.props.indexOn == 1) ? 0 : -FRAME.width,
+      duration: 250
+    }).start()
+  }
+
   render() {
+    console.log("here2")
     return (
       <Animated.View style={styles.container} >
         <StatusBar hidden={false} barStyle={'light-content'} />
@@ -435,13 +446,22 @@ class HomeScreen extends Component {
           <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this.clearKeys() } rightOnPress={() => this.presentMyProfile()} />
         </View>
 
-        {(this.props.indexOn === 0)
+        {/*(this.props.indexOn === 0)
           ? (this.props.places.length < 1)
             ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ textAlign:'center', fontSize: 20, fontFamily: 'roboto-bold', color: Colors.MID_GREY}}>Add a Restaurant before you add employees!</Text>
               </View>
             : <RestaurantScreen search={(text) => this._searchLocations(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
           : <EmployeeScreen search={(text) => this._searchEmployees(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
+        */
+        (this.props.places.length < 1)
+          ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ textAlign:'center', fontSize: 20, fontFamily: 'roboto-bold', color: Colors.MID_GREY}}>Add a Restaurant before you add employees!</Text>
+            </View>
+          : <Animated.View style={[styles.animatedView, {left: this.state.tabAnimation}]}>
+              <RestaurantScreen style={{shadowOpacity: this.state.tabAnimation}} search={(text) => this._searchLocations(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
+              <EmployeeScreen search={(text) => this._searchEmployees(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
+            </Animated.View>
         }
 
         {this.renderOptionToggle()}
@@ -533,6 +553,14 @@ const styles = StyleSheet.create({
     borderRadius:32, height: 64, width: 64, marginBottom: 12,
     backgroundColor: Colors.YELLOW,
     justifyContent:'center',alignItems:'center'
+  },
+  animatedView: {
+    position: 'absolute',
+    flexDirection: 'row',
+    width: FRAME.width * 2,
+    top: (FRAME.height === 812 || FRAME.height === 896) ? 90 : 72,
+    bottom: 0,
+    left: 0
   }
 });
 
