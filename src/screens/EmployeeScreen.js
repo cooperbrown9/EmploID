@@ -1,17 +1,43 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl, Animated } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl, FlatList } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { findSimilarPlaces } from '../api/data-builder';
 
 import * as NavActions from '../action-types/nav-action-types';
 import * as Colors from '../constants/colors';
 
+function renderItem({ item }, openProfile) {
+  return(
+    <TouchableOpacity style={styles.employeeItem} key={item._id} onPress={() => openProfile(item)}>
+      <View style={[styles.employeeImage, { borderRadius:4,overflow:'hidden'}]}>
+        <Image
+          style={styles.employeeImage}
+          source={(item.image_url == null || item.image_url == "") ? require('../../assets/images/chef1.png') : { uri: item.image_url }}
+          />
+      </View>
+
+      <View style={styles.employeeInfo}>
+        <Text style={styles.nameText}>{item.first_name} {item.last_name}</Text>
+        <Text style={styles.positionText}>{(item.position === 0) ? 'Employee' : 'Manager'}</Text>
+      </View>
+    </TouchableOpacity>
+  )
+}
+
 const EmployeeScreen = (props) => (
 
     <View style={styles.container} >
-      {/*<SearchBar lightTheme placeholder={'Search'} style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />*/}
+
+      <FlatList
+        style={{padding: 12}}
+        data={(!props.spotlightOn) ? props.employees : props.spotlightUsers}
+        renderItem={(employee) => renderItem(employee, props.openProfile)}
+        onRefresh={props.onRefresh}
+        refreshing={props.isRefreshing}
+      />
+      {/*<SearchBar lightTheme placeholder={'Search'} style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />
 
       <ScrollView
         contentContainerStyle={{marginRight: 8, marginLeft: 8}}
@@ -35,7 +61,7 @@ const EmployeeScreen = (props) => (
         ))}
 
       </ScrollView>
-
+*/}
     </View>
 )
 
@@ -76,9 +102,8 @@ const styles = StyleSheet.create({
   employeeImage: {
     height: 100,
     width: 100,
-    flex: 1,
-    resizeMode: 'cover'
-
+    // flex: 1,
+  resizeMode: 'cover'
   },
   employeeInfo: {
     flex:3,

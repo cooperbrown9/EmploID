@@ -6,6 +6,7 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert,
 import { connect } from 'react-redux';
 
 import TabBar from '../ui-elements/tab-bar';
+
 import * as LoadingActions from '../action-types/loading-action-types';
 import * as TabActions from '../action-types/tab-action-types';
 import * as NavActions from '../action-types/nav-action-types';
@@ -27,8 +28,9 @@ import EmployeeForm from './EmployeeForm';
 import PlaceForm from './RestaurantForm';
 import ProfileScreen from './ProfileScreen';
 import MyDiscountScreen from './MyDiscountScreen';
-import { alphabetizeUsers, alphabetizePlaces } from '../util';
 
+import { alphabetizeUsers, alphabetizePlaces } from '../util';
+// import { preloadedImages, PreloadedImage } from 'react-native-preload-images';
 // import AnimatedButtons from '../ui-elements/animated-buttons';
 
 class HomeScreen extends Component {
@@ -63,8 +65,13 @@ class HomeScreen extends Component {
     gesturesEnabled: false
   }
 
+  componentWillMount() {
+    // this.loadData();
+
+  }
   componentDidMount() {
-    this.loadData();
+    // NOTE moved to willMount
+    this.loadData()
   }
 
   loadData() {
@@ -145,23 +152,53 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
-            this.cacheImages(users)
-            this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
-            this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
+            // Promise.all([this.cacheImages(users)])
+            // .then((status) => {
+            // this.loadImages(users)
+              // console.log(status)
+              this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
+              this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
 
-            this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
-              this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
-            });
+              this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
+                this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
+              });
+            // })
+            // .catch((e) => {
+              // debugger
+            // })
+            // this.cacheImages(users)
+            // this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
+            // this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
+            //
+            // this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
+            //   this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
+            // });
           }
         })
       }
     })
   }
 
+  // loadImages(users) {
+  //   let images = []
+  //   users.forEach((user) => {
+  //     images.push({ name: user._id, uri: user.image_url })
+  //   })
+  //   preloadImages(images)
+  // }
+
   // NOTE image_url like users[0].image_url
   // NOTE called on line 157
   cacheImages(users) {
-
+    return users.map((user) => {
+      console.log(user.image_url)
+      let img = Image.prefetch(user.image_url).then((data) => {
+        console.log(data)
+        debugger
+      })
+      // debugger
+      return Image.prefetch(user.image_url)
+    })
   }
 
   // takes locations on redux and puts their user count on them
@@ -458,9 +495,11 @@ class HomeScreen extends Component {
           ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ textAlign:'center', fontSize: 20, fontFamily: 'roboto-bold', color: Colors.MID_GREY}}>Add a Restaurant before you add employees!</Text>
             </View>
-          : <Animated.View style={[styles.animatedView, {left: this.state.tabAnimation}]}>
+          : <Animated.View style={[styles.animatedView, {left: this.state.tabAnimation,flexDirection:'column'}]}>
+            <View style={{flex: 1,flexDirection:'row'}}>
               <RestaurantScreen style={{shadowOpacity: this.state.tabAnimation}} search={(text) => this._searchLocations(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
               <EmployeeScreen search={(text) => this._searchEmployees(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
+            </View>
             </Animated.View>
         }
 

@@ -431,7 +431,7 @@ class ProfileScreen extends Component {
           <View style={styles.bottomContainer}>
             <Animated.View style={[styles.bottomContainerAnimated, { marginTop: this.state.animation }]}>
               <View style={styles.infoContainer0} >
-                <Text style={styles.infoTextName}>
+                <Text style={styles.infoTextName} numberOfLines={2} ellipsizeMode={'tail'}>
                   {this.props.employee.first_name} {this.props.employee.last_name}
                 </Text>
                 <Text style={styles.infoText}>{this.props.employee.email}</Text>
@@ -552,6 +552,10 @@ const styles = StyleSheet.create({
   },
   infoContainer0: {
     position: 'absolute',
+    left: 16, right: 16, top: -190
+  },
+  infoContainer00: {
+    position: 'absolute', backgroundColor: 'orange',
     left: 16, right: 16, top: -150,
     // bottom: 100,
     zIndex: 1001

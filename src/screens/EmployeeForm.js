@@ -277,7 +277,7 @@ class EmployeeForm extends Component {
 
   takePicture = async() => {
     if(this.camera) {
-      await this.camera.takePictureAsync()
+      await this.camera.takePictureAsync({ quality: 0.01 })
         .then((data) => { console.log(data); this.setState({ employee: { ...this.state.employee, imageURI: data.uri }, cameraPermission: false }) })
         .catch(e => {
           console.log(e);

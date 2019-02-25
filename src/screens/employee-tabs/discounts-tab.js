@@ -34,7 +34,8 @@ DiscountsTab.defaultPropTypes = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginRight: 8, marginLeft: 8
+    marginRight: 8, marginLeft: 8,
+    shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
   },
   discountItem: {
       flex: 1,

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView, ListView, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 
+// import { PreloadedImage }
+
 import * as Colors from '../../constants/colors';
 
 const EmployeesTab = (props) => (
@@ -15,7 +17,7 @@ const EmployeesTab = (props) => (
           style={(model.relation.role === 0) ? styles.employeeItem : (model.relation.role === 1) ? styles.employeeItemManager : styles.employeeItemOwner} key={model._id}
           onPress={() => props.onPress(model)}
         >
-          <Image style={styles.employeeImage} source={(model.image_url != "" || model.image_url != null ) ? { uri: model.image_url } : require('../../../assets/images/chef1.png')} />
+          <Image style={styles.employeeImage} source={(model.image_url != "" || model.image_url != null ) ? { uri: model.image_url, cache:'force-cache' } : require('../../../assets/images/chef1.png')} />
           <View style={styles.employeeInfo}>
             <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.first_name} {model.last_name}</Text>
             <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}}>{model.relation.position}</Text>
@@ -42,12 +44,12 @@ EmployeesTab.defaultProps = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginRight: 8, marginLeft: 8
+    marginRight: 8, marginLeft: 8,
+    shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
   },
   employeeImage: {
     height: 100,
     width: 100,
-    flex: 1,
     resizeMode: 'cover'
   },
   employeeItem: {
@@ -91,7 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     backgroundColor: 'transparent',
-    marginLeft: 28
+    marginLeft: 16
   }
 });
 

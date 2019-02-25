@@ -1,11 +1,12 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { AsyncStorage, StyleSheet, Text,
+  Image, View, ActivityIndicator } from 'react-native';
 
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
 
-import { Font } from 'expo';
+import { Asset, Font } from 'expo';
 import MainReducer from './src/reducers/main-reducer';
 // import AppNavigatorWithState from './src/navigation/app-navigator';
 import AppNavigator from './src/navigation/app-navigator';
@@ -71,7 +72,21 @@ export default class App extends React.Component {
       'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf'),
       'roboto-bold': require('./assets/fonts/Roboto-Bold.ttf')
     });
+    this.cacheImages()
     this.setState({ fontLoaded: true });
+  }
+
+  cacheImages() {
+    let images = [
+      require('./assets/images/chef1.png'),
+    ]
+    return Asset.fromModule(images[0]).downloadAsync()
+    // return Image.prefetch(images[0])
+    // return Image.prefetch('https://m.media-amazon.com/images/S/aplus-media/vc/88a2891b-c398-4a59-a32b-d7621eccf0a4._CR0,0,300,300_PT0_SX300__.jpg')
+  }
+
+  cacheImage() {
+    return Image.prefetch('https://emploid.s3.us-west-2.amazonaws.com/1550883646647.png');
   }
 
   async clearKeys() {
