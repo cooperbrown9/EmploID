@@ -40,6 +40,9 @@ class RestaurantProfileScreen extends Component {
 
   componentDidMount() {
     this.getUsers();
+    setTimeout(() => {
+      console.log(this.emps)
+    }, 3000)
   }
 
   componentWillUnmount() {
@@ -63,13 +66,23 @@ class RestaurantProfileScreen extends Component {
             console.log(e2);
           } else {
             console.log(users);
-            DataBuilder.assignRelationsToUsers(relations, users, (usersWithRelations) => {
-              this.props.dispatch({ type: DetailActions.SET_EMPLOYEES, employees: usersWithRelations });
-              this.getDiscounts();
-            })
+            Promise.all([this.cacheImages(users)])
+            .then((data) => {
+              console.log(data)
+              DataBuilder.assignRelationsToUsers(relations, users, (usersWithRelations) => {
+                this.props.dispatch({ type: DetailActions.SET_EMPLOYEES, employees: usersWithRelations });
+                this.getDiscounts();
+              })
+            }).catch(e => console.log(e))
           }
         })
       }
+    })
+  }
+
+  cacheImages(users) {
+    return users.map((user) => {
+      return Image.prefetch(user.image_url)
     })
   }
 
@@ -319,7 +332,7 @@ class RestaurantProfileScreen extends Component {
 
           <View style={styles.screenContainer} >
        {(this.props.indexOn === 0)
-          ? <EmployeesTab onPress={(employee) => this.onSelectEmployee(employee)} />
+          ? <EmployeesTab onPress={(employee) => this.onSelectEmployee(employee)} ref={ref => this.emps = ref } />
           : (this.props.indexOn === 1)
             ? <DiscountsTab selectDiscount={(discount) => this._presentDiscountModal(discount)} />
             : (this.props.indexOn === 2)

@@ -23,8 +23,8 @@ class EmployeeTabBar extends Component {
   }
 
   handleTabPress(path) {
-    this.props.handleProfile(path);
     this.props.dispatch({ type: path });
+    this.props.handleProfile(path);
   }
 
   render() {
@@ -44,9 +44,15 @@ class EmployeeTabBar extends Component {
           <Text color={'black'} style={(this.props.indexOn === 2) ? styles.buttonTextOn : styles.buttonTextOff}>Discounts</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={() => this.handleTabPress(EmpActions.OPEN_NOTES)} style={(this.props.indexOn === 3) ? styles.buttonOn : styles.buttonOff} >
+          <Text color={'black'} style={(this.props.indexOn === 3) ? styles.buttonTextOn : styles.buttonTextOff}>Notes</Text>
+        </TouchableOpacity>
+
+        {/*
         <TouchableOpacity onPress={() => { this.props.handleProfile(); this.props.dispatch({type: EmpActions.OPEN_NOTES}) }} style={(this.props.indexOn === 3) ? styles.buttonOn : styles.buttonOff} >
           <Text color={'black'} style={(this.props.indexOn === 3) ? styles.buttonTextOn : styles.buttonTextOff}>Notes</Text>
         </TouchableOpacity>
+      */}
 
       </View>
     );

@@ -5,18 +5,18 @@ import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshCon
 import { SearchBar } from 'react-native-elements';
 import { findSimilarPlaces } from '../api/data-builder';
 
+import ProgressiveImage from '../ui-elements/progressive-image';
+
 import * as NavActions from '../action-types/nav-action-types';
 import * as Colors from '../constants/colors';
 
 function renderItem({ item }, openProfile) {
   return(
     <TouchableOpacity style={styles.employeeItem} key={item._id} onPress={() => openProfile(item)}>
-      <View style={[styles.employeeImage, { borderRadius:4,overflow:'hidden'}]}>
-        <Image
+        <ProgressiveImage
           style={styles.employeeImage}
           source={(item.image_url == null || item.image_url == "") ? require('../../assets/images/chef1.png') : { uri: item.image_url }}
           />
-      </View>
 
       <View style={styles.employeeInfo}>
         <Text style={styles.nameText}>{item.first_name} {item.last_name}</Text>
@@ -27,42 +27,19 @@ function renderItem({ item }, openProfile) {
 }
 
 const EmployeeScreen = (props) => (
+  <View style={styles.container} >
+    <FlatList
+      style={{padding: 12}}
+      data={(!props.spotlightOn) ? props.employees : props.spotlightUsers}
+      renderItem={(employee) => renderItem(employee, props.openProfile)}
+      onRefresh={props.onRefresh}
+      refreshing={props.isRefreshing}
+    />
+{/*
 
-    <View style={styles.container} >
-
-      <FlatList
-        style={{padding: 12}}
-        data={(!props.spotlightOn) ? props.employees : props.spotlightUsers}
-        renderItem={(employee) => renderItem(employee, props.openProfile)}
-        onRefresh={props.onRefresh}
-        refreshing={props.isRefreshing}
-      />
-      {/*<SearchBar lightTheme placeholder={'Search'} style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />
-
-      <ScrollView
-        contentContainerStyle={{marginRight: 8, marginLeft: 8}}
-        refreshControl={
-          <RefreshControl refreshing={props.isRefreshing} onRefresh={props.onRefresh} />
-        }
-      >
-
-        {((!props.spotlightOn) ? (props.employees) : props.spotlightUsers).map((employee) => (
-          <TouchableOpacity style={styles.employeeItem} key={employee._id} onPress={() => props.openProfile(employee)}>
-            <Image
-              style={styles.employeeImage}
-              source={(employee.image_url == null || employee.image_url == "") ? require('../../assets/images/chef1.png') : { uri: employee.image_url }}
-            />
-
-            <View style={styles.employeeInfo}>
-              <Text style={styles.nameText}>{employee.first_name} {employee.last_name}</Text>
-              <Text style={styles.positionText}>{(employee.position === 0) ? 'Employee' : 'Manager'}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-
-      </ScrollView>
+<SearchBar lightTheme placeholder={'Search'} style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />
 */}
-    </View>
+  </View>
 )
 
 EmployeeScreen.propTypes = {
@@ -102,8 +79,9 @@ const styles = StyleSheet.create({
   employeeImage: {
     height: 100,
     width: 100,
+    borderBottomLeftRadius: 4, borderTopLeftRadius: 16,
     // flex: 1,
-  resizeMode: 'cover'
+  resizeMode: 'cover', overflow: 'hidden'
   },
   employeeInfo: {
     flex:3,

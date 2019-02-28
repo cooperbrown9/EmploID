@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Animated, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, RefreshControl, Dimensions, Alert, LayoutAnimation, NativeModules } from 'react-native';
+import { View, Animated, Text, StyleSheet, ScrollView, FlatList,
+  Image, TouchableOpacity, Modal, RefreshControl, Dimensions, Alert,
+  LayoutAnimation, NativeModules
+} from 'react-native';
 import { connect } from 'react-redux';
 import { Camera, Permissions } from 'expo';
 import EmployeeTabBar from '../ui-elements/employee-tab-bar.js';
@@ -18,6 +21,7 @@ import UserPermissionModal from './UserPermissionModal';
 import CreateUserNoteForm from './CreateUserNoteForm';
 import ImageScreen from './ImageScreen';
 import EmployeeFormAddLocationEdit from './edit/EmployeeFormAddLocationEdit';
+import ProgressiveImage from '../ui-elements/progressive-image';
 
 import { uploadImage } from '../api/image-handler';
 
@@ -34,8 +38,6 @@ UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
 const FRAME = Dimensions.get('window');
-
-// TODO make phone number not in touch zone
 
 class ProfileScreen extends Component {
   static navigationOptions = {
@@ -89,6 +91,13 @@ class ProfileScreen extends Component {
   componentDidMount () {
     this.getPlaces();
     this.setState({ dispatchFromPlace: this.props.navigation.getParam('dispatchFromPlace', 'dispatchFromPlace') });
+    // setTimeout(() => {
+    //   this.list.scrollToIndex({
+    //     index: 3,
+    //     viewOffset: 0,
+    //     viewPosition: 0
+    //   })
+    // }, 3000)
   }
 
   componentWillUnmount() {
@@ -399,128 +408,121 @@ class ProfileScreen extends Component {
       )
     }
 
-    let initial = FRAME.height / 2;
-    let animatedFlex = 1;
-
-
     return (
-        <View style={{flex:1}} >
+      <View style={{flex:1}} >
 
-          <View style={styles.profilePicContainer} >
-            {/*<TouchableOpacity style={{flex:1}} onPress={() => this.setState({ imagePresented: true })}>*/}
+        <View style={styles.profilePicContainer} >
+          {/*<TouchableOpacity style={{flex:1}} onPress={() => this.setState({ imagePresented: true })}>*/}
 
-              {(this.props.employee.image_url)
-                ? <Image style={styles.profilePic} source={{ uri: this.props.employee.image_url }} />
-                : <View style={styles.profilePicEmpty}>
-                    <Text style={{fontSize:32,fontFamily:'roboto-bold',textAlign:'center', color:'gray'}}></Text>
-                  </View>
-              }
+            {(this.props.employee.image_url)
+              ? <Image style={styles.profilePic} source={{ uri: this.props.employee.image_url }} />
+              : <View style={styles.profilePicEmpty}>
+                  <Text style={{fontSize:32,fontFamily:'roboto-bold',textAlign:'center', color:'gray'}}></Text>
+                </View>
+            }
 
-              <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.2)',zIndex:1000}}></View>
+            <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.2)',zIndex:1000}}></View>
 
-              <View style={styles.backButton}>
-                <RoundButton onPress={() => this._goBack()} />
-              </View>
-
-              {this.editProfileButton()}
-              {this.profilePicButton()}
-
-            {/*</TouchableOpacity>*/}
-          </View>
-
-          <View style={styles.bottomContainer}>
-            <Animated.View style={[styles.bottomContainerAnimated, { marginTop: this.state.animation }]}>
-              <View style={styles.infoContainer0} >
-                <Text style={styles.infoTextName} numberOfLines={2} ellipsizeMode={'tail'}>
-                  {this.props.employee.first_name} {this.props.employee.last_name}
-                </Text>
-                <Text style={styles.infoText}>{this.props.employee.email}</Text>
-                <TouchableOpacity onPress={() => util.callPhoneNumber(this.props.employee.phone)}>
-                  <Text style={styles.infoText}>{util.toPhoneNumber(this.props.employee.phone)}</Text>
-                </TouchableOpacity>
-                {this.editPlacesButton()}
-                {this.addNoteButton()}
-              </View>
-            <View style={{height: 64, paddingBottom: 8}} >
-              <EmployeeTabBar handleProfile={(callback) => this._handleProfileTab(callback)} />
+            <View style={styles.backButton}>
+              <RoundButton onPress={() => this._goBack()} />
             </View>
 
-            <ScrollView
-              style={{display:'float',backgroundColor:'transparent'}}
-              refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshUser} /> }
-            >
+            {this.editProfileButton()}
+            {this.profilePicButton()}
 
-              <View style={styles.screenContainer} >
-              {/*this.addNoteButton()*/}
-              {/*this.editPlacesButton()*/}
-             {(this.props.indexOn === 0)
-                ? <ProfileTab />
-                : (this.props.indexOn === 1)
-                  ? <LocationsTab presentModal={(model) => this._presentUserPermissionModal(model)} />
-                  : (this.props.indexOn === 2)
-                    ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }, () => this._presentDiscountModal())} />
-                  : (this.props.indexOn === 3)
-                      ? <NotesTab />
-                    : null
-              }
-
-              </View>
-            </ScrollView>
-          </Animated.View>
+          {/*</TouchableOpacity>*/}
         </View>
 
-        {/*
-          <Modal animationType={'slide'} transparent={false} visible={this.state.imagePresented} styles={{marginTop: 0}} >
-            <ImageScreen image={this.props.employee.image_url} dismiss={() => this.setState({ imagePresented: false })} />
-          </Modal>
-          */}
+        <View style={styles.bottomContainer}>
+          <Animated.View style={[styles.bottomContainerAnimated, { marginTop: this.state.animation }]}>
+            <View style={styles.infoContainer0} >
+              <Text style={styles.infoTextName} numberOfLines={2} ellipsizeMode={'tail'}>
+                {this.props.employee.first_name} {this.props.employee.last_name}
+              </Text>
+              <Text style={styles.infoText}>{this.props.employee.email}</Text>
+              <TouchableOpacity onPress={() => util.callPhoneNumber(this.props.employee.phone)}>
+                <Text style={styles.infoText}>{util.toPhoneNumber(this.props.employee.phone)}</Text>
+              </TouchableOpacity>
+              {this.editPlacesButton()}
+              {this.addNoteButton()}
+            </View>
+          <View style={{height: 64, paddingBottom: 8}} >
+            <EmployeeTabBar handleProfile={(callback) => this._handleProfileTab(callback)} />
+          </View>
 
-          <Modal animationType={'slide'} transparent={false} visible={this.state.editModalPresented} styles={{marginTop: 0}} onDismiss={() => this.refreshUser()}>
-            <EmployeeFormEdit dismiss={this._dismissFormModal} />
-          </Modal>
+          <ScrollView
+            style={{display:'float',backgroundColor:'transparent'}}
+            contentContainerStyle={{alignItems: 'stretch'}}
+            refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshUser} /> }
+          >
 
-          <Modal animationType={'slide'} transparent={false} visible={this.state.noteFormPresented} >
-            <CreateUserNoteForm dismiss={() => this._dismissNoteForm()} />
-          </Modal>
 
-          <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal} onDismiss={() => this.refreshUser()}>
-            <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} />
-          </Modal>
+            {/*<View style={styles.screenContainer} >*/}
+            {/*this.addNoteButton()*/}
+            {/*this.editPlacesButton()*/}
 
-          <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} onDismiss={() => this.refreshUser()}>
-            <UserPermissionModal
-              updatePermission={(role, location, positions) => this._updateUserPermissions(role, location, positions)}
-              location={this.state.userPermissionModel}
-              onFire={() => this.fireEmployee(this.state.userPermissionModel)}
-              dismiss={() => this.setState({ userPermissionModalPresented: false })}
-            />
-          </Modal>
+           {(this.props.indexOn === 0)
+              ? <ProfileTab />
+              : (this.props.indexOn === 1)
+                ? <LocationsTab presentModal={(model) => this._presentUserPermissionModal(model)} />
+                : (this.props.indexOn === 2)
+                  ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }, () => this._presentDiscountModal())} />
+                : (this.props.indexOn === 3)
+                    ? <NotesTab />
+                  : null
+            }
 
-          {
-          <Modal animationType={'slide'} transparent={false} visible={this.state.editPlacesPresented} >
-            <EmployeeFormAddLocationEdit
-              dismiss={() => this.setState({ editPlacesPresented: false }, () => this.refreshUser() )}
-              addLocation={(places) => this.updatePlaces(places)}
-            />
-          </Modal>
-          }
+          {/*</View>*/}
+          </ScrollView>
+        </Animated.View>
+      </View>
 
-          {(this.state.cameraPermission)
-            ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0, zIndex:11000}}>
-                <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
-                  <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
-                    <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >
-                      <Image style={{height:32, width:32,tintColor:'white'}} source={require('../../assets/icons/cancel.png')} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={this.takePicture} style={{height:64,width:128,borderRadius:16, backgroundColor:Colors.BLUE,justifyContent:'center',alignItems:'center' }} >
-                      <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../assets/icons/camera.png')} />
-                    </TouchableOpacity>
-                  </View>
-                </Camera>
-              </View>
-            : null
-          }
-        </View>
+        <Modal animationType={'slide'} transparent={false} visible={this.state.editModalPresented} styles={{marginTop: 0}} onDismiss={() => this.refreshUser()}>
+          <EmployeeFormEdit dismiss={this._dismissFormModal} />
+        </Modal>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.noteFormPresented} >
+          <CreateUserNoteForm dismiss={() => this._dismissNoteForm()} />
+        </Modal>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal} onDismiss={() => this.refreshUser()}>
+          <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} />
+        </Modal>
+
+        <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} onDismiss={() => this.refreshUser()}>
+          <UserPermissionModal
+            updatePermission={(role, location, positions) => this._updateUserPermissions(role, location, positions)}
+            location={this.state.userPermissionModel}
+            onFire={() => this.fireEmployee(this.state.userPermissionModel)}
+            dismiss={() => this.setState({ userPermissionModalPresented: false })}
+          />
+        </Modal>
+
+        {
+        <Modal animationType={'slide'} transparent={false} visible={this.state.editPlacesPresented} >
+          <EmployeeFormAddLocationEdit
+            dismiss={() => this.setState({ editPlacesPresented: false }, () => this.refreshUser() )}
+            addLocation={(places) => this.updatePlaces(places)}
+          />
+        </Modal>
+        }
+
+        {(this.state.cameraPermission)
+          ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0, zIndex:11000}}>
+              <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
+                <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
+                  <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >
+                    <Image style={{height:32, width:32,tintColor:'white'}} source={require('../../assets/icons/cancel.png')} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={this.takePicture} style={{height:64,width:128,borderRadius:16, backgroundColor:Colors.BLUE,justifyContent:'center',alignItems:'center' }} >
+                    <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../assets/icons/camera.png')} />
+                  </TouchableOpacity>
+                </View>
+              </Camera>
+            </View>
+          : null
+        }
+      </View>
     )
   }
 }
@@ -565,9 +567,13 @@ const styles = StyleSheet.create({
     left: 16, right: 16, bottom: 16,
     zIndex: 1001
   },
+  animatedTabView: {
+    position: 'absolute', left: 0, top: 0, width: FRAME.wdith * 4, bottom: 0,
+    backgroundColor: 'yellow'
+  },
   screenContainer: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column', backgroundColor: 'orange'
   },
   editPlacesButton: {
     position: 'absolute',
@@ -580,6 +586,7 @@ const styles = StyleSheet.create({
   },
   profilePic: {
     flex: 1, zIndex: 4,
+    height: undefined, width: undefined,
     // height: FRAME.height / 2 + 32, width: FRAME.width,
     resizeMode: 'cover'
   },

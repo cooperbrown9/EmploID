@@ -10,6 +10,7 @@ import loading from './loading-reducer';
 import detail from './detail-reducer';
 import spotlight from './spotlight-reducer';
 import permission from './permission-reducer';
+import imageCache from './image-cache-reducer';
 
 export default MainReducer = combineReducers({
   nav,
@@ -21,5 +22,6 @@ export default MainReducer = combineReducers({
   loading,
   detail,
   spotlight,
-  permission
+  permission,
+  imageCache
 });

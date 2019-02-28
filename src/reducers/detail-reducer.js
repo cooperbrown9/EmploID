@@ -16,6 +16,7 @@ function detail(state = initialState, action) {
   switch(action.type) {
 
     case DetailActions.SET_USER:
+      // IDEA pass the whole image thru here
       return {
         ...state,
         user: action.user

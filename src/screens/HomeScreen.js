@@ -152,6 +152,7 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
+            this.cacheImages(users)
             // Promise.all([this.cacheImages(users)])
             // .then((status) => {
             // this.loadImages(users)
@@ -194,10 +195,10 @@ class HomeScreen extends Component {
       console.log(user.image_url)
       let img = Image.prefetch(user.image_url).then((data) => {
         console.log(data)
-        debugger
       })
+
       // debugger
-      return Image.prefetch(user.image_url)
+      // return Image.prefetch(user.image_url)
     })
   }
 
@@ -475,7 +476,6 @@ class HomeScreen extends Component {
   }
 
   render() {
-    console.log("here2")
     return (
       <Animated.View style={styles.container} >
         <StatusBar hidden={false} barStyle={'light-content'} />
