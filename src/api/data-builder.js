@@ -58,7 +58,7 @@ export function assignRolesToDiscounts(places, discounts, callback) {
         // COMBAK called from ProfileScreen on getting discounts
         if(discounts[i].exclusive && (places[j].relation.role !== 2 && places[j].relation.role !== 1)) {
           discounts.splice(i, 1);
-          i--;
+          // i--;
           // if(discounts.length === 0) {
             // callback(discounts);
           // }

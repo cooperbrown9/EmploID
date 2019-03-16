@@ -17,28 +17,9 @@ import { FONT_LOADED } from './src/action-types/setup-action-types';
 import * as NavActions from './src/action-types/nav-action-types';
 
 // TODO Phone number
-// TODO close on update forms acts as a submit, instead of dismiss
-// TODO TODO TODO add employees to restaurants from Employee Roster
-// TODO leave employees without image, without the image
-// TODO round corners on all boxes
-// TODO navigate to employee profile from their box on restaurant profile
-// TODO delete employees
 // COMBAK PlaceForm: Break up address fields
 // "upload restaurant logo" instead
 // search
-// filter modal
-// float all edit buttons
-// swipe to navigate -- check it out
-// if image is not selected, send it up as null
-// clear Detail USer/Location data so
-// access camera roll for photos
-// camera icon not showing up
-// KeyboardAvoidingView on both forms
-// alphabetize restaurants and employees roster
-// on profile, fix image, scrollview with tabs over it
-// add phone call to restaurant cell
-// basically remove all restaurant image stuff
-// changing tabs reformats the screen -- make concrete height of scroll
 
 export default class App extends React.Component {
 
@@ -50,23 +31,8 @@ export default class App extends React.Component {
     fontLoaded: false
   }
 
-  // isOwner is not null, so now checks to see if stored session and userID are
-  // still valid. If they are, dispatch START_HOME
   async componentDidMount() {
     // await this.clearKeys();
-
-    // config for getting network calls in Reactotron
-    // Reactotron
-    //   .configure({
-    //     name: 'EmploID'
-    //   })
-    //   .use(trackGlobalErrors())
-    //   .use(openInEditor())
-    //   .use(overlay())
-    //   .use(asyncStorage())
-    //   .use(networking())
-    //   .connect()
-
     console.disableYellowBox = true;
     await Font.loadAsync({
       'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf'),

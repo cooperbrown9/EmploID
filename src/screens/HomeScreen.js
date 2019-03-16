@@ -146,16 +146,16 @@ class HomeScreen extends Component {
         const sender = {
           'users': userIDs
         }
-        API.getUsers(sender, (err, users) => {
+        API.getUsers(sender, async(err, users) => {
           if(err) {
             this.setState({ isRefreshing: false }, () => {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
-            this.cacheImages(users)
-            // Promise.all([this.cacheImages(users)])
-            // .then((status) => {
-            // this.loadImages(users)
+            await Promise.all(...this.cacheImages(users)).then((result) => {
+              // Promise.all([this.cacheImages(users)])
+              // .then((status) => {
+              // this.loadImages(users)
               // console.log(status)
               this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
               this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
@@ -163,17 +163,18 @@ class HomeScreen extends Component {
               this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
                 this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
               });
-            // })
-            // .catch((e) => {
+              // })
+              // .catch((e) => {
               // debugger
-            // })
-            // this.cacheImages(users)
-            // this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
-            // this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
-            //
-            // this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
-            //   this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
-            // });
+              // })
+              // this.cacheImages(users)
+              // this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
+              // this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
+              //
+              // this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
+              //   this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
+              // });
+            }).catch((e) => console.log('couldnt cache images'))
           }
         })
       }
@@ -193,12 +194,12 @@ class HomeScreen extends Component {
   cacheImages(users) {
     return users.map((user) => {
       console.log(user.image_url)
-      let img = Image.prefetch(user.image_url).then((data) => {
-        console.log(data)
-      })
+      // let img = Image.prefetch(user.image_url).then((data) => {
+      //   console.log(data)
+      // })
 
       // debugger
-      // return Image.prefetch(user.image_url)
+      return Image.prefetch(user.image_url)
     })
   }
 

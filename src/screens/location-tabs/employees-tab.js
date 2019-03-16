@@ -21,8 +21,8 @@ const EmployeesTab = (props) => (
           {/*<Image style={styles.employeeImage} source={(model.image_url != "" || model.image_url != null ) ? { uri: model.image_url, cache:'force-cache' } : require('../../../assets/images/chef1.png')} />*/}
           <ProgressiveImage
             style={styles.employeeImage}
-            thumbnailSource={(model.image_url == "") ? require('../../../assets/images/chef1.png') : {uri:model.image_url, cache:'default'}}
-            source={(model.image_url == "") ? require('../../../assets/images/chef1.png') : {uri:model.image_url, cache:'default'}}
+            thumbnailSource={(model.image_url == "") ? require('../../../assets/images/chef1.png') : {uri:model.image_url}}
+            source={(model.image_url == "") ? require('../../../assets/images/chef1.png') : {uri:model.image_url}}
           />
           <View style={styles.employeeInfo}>
             <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.first_name} {model.last_name}</Text>

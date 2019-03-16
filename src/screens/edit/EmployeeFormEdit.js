@@ -80,7 +80,10 @@ class EmployeeFormEdit extends Component {
   componentDidMount() {
     this.genderSelected(this.state.employee.gender);
     this.hairSelected(this.state.employee.hair);
-    this.roleSelected(this.state.employee.role);
+    // debugger
+    this.roleSelected(
+      (this.state.employee.canCreatePlaces) ? 1 : 0
+      )
     if(this.props.employee.image_url != null) {
       this.setState({ employee: { ...this.state.employee, imageURL: this.state.employee.image_url }});
     }
