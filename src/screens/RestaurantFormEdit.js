@@ -4,6 +4,8 @@ import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image 
 
 import { connect } from 'react-redux';
 import { Camera, Permissions } from 'expo';
+import { TextInputMask } from 'react-native-masked-text';
+import { cleanPhoneNumber } from '../util';
 
 import * as Colors from '../constants/colors';
 import * as API from '../api/api';
@@ -17,6 +19,8 @@ import RoundButton from '../ui-elements/round-button';
 class RestaurantFormEdit extends Component {
   constructor() {
     super();
+
+    this.cleanPhoneNumber = cleanPhoneNumber.bind(this)
 
     this.state = {
       place: {
@@ -46,7 +50,7 @@ class RestaurantFormEdit extends Component {
     updateLocation: PropTypes.func
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({ place: { ...this.props.location, imageURL: this.props.location.image_url } }, () => {
       for(let i = 0; i < this.state.place.positions.length; i++) {
         for(let j = 0; j < this.state.positionOptions.length; j++) {
@@ -75,23 +79,26 @@ class RestaurantFormEdit extends Component {
   }
 
   updateLocation = () => {
-    if(this.state.place.imageURL === this.props.location.image_url) {
-      this.updateLocationCall();
-    } else {
-      var img = new FormData();
-      img.append('file', {
-        uri: this.state.place.imageURL,
-        type: 'image/png',
-        name: 'lol'
-      });
-
-      axios.post('https://emploid.herokuapp.com/upload', img).then((response) => {
-        this.state.place.imageURL = response.data;
+    this.cleanPhoneNumber(this.state.place.phone, (phone) => {
+      this.state.place.phone = phone;
+      if(this.state.place.imageURL === this.props.location.image_url) {
         this.updateLocationCall();
-      }).catch((e) => {
-        console.log(e);
-      })
-    }
+      } else {
+        var img = new FormData();
+        img.append('file', {
+          uri: this.state.place.imageURL,
+          type: 'image/png',
+          name: 'lol'
+        });
+
+        axios.post('https://emploid.herokuapp.com/upload', img).then((response) => {
+          this.state.place.imageURL = response.data;
+          this.updateLocationCall();
+        }).catch((e) => {
+          console.log(e);
+        })
+      }
+    })
   }
 
   updateLocationCall = () => {
@@ -142,6 +149,27 @@ class RestaurantFormEdit extends Component {
     )
   }
 
+  phoneFactory(placeholder) {
+    return(
+      <TextInputMask
+        placeholder={placeholder}
+        style={styles.input}
+        type={'custom'}
+        keyboardType={'phone-pad'}
+        returnKeyType={'done'}
+        options={{
+          mask: '(999) 999-9999'
+        }}
+        value={this.state.place.phone}
+        onChangeText={text => {
+          this.setState({
+            place: { ...this.state.place, phone: text }
+          })
+        }}
+      />
+    )
+  }
+
   render() {
     return(
       <View style={{ flex: 1 }}>
@@ -174,7 +202,8 @@ class RestaurantFormEdit extends Component {
 
             <Text style={styles.textHeader} >Phone Number</Text>
             <View style={styles.inputView} >
-              {this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone)}
+              {this.phoneFactory('(555) 555-5555')}
+              {/*this.textInputFactory('555.555.5555', (text) => this.setState({ place: {...this.state.place, phone: text}}), this.state.place.phone)*/}
             </View>
 
             <Text style={styles.textHeader}>Choose Positions</Text>
@@ -198,21 +227,6 @@ class RestaurantFormEdit extends Component {
             <View style={{height: 64}}/>
           </View>
         </ScrollView>
-        {(this.state.cameraPermission)
-          ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
-              <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
-                <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
-                  <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >
-                    <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../assets/icons/cancel.png')} />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={this.takePicture} style={{height:64,width:128,borderRadius:16, backgroundColor:Colors.BLUE,justifyContent:'center',alignItems:'center' }} >
-                    <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../assets/icons/camera.png')} />
-                  </TouchableOpacity>
-                </View>
-              </Camera>
-            </View>
-          : null
-        }
       </View>
     )
   }
@@ -228,7 +242,7 @@ const styles = StyleSheet.create({
     marginLeft: 16, marginRight: 16
   },
   backButton: {
-    position: 'absolute', left:16,top: 40, zIndex: 100000
+    position: 'absolute', left:16,top: 16, zIndex: 100000
   },
   submitContainer: {
     marginLeft: 16, marginRight: 16, marginTop: 16

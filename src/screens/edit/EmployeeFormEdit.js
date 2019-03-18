@@ -9,6 +9,7 @@ import OptionView from '../../ui-elements/option-view';
 import OptionViewSplit from '../../ui-elements/option-view-split';
 
 import { Camera, Permissions } from 'expo';
+import { TextInputMask } from 'react-native-masked-text';
 
 import * as Colors from '../../constants/colors';
 import * as API from '../../api/api';
@@ -191,6 +192,27 @@ class EmployeeFormEdit extends Component {
     )
   }
 
+  phoneFactory(placeholder) {
+    return(
+      <TextInputMask
+        placeholder={placeholder}
+        style={styles.input}
+        type={'custom'}
+        keyboardType={'phone-pad'}
+        returnKeyType={'done'}
+        options={{
+          mask: '(999) 999-9999'
+        }}
+        value={this.state.employee.phone}
+        onChangeText={text => {
+          this.setState({
+            employee: { ...this.state.employee, phone: text }
+          })
+        }}
+      />
+    )
+  }
+
   bdayTextInputFactory(placeholder, onTextChange, value) {
     return (
       <TextInput
@@ -261,7 +283,8 @@ class EmployeeFormEdit extends Component {
 
             <Text style={styles.textHeader} >Phone Number</Text>
             <View style={styles.inputView} >
-              {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text}}), this.state.employee.phone, true)}
+              {this.phoneFactory('(555) 555-5555')}
+              {/*this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text}}), this.state.employee.phone, true)*/}
             </View>
 
             <Text style={styles.textHeader} >Hire Date</Text>
@@ -310,8 +333,9 @@ class EmployeeFormEdit extends Component {
         </ScrollView>
         {(this.state.cameraPermission)
           ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
-              <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
-                <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
+              <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'center', alignItems:'center'}} >
+                <Image style={{height: 300, width: 300, zIndex: 10004,tintColor:'white'}} source={require('../../../assets/images/circle.png')} resizeMode={'contain'}/>
+                <View style={{height: 64, position:'absolute', bottom: 64, left: 16, right: 16, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
                   <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >
                     <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../../assets/icons/cancel.png')} />
                   </TouchableOpacity>
@@ -338,7 +362,7 @@ const styles = StyleSheet.create({
     marginLeft: 16, marginRight: 16
   },
   backButton: {
-    position: 'absolute', left:16,top: 40, zIndex: 100000
+    position: 'absolute', left:16,top: 16, zIndex: 100000
   },
   submitContainer: {
     marginLeft: 16, marginRight: 16, marginTop: 16

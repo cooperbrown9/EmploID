@@ -144,6 +144,17 @@ export function getMyRankToEmployeeByPlaces(myPlaces, employeePlaces, callback) 
   callback(highestRank);
 }
 
+// NOTE this is for the HomeScreen so that we can put locations on each employee
+// on the EmployeeScreen, this doesnt serve a purpose besides that
+export function assignPositionsToUsers(users, relations, callback) {
+  users.map((user) => {
+    // find relation where ids match, then put relation positions on the user
+    let placeOfWork = relations.find((r) => r.user_id === user._id)
+    user.positions_weak = placeOfWork.positions;
+  });
+  callback(users)
+}
+
 export function buildEmployeeForm(data, callback) {
   var obj = {
     "firstName": data.firstName,

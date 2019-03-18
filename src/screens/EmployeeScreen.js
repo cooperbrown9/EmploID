@@ -10,6 +10,14 @@ import ProgressiveImage from '../ui-elements/progressive-image';
 import * as NavActions from '../action-types/nav-action-types';
 import * as Colors from '../constants/colors';
 
+function formatPositions(positions) {
+  let s = '';
+  positions.forEach((p) => {
+    s += (p + ', ')
+  });
+  return s.substring(0, s.length-2);
+}
+
 function renderItem({ item }, openProfile) {
   return(
     <TouchableOpacity style={styles.employeeItem} key={item._id} onPress={() => openProfile(item)}>
@@ -20,7 +28,7 @@ function renderItem({ item }, openProfile) {
 
       <View style={styles.employeeInfo}>
         <Text style={styles.nameText}>{item.first_name} {item.last_name}</Text>
-        <Text style={styles.positionText}>{(item.position === 0) ? 'Employee' : 'Manager'}</Text>
+        <Text style={styles.positionText}>{formatPositions(item.positions_weak)}</Text>
       </View>
     </TouchableOpacity>
   )

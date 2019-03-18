@@ -38,17 +38,34 @@ export default class App extends React.Component {
       'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf'),
       'roboto-bold': require('./assets/fonts/Roboto-Bold.ttf')
     });
-    this.cacheImages()
+    await this.cacheImagesAsync()
     this.setState({ fontLoaded: true });
   }
 
-  cacheImages() {
+  cacheImagesAsync() {
     let images = [
       require('./assets/images/chef1.png'),
+      require('./assets/images/back-arrow.png'),
+      require('./assets/images/circle.png'),
+      require('./assets/icons/add.png'),
+      require('./assets/icons/back.png'),
+      require('./assets/icons/camera.png'),
+      require('./assets/icons/cancel.png'),
+      require('./assets/icons/card.png'),
+      require('./assets/icons/check.png'),
+      require('./assets/icons/dots.png'),
+      require('./assets/icons/ellipsis.png'),
+      require('./assets/icons/pencil.png'),
+      require('./assets/icons/profile-male.png'),
+      require('./assets/icons/profile.png'),
+      require('./assets/icons/search.png'),
+      require('./assets/icons/social.png'),
+      require('./assets/icons/down.png'),
     ]
-    return Asset.fromModule(images[0]).downloadAsync()
-    // return Image.prefetch(images[0])
-    // return Image.prefetch('https://m.media-amazon.com/images/S/aplus-media/vc/88a2891b-c398-4a59-a32b-d7621eccf0a4._CR0,0,300,300_PT0_SX300__.jpg')
+
+    return images.map(img => {
+      return Asset.fromModule(img).downloadAsync()
+    })
   }
 
   cacheImage() {

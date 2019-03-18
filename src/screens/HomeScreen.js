@@ -152,17 +152,19 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
-            await Promise.all(...this.cacheImages(users)).then((result) => {
+            // await Promise.all(...this.cacheImages(users)).then((result) => {
               // Promise.all([this.cacheImages(users)])
               // .then((status) => {
               // this.loadImages(users)
               // console.log(status)
-              this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
-              this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
+              DataBuilder.assignPositionsToUsers(users, relations, (users) => {
+                this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
+                this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
 
-              this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
-                this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
-              });
+                this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
+                  this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
+                });
+              })
               // })
               // .catch((e) => {
               // debugger
@@ -174,7 +176,7 @@ class HomeScreen extends Component {
               // this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
               //   this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
               // });
-            }).catch((e) => console.log('couldnt cache images'))
+            // }).catch((e) => console.log('couldnt cache images'))
           }
         })
       }

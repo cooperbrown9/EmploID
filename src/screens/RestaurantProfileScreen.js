@@ -230,6 +230,7 @@ class RestaurantProfileScreen extends Component {
   }
 
   onSelectEmployee(employee) {
+    console.log('yup')
     this.props.dispatch({ type: DetailActions.SET_USER, user: employee });
     // this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE, dispatchFromPlace: true });
     this.props.navigation.push(NavActions.EMPLOYEE_PROFILE, { dispatchFromPlace: true });
@@ -239,7 +240,7 @@ class RestaurantProfileScreen extends Component {
     if(this.props.myRole === 2) {
       return (
         <View style={styles.optionsButton}>
-          <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')} color={Colors.LIGHT_BLUE}/>
+          <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/pencil.png')} color={Colors.BLUE}/>
         </View>
       )
     } else {
@@ -248,6 +249,7 @@ class RestaurantProfileScreen extends Component {
   }
 
   editPlacesButton() {
+    // moving edit places to the web
     return null;
     if(this.props.indexOn === 0 && this.props.myRole >= 1) {
       return(
@@ -255,7 +257,7 @@ class RestaurantProfileScreen extends Component {
           <RoundButton
             onPress={() => this._presentAddEmployeeForm()}
             imagePath={require('../../assets/icons/pencil.png')}
-            color={Colors.LIGHT_BLUE}
+            color={Colors.BLUE}
           />
         </View>
       )
@@ -270,8 +272,8 @@ class RestaurantProfileScreen extends Component {
           <View style={styles.addDiscount} >
             <RoundButton
               onPress={() => this._presentDiscountForm()}
-              imagePath={require('../../assets/icons/plus.png')}
-              color={Colors.LIGHT_BLUE}
+              imagePath={require('../../assets/icons/add.png')}
+              color={Colors.BLUE}
             />
           </View>
         )
@@ -281,8 +283,8 @@ class RestaurantProfileScreen extends Component {
         <View style={styles.addDiscount} >
           <RoundButton
             onPress={() => this._presentNoteForm()}
-            imagePath={require('../../assets/icons/plus.png')}
-            color={Colors.LIGHT_BLUE}
+            imagePath={require('../../assets/icons/add.png')}
+            color={Colors.BLUE}
           />
         </View>
       )
@@ -320,7 +322,7 @@ class RestaurantProfileScreen extends Component {
 
 
           <View style={styles.backButton}>
-            <RoundButton onPress={this._goBack} imagePath={require('../../assets/icons/back.png')} color={Colors.LIGHT_BLUE} />
+            <RoundButton onPress={this._goBack} imagePath={require('../../assets/icons/back.png')} color={Colors.BLUE} />
           </View>
 
 
@@ -378,7 +380,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   topContainer: {
-    height: FRAME.height / 2 - 64, backgroundColor: Colors.BLUE
+    height: FRAME.height / 2 - 64, backgroundColor: 'rgb(40,40,40)'//Colors.BLUE
   },
   infoText: {
     backgroundColor: 'transparent',

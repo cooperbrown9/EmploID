@@ -9,7 +9,7 @@ import { callPhoneNumber } from '../util';
 // onPress={() => props.openProfile(place)}
 function renderItem({ item }, openProfile) {
   return(
-    <TouchableOpacity style={styles.restaurantItem} onPress={() => openProfile(item)} >
+    <TouchableOpacity style={styles.restaurantItem} onPress={() => openProfile(item)} key={item._id} >
 
       <View style={styles.restaurantInfo}>
         <Text style={styles.nameText}>{item.name}</Text>

@@ -24,6 +24,8 @@ import DataButton from '../ui-elements/data-button';
 import RoundButton from '../ui-elements/round-button';
 import LoadingOverlay from '../ui-elements/loading-overlay';
 
+import { TextInputMask } from 'react-native-masked-text'
+
 
 class EmployeeForm extends Component {
   static navigationOptions = {
@@ -259,6 +261,27 @@ class EmployeeForm extends Component {
     )
   }
 
+  phoneFactory(placeholder) {
+    return(
+      <TextInputMask
+        placeholder={placeholder}
+        style={styles.input}
+        type={'custom'}
+        keyboardType={'phone-pad'}
+        returnKeyType={'done'}
+        options={{
+          mask: '(999) 999-9999'
+        }}
+        value={this.state.employee.phone}
+        onChangeText={text => {
+          this.setState({
+            employee: { ...this.state.employee, phone: text }
+          })
+        }}
+      />
+    )
+  }
+
   nextInput = (index) => {
     if(index === 2) {
       return;
@@ -294,7 +317,10 @@ class EmployeeForm extends Component {
     return(
       <View style={{flex: 1}}>
         <View style={styles.backButton} >
-          <RoundButton onPress={() => this.props.navigation.goBack()} imagePath={require('../../assets/icons/back.png')} />
+          {(!this.state.cameraPermission)
+            ? <RoundButton onPress={() => this.props.navigation.goBack()} imagePath={require('../../assets/icons/back.png')} />
+            : null
+          }
         </View>
       <ScrollView style={styles.scrollContainer} >
         <KeyboardAwareScrollView style={styles.container} >
@@ -331,7 +357,7 @@ class EmployeeForm extends Component {
           </View>
 
           <Text style={styles.textHeader} >Birthday</Text>
-          <View style={styles.dateView} >
+          <View style={[styles.dateView, { marginBottom: 32 }]} >
             <DatePickerIOS
               onDateChange={(date) => { this.setState({ employee: {...this.state.employee, birthday: date.toDateString() }}) }}
               date={new Date(this.state.employee.birthday)}
@@ -341,8 +367,9 @@ class EmployeeForm extends Component {
 
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
-            {this.textInputFactory('555.555.5555', (text) => this.setState({ employee: {...this.state.employee, phone: text }}), this.state.employee.phone, true, false, 'phone-pad', 3)}
-          </View>
+            {this.phoneFactory('(555) 555-5555')}
+            {/*this.textInputFactory('555.555.5555', (text) => this.formatPhone(text), this.state.employee.phone, true, false, 'phone-pad', 3)*/}
+          </View> {/*this.setState({ employee: {...this.state.employee, phone: text }*/}
 
           <Text style={styles.textHeader} >Hire Date</Text>
           <View style={styles.dateView} >
@@ -398,8 +425,9 @@ class EmployeeForm extends Component {
       </ScrollView>
       {(this.state.cameraPermission)
         ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
-            <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
-              <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
+            <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'center', alignItems:'center'}} >
+              <Image style={{height: 300, width: 300, zIndex: 10004,tintColor:'white'}} source={require('../../assets/images/circle.png')} resizeMode={'contain'}/>
+              <View style={{height: 64, position:'absolute', bottom: 64, left: 16, right: 16, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
                 <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >
                   <Image style={{height:32, width:32, tintColor:'white'}} source={require('../../assets/icons/cancel.png')} />
                 </TouchableOpacity>
@@ -426,7 +454,7 @@ const styles = StyleSheet.create({
     marginLeft: 16, marginRight: 16
   },
   backButton: {
-    position: 'absolute', left:16,top: 40, zIndex: 100000
+    position: 'absolute', left:16,top: 16, zIndex: 100000
   },
   submitContainer: {
     marginLeft: 16, marginRight: 16, marginTop: 16

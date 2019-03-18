@@ -280,7 +280,7 @@ class ProfileScreen extends Component {
     if(this.state.canEdit) {
       return (
         <View style={styles.optionsButton}>
-          <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/ellipsis.png')}/>
+          <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/pencil.png')}/>
         </View>
       )
     } else {
@@ -443,7 +443,7 @@ class ProfileScreen extends Component {
               <TouchableOpacity onPress={() => util.callPhoneNumber(this.props.employee.phone)}>
                 <Text style={styles.infoText}>{util.toPhoneNumber(this.props.employee.phone)}</Text>
               </TouchableOpacity>
-              {this.editPlacesButton()}
+              {/*this.editPlacesButton()*/}
               {this.addNoteButton()}
             </View>
           <View style={{height: 64, paddingBottom: 8}} >
@@ -451,7 +451,7 @@ class ProfileScreen extends Component {
           </View>
 
           <ScrollView
-            style={{display:'float',backgroundColor:'transparent'}}
+            style={{backgroundColor:'transparent'}}
             contentContainerStyle={{alignItems: 'stretch'}}
             refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.refreshUser} /> }
           >

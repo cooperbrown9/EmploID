@@ -3,6 +3,7 @@
 //      So yeah, it's probably a bit janky because it is so specific
 
 import * as _ from 'lodash';
+import * as DataBuilder from '../api/data-builder';
 import * as API from '../api/api';
 
 export function query(data, callback) {
@@ -34,13 +35,15 @@ function queryWithLocation(data, callback) {
         if(e2) {
           callback(e2);
         } else {
-          if(data.hair != null) {
-            users = queryHair(users, data.hair);
-          }
-          if(data.gender != null) {
-            users = queryGender(users, data.gender);
-          }
-          callback(null, users);
+          DataBuilder.assignPositionsToUsers(users, relations, (users) => {
+            if(data.hair != null) {
+              users = queryHair(users, data.hair);
+            }
+            if(data.gender != null) {
+              users = queryGender(users, data.gender);
+            }
+            callback(null, users);
+          })
         }
       })
     }
