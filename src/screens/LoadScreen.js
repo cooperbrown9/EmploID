@@ -46,7 +46,6 @@ class LoadScreen extends Component {
         // this.props.navigation.dispatch({ type: 'START_LOGIN' });
         this.props.navigation.navigate(NavActions.LOGIN);
       } else {
-        console.log(response);
         this.props.dispatch({
           type: AuthActions.LOGIN_SUCCESS,
           user: response.user,

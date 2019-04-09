@@ -172,11 +172,19 @@ class EmployeeFormEdit extends Component {
   takePicture = async() => {
     if(this.camera) {
       await this.camera.takePictureAsync()
-        .then((data) => { console.log(data); this.setState({ employee: { ...this.state.employee, imageURL: data.uri }, cameraPermission: false }) })
+        .then((data) => { this.setState({ employee: { ...this.state.employee, imageURL: data.uri }, cameraPermission: false }) })
         .catch(e => {
           console.log(e);
           this.setState({ cameraPermission: false });
         })
+    }
+  }
+
+  switchCameraType = () => {
+    if(this.state.cameraType == Camera.Constants.Type.back) {
+      this.setState({ cameraType: Camera.Constants.Type.front })
+    } else {
+      this.setState({ cameraType: Camera.Constants.Type.back })
     }
   }
 
@@ -235,7 +243,10 @@ class EmployeeFormEdit extends Component {
     return(
       <View style={{flex: 1}}>
         <View style={styles.backButton} >
-          <RoundButton imagePath={require('../../../assets/icons/down.png')} onPress={this.props.dismiss} />
+          {(!this.state.cameraPermission)
+            ? <RoundButton imagePath={require('../../../assets/icons/down.png')} onPress={this.props.dismiss} />
+          : null
+          }
         </View>
         <ScrollView style={styles.scrollContainer} >
           <View style={{height:124}} />
@@ -334,6 +345,9 @@ class EmployeeFormEdit extends Component {
         {(this.state.cameraPermission)
           ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0}}>
               <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'center', alignItems:'center'}} >
+                <TouchableOpacity style={{position:'absolute',right:16,top:64}} onPress={this.switchCameraType}>
+                  <Image source={require('../../../assets/icons/switch.png')} style={{height: 40, width: 40,tintColor:'white'}} resizeMode={'contain'} />
+                </TouchableOpacity>
                 <Image style={{height: 300, width: 300, zIndex: 10004,tintColor:'white'}} source={require('../../../assets/images/circle.png')} resizeMode={'contain'}/>
                 <View style={{height: 64, position:'absolute', bottom: 64, left: 16, right: 16, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
                   <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >

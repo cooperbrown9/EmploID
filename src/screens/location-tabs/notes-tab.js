@@ -15,7 +15,7 @@ const NotesTab = (props) => (
     */}
 
     {props.notes.map(model =>
-      <TouchableOpacity style={styles.noteItem} onPress={() => props.selectNote(model)} key={model._id} >
+      <TouchableOpacity style={styles.noteItem} onPress={() => props.onSelectNote(model)} key={model._id} >
         <View style={styles.noteText}>
           <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.title} </Text>
           <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-regular'}}>{model.text}</Text>
@@ -28,7 +28,7 @@ const NotesTab = (props) => (
 
 NotesTab.propTypes = {
   notes: PropTypes.array,
-  selectNote: PropTypes.func
+  onSelectNote: PropTypes.func
 };
 
 NotesTab.defaultPropTypes = {

@@ -8,6 +8,14 @@ import ProgressiveImage from '../../ui-elements/progressive-image';
 
 import * as Colors from '../../constants/colors';
 
+function findPositions(positions) {
+  let s = '';
+  positions.forEach((p) => {
+    s += (p + ', ')
+  })
+  return s.substr(0, s.length-2)
+}
+
 const EmployeesTab = (props) => (
 
 
@@ -18,15 +26,15 @@ const EmployeesTab = (props) => (
           style={(model.relation.role === 0) ? styles.employeeItem : (model.relation.role === 1) ? styles.employeeItemManager : styles.employeeItemOwner} key={model._id}
           onPress={() => props.onPress(model)}
         >
-          {/*<Image style={styles.employeeImage} source={(model.image_url != "" || model.image_url != null ) ? { uri: model.image_url, cache:'force-cache' } : require('../../../assets/images/chef1.png')} />*/}
-          <ProgressiveImage
+          <Image style={styles.employeeImage} source={(model.image_url !== "" && model.image_url != null ) ? { uri: model.image_url } : require('../../../assets/images/chef1.png')} />
+          {/*<ProgressiveImage
             style={styles.employeeImage}
             thumbnailSource={(model.image_url == "") ? require('../../../assets/images/chef1.png') : {uri:model.image_url}}
             source={(model.image_url == "") ? require('../../../assets/images/chef1.png') : {uri:model.image_url}}
-          />
+          />*/}
           <View style={styles.employeeInfo}>
             <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.first_name} {model.last_name}</Text>
-            <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}}>{model.relation.position}</Text>
+            <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}}>{findPositions(model.relation.positions)}</Text>
           </View>
           <View style={{}}>
 
@@ -40,12 +48,12 @@ const EmployeesTab = (props) => (
 EmployeesTab.propTypes = {
   employees: PropTypes.array,
   onPress: PropTypes.func
-};
+}
 
 EmployeesTab.defaultProps = {
   employees: [],
   onPress: () => {}
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -56,7 +64,8 @@ const styles = StyleSheet.create({
   employeeImage: {
     height: 100,
     width: 100,
-    resizeMode: 'cover'
+    resizeMode: 'cover',
+    backgroundColor: Colors.BACKGROUND_GREY
   },
   employeeItem: {
       flex: 1,

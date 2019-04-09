@@ -95,7 +95,6 @@ class FilterModal extends Component {
     }
 
     query.query(data, (err, users) => {
-      debugger
       this.dispatchResults(err, users);
     })
   }

@@ -53,12 +53,14 @@ class ProfileScreen extends Component {
 
   state = {
     editPlacesPresented: false,
+    noteFormEdit: false,
     editModalPresented: false,
     discountModalPresented: false,
     userPermissionModalPresented: false,
     noteFormPresented: false,
     imagePresented: false,
     selectedDiscount: null,
+    selectedNote: null,
     isRefreshing: false,
     userPermissionModel: {},
     cameraPermission: false,
@@ -91,13 +93,6 @@ class ProfileScreen extends Component {
   componentDidMount () {
     this.getPlaces();
     this.setState({ dispatchFromPlace: this.props.navigation.getParam('dispatchFromPlace', 'dispatchFromPlace') });
-    // setTimeout(() => {
-    //   this.list.scrollToIndex({
-    //     index: 3,
-    //     viewOffset: 0,
-    //     viewPosition: 0
-    //   })
-    // }, 3000)
   }
 
   componentWillUnmount() {
@@ -233,13 +228,13 @@ class ProfileScreen extends Component {
   }
 
   _dismissNoteForm = () => {
-    this.setState({ noteFormPresented: false });
+    this.setState({ noteFormPresented: false, noteFormEdit: false }, () => {
+      this.getNotes()
+    });
   }
 
-  _selectNote = (note) => {
-    this.setState({ selectedNote: note }, () => {
-      this.setState({ noteFormPresented})
-    })
+  _onSelectNote = (note) => {
+    this.setState({ selectedNote: note, noteFormPresented: true, noteFormEdit: true })
   }
 
   _dismissDiscountModal = () => {
@@ -321,7 +316,7 @@ class ProfileScreen extends Component {
     if(this.props.indexOn === 3) {
       return (
         <View style={styles.addNote} >
-          <RoundButton onPress={() => this._presentNoteForm()} imagePath={require('../../assets/icons/plus.png')} />
+          <RoundButton onPress={() => this._presentNoteForm()} imagePath={require('../../assets/icons/add.png')} />
         </View>
       )
     } else {
@@ -347,7 +342,6 @@ class ProfileScreen extends Component {
       if(err) {
         console.log(err)
       } else {
-        console.log(result);
         this.refreshUser();
       }
     })
@@ -468,7 +462,7 @@ class ProfileScreen extends Component {
                 : (this.props.indexOn === 2)
                   ? <DiscountsTab selectDiscount={(disc) => this.setState({ selectedDiscount: disc }, () => this._presentDiscountModal())} />
                 : (this.props.indexOn === 3)
-                    ? <NotesTab />
+                    ? <NotesTab onSelectNote={(note) => this._onSelectNote(note)}/>
                   : null
             }
 
@@ -482,7 +476,7 @@ class ProfileScreen extends Component {
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.noteFormPresented} >
-          <CreateUserNoteForm dismiss={() => this._dismissNoteForm()} />
+          <CreateUserNoteForm edit={this.state.noteFormEdit} note={this.state.selectedNote} dismiss={() => this._dismissNoteForm()} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal} onDismiss={() => this.refreshUser()}>

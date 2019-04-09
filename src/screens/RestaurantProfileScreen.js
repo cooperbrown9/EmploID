@@ -30,19 +30,18 @@ class RestaurantProfileScreen extends Component {
 
   state = {
     formModal: false,
+    noteFormEdit: false,
     discountModalPresented: false,
     addEmployeesFormPresented: false,
     noteFormPresented: false,
     createDiscountModalPresented: false,
     isRefreshing: false,
-    selectedDiscount: null
+    selectedDiscount: null,
+    selectedNote: null
   }
 
   componentDidMount() {
     this.getUsers();
-    setTimeout(() => {
-      console.log(this.emps)
-    }, 3000)
   }
 
   componentWillUnmount() {
@@ -92,7 +91,6 @@ class RestaurantProfileScreen extends Component {
         console.log(e1);
         this.setState({ isRefreshing: false });
       } else {
-        console.log(discounts);
 
         if(this.props.location.relation.role !== 1 && this.props.location.relation.role !== 2) {
           let legalDiscounts = [];
@@ -174,7 +172,7 @@ class RestaurantProfileScreen extends Component {
     this.setState({ noteFormPresented: true });
   }
   _dismissNoteForm = (didCreate) => {
-    this.setState({ noteFormPresented: false, isRefreshing: true }, () => {
+    this.setState({ noteFormPresented: false, noteFormEdit: false, isRefreshing: true }, () => {
       this.getUpdatedLocation();
     })
   }
@@ -230,10 +228,13 @@ class RestaurantProfileScreen extends Component {
   }
 
   onSelectEmployee(employee) {
-    console.log('yup')
     this.props.dispatch({ type: DetailActions.SET_USER, user: employee });
     // this.props.dispatch({ type: NavActions.EMPLOYEE_PROFILE, dispatchFromPlace: true });
     this.props.navigation.push(NavActions.EMPLOYEE_PROFILE, { dispatchFromPlace: true });
+  }
+
+  onSelectNote = (note) => {
+    this.setState({ noteFormEdit: true, noteFormPresented: true, selectedNote: note });
   }
 
   editProfileButton() {
@@ -330,15 +331,15 @@ class RestaurantProfileScreen extends Component {
           <View style={{height: 64, paddingBottom: 8}}>
             <LocationTabBar />
           </View>
-          <ScrollView style={{display: 'float', backgroundColor:'transparent', zIndex: 20000}}>
+          <ScrollView style={{backgroundColor:'transparent', zIndex: 20000}}>
 
-          <View style={styles.screenContainer} >
+          <View >
        {(this.props.indexOn === 0)
-          ? <EmployeesTab onPress={(employee) => this.onSelectEmployee(employee)} ref={ref => this.emps = ref } />
+          ? <EmployeesTab onPress={(employee) => this.onSelectEmployee(employee)} />
           : (this.props.indexOn === 1)
             ? <DiscountsTab selectDiscount={(discount) => this._presentDiscountModal(discount)} />
             : (this.props.indexOn === 2)
-              ? <NotesTab />
+              ? <NotesTab onSelectNote={(note) => this.onSelectNote(note)} />
               : null
         }
 
@@ -354,7 +355,7 @@ class RestaurantProfileScreen extends Component {
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.noteFormPresented} >
-          <CreatePlaceNoteForm dismiss={(didCreate) => this._dismissNoteForm(didCreate)} />
+          <CreatePlaceNoteForm edit={this.state.noteFormEdit} note={this.state.selectedNote} dismiss={(didCreate) => this._dismissNoteForm(didCreate)} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} >

@@ -22,7 +22,7 @@ export function cleanPhoneNumber(num, callback) {
   if(callback != null) {
     callback(num);
   } else {
-    callback(num);
+    return num;
   }
 }
 

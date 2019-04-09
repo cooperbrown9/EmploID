@@ -122,6 +122,7 @@ class UserPermissionModal extends Component {
             />
           </View>
 
+          {/*whole fire function works, literally just commented it out
           <View style={styles.fireContainer} >
             {this.state.firePressed ? <Text style={styles.confirmFireText}>{this.state.firePressed ? 'Are you sure?' : ''}</Text> : null}
             <View style={styles.fireOption}>
@@ -133,6 +134,7 @@ class UserPermissionModal extends Component {
           : null
         }
           </View>
+          */}
           {/*
           <View style={styles.submitButton} >
             <SubmitButton title={'UPDATE'} onPress={() => this.submit()} />

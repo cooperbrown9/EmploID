@@ -37,8 +37,8 @@ class CreateUserNoteForm extends Component {
 
   componentDidMount() {
     if(this.props.edit) {
-      this.setState({ name: this.props.note.title, text: this.props.note.text }, () => {
-        this.optionSelected((this.props.note.exclusive) ? 0 : 1);
+      this.setState({ title: this.props.note.title, text: this.props.note.text }, () => {
+        // this.optionSelected((this.props.note.exclusive) ? 0 : 1);
       })
     }
   }
@@ -62,34 +62,34 @@ class CreateUserNoteForm extends Component {
   }
 
   editNote = () => {
-    let exclusive = this.state.exclusiveOptions[0].selected;
+    // let exclusive = this.state.exclusiveOptions[0].selected;
     var data = {
       ...this.props.note,
       "title": this.state.title,
       "text": this.state.text
     }
 
-    // API.updateNote(data, (e1, note) => {
-    //   if(e1) {
-    //     console.log(e1);
-    //   } else {
-    //     console.log(note);
-    //     this.props.dismiss();
-    //   }
-    // })
+    API.updateUserNote(data, (e1, note) => {
+      if(e1) {
+        console.log(e1);
+      } else {
+        console.log(note);
+        this.props.dismiss();
+      }
+    })
   }
 
   deleteNote() {
     if(this.state.deleteCount === 0) {
       this.setState({ deleteText: 'Click again to confirm', deleteCount: ++this.state.deleteCount });
     } else {
-      // API.deleteNote(this.props.note._id, (err, res) => {
-      //   if(err) {
-      //     console.log(err)
-      //   } else {
-      //     this.props.dismiss();
-      //   }
-      // })
+      API.deleteUserNote(this.props.note._id, (err, res) => {
+        if(err) {
+          console.log(err)
+        } else {
+          this.props.dismiss();
+        }
+      })
     }
   }
 

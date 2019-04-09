@@ -80,13 +80,9 @@ export default class App extends React.Component {
 
   checkKeys() {
     AsyncStorage.getItem(Keys.IS_OWNER, (v1) => {
-      console.log(v1);
       if(v1 == true) {
-        console.log('== works', v2);
         AsyncStorage.getItem(Keys.SESSION_ID, (v2) => {
-          console.log(v2);
           AsyncStorage.getItem(Keys.USER_ID, (v3) => {
-            console.log(v3);
           });
         });
       }

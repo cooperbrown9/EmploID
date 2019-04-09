@@ -36,11 +36,15 @@ const UPDATE_LOCATION = '/update-place';
 const UPDATE_DISCOUNT = '/update-discount';
 const UPDATE_USER_PLACES = '/update-user-places';
 const UPDATE_ROLE = '/update-role';
+const UPDATE_PLACE_NOTE = '/update-place-note';
+const UPDATE_USER_NOTE = '/update-user-note';
 
 const DELETE_USER = '/delete-user';
 const DELETE_RELATION = '/delete-relation';
 const DELETE_RELATIONS = '/delete-relations';
 const DELETE_DISCOUNT = '/delete-discount/';
+const DELETE_PLACE_NOTE = '/delete-place-note';
+const DELETE_USER_NOTE = '/delete-user-note';
 
 const VERIFY_SESSION_GET_USER = '/verify-session-get-user';
 
@@ -108,6 +112,18 @@ export function createUserNote(data, callback) {
 
 export function createPlaceNote(data, callback) {
   axios.post(BASE + CREATE_PLACE_NOTE, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function updatePlaceNote(data, callback) {
+  axios.post(BASE + UPDATE_PLACE_NOTE, data)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function updateUserNote(data, callback) {
+  axios.post(BASE + UPDATE_USER_NOTE, data)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }
@@ -260,6 +276,27 @@ export function deleteRelations(relations, callback) {
 
 export function deleteDiscount(discountID, callback) {
   axios.get(BASE + DELETE_DISCOUNT + discountID)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+// needs object with _id set to note's _id
+export function deletePlaceNote(id, callback) {
+  let sender = {
+    '_id': id
+  }
+
+  axios.post(BASE + DELETE_PLACE_NOTE, sender)
+    .then(response => callback(null, response.data))
+    .catch(e => callback(e))
+}
+
+export function deleteUserNote(id, callback) {
+  let sender = {
+    '_id': id
+  }
+
+  axios.post(BASE + DELETE_USER_NOTE, sender)
     .then(response => callback(null, response.data))
     .catch(e => callback(e))
 }

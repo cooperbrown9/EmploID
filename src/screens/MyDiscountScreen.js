@@ -69,7 +69,6 @@ class MyDiscountScreen extends Component {
       if(err) {
         console.log(err.message)
       } else {
-        console.log(discounts)
         this.checkPermissions(discounts)
       }
     })

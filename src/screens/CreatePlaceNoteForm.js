@@ -35,8 +35,8 @@ class CreatePlaceNoteForm extends Component {
 
   componentDidMount() {
     if(this.props.edit) {
-      this.setState({ name: this.props.note.title, text: this.props.note.text }, () => {
-        this.optionSelected((this.props.note.exclusive) ? 0 : 1);
+      this.setState({ title: this.props.note.title, text: this.props.note.text }, () => {
+        // this.optionSelected((this.props.note.exclusive || false) ? 0 : 1);
       })
     }
   }
@@ -53,41 +53,39 @@ class CreatePlaceNoteForm extends Component {
       if(err) {
         console.log(err);
       } else {
-        console.log(response);
         this.props.dismiss(true);
       }
     });
   }
 
   editNote = () => {
-    let exclusive = this.state.exclusiveOptions[0].selected;
+    // let exclusive = this.state.exclusiveOptions[0].selected;
     var data = {
       ...this.props.note,
       "title": this.state.title,
       "text": this.state.text
     }
 
-    // API.updateNote(data, (e1, note) => {
-    //   if(e1) {
-    //     console.log(e1);
-    //   } else {
-    //     console.log(note);
-    //     this.props.dismiss();
-    //   }
-    // })
+    API.updatePlaceNote(data, (e1, note) => {
+      if(e1) {
+        console.log(e1);
+      } else {
+        this.props.dismiss();
+      }
+    })
   }
 
   deleteNote() {
     if(this.state.deleteCount === 0) {
       this.setState({ deleteText: 'Click again to confirm', deleteCount: ++this.state.deleteCount });
     } else {
-      // API.deleteNote(this.props.note._id, (err, res) => {
-      //   if(err) {
-      //     console.log(err)
-      //   } else {
-      //     this.props.dismiss();
-      //   }
-      // })
+      API.deletePlaceNote(this.props.note._id, (err, res) => {
+        if(err) {
+          console.log(err)
+        } else {
+          this.props.dismiss();
+        }
+      })
     }
   }
 

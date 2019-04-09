@@ -181,10 +181,8 @@ class EmployeeFormAddLocationEdit extends Component {
         if(err) {
           console.log(err);
           deletesComplete = true;
-          console.log('naaaahhh');
           this.props.dismiss();
         } else {
-          console.log(results);
           deletesComplete = true;
           this.requestsComplete(createsComplete, deletesComplete);
         }

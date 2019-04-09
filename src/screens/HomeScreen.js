@@ -330,7 +330,6 @@ class HomeScreen extends Component {
         if(err) {
           Alert.alert(err.message);
         } else {
-          console.log(place);
           Alert.alert('Success!');
 
           const relationData = {
