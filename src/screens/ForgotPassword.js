@@ -11,7 +11,7 @@ function textInputFactory(placeholder, onTextChange, value, canEdit = true, keyb
     <TextInput
       placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
       selectionColor={Colors.BLUE} style={styles.input}
-      autoCorrect={false} autoCapitalize={false}
+      autoCorrect={false} autoCapitalize={'none'}
       onChangeText={(text) => onTextChange(text)}
       value={value}
       editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
@@ -47,7 +47,7 @@ const ForgotPassword = props => (
 )
 
 ForgotPassword.propTypes = {
-  email: PropTypes.func,
+  email: PropTypes.string,
   setEmail: PropTypes.func,
   resetPassword: PropTypes.func,
   dismiss: PropTypes.func

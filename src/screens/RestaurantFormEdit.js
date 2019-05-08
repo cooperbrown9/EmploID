@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, StatusBar } from 'react-native';
 
 import { connect } from 'react-redux';
 import { Camera, Permissions } from 'expo';
@@ -11,7 +11,7 @@ import * as Colors from '../constants/colors';
 import * as API from '../api/api';
 
 import axios from 'axios';
-import OptionView from '../ui-elements/option-view';
+// import OptionView from '../ui-elements/option-view';
 import OptionViewSplit from '../ui-elements/option-view-split';
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
@@ -34,7 +34,7 @@ class RestaurantFormEdit extends Component {
         { value: 'Server', selected: false, index: 0 },
         { value: 'Bartender', selected: false, index: 1 },
         { value: 'Host', selected: false, index: 2 },
-        { value: 'Busser', selected: false, index: 3 },
+        { value: 'Support', selected: false, index: 3 },
         { value: 'Manager', selected: false, index: 4 },
         { value: 'Chef', selected: false, index: 5 },
         { value: 'Cook', selected: false, index: 6 },
@@ -173,6 +173,7 @@ class RestaurantFormEdit extends Component {
   render() {
     return(
       <View style={{ flex: 1 }}>
+        <StatusBar hidden />
         <View style={styles.backButton} >
           <RoundButton onPress={this.props.dismiss} imagePath={require('../../assets/icons/back.png')} />
         </View>

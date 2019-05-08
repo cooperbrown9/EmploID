@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image, Modal, ActivityIndicator, Alert } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, TextInput, Image, Modal, ActivityIndicator, Alert, StatusBar } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Camera, Permissions } from 'expo';
 import { connect } from 'react-redux';
@@ -47,7 +47,7 @@ class RestaurantForm extends Component {
         { value: 'Server', selected: false, index: 0 },
         { value: 'Bartender', selected: false, index: 1 },
         { value: 'Host', selected: false, index: 2 },
-        { value: 'Busser', selected: false, index: 3 },
+        { value: 'Support', selected: false, index: 3 },
         { value: 'Manager', selected: false, index: 4 },
         { value: 'Chef', selected: false, index: 5 },
         { value: 'Cook', selected: false, index: 6 },
@@ -68,10 +68,6 @@ class RestaurantForm extends Component {
 
   static defaultProps = {
     edit: false
-  }
-
-
-  componentWillMount() {
   }
 
   submit = () => {
@@ -243,6 +239,7 @@ class RestaurantForm extends Component {
   render() {
     return(
       <View style={{flex: 1}} >
+        <StatusBar hidden />
         <View style={styles.backButton} >
           <RoundButton onPress={() => this.props.navigation.goBack()} imagePath={require('../../assets/icons/back.png')} />
         </View>

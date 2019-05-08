@@ -33,12 +33,15 @@ const EmployeesTab = (props) => (
             source={(model.image_url == "") ? require('../../../assets/images/chef1.png') : {uri:model.image_url}}
           />*/}
           <View style={styles.employeeInfo}>
-            <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}}>{model.first_name} {model.last_name}</Text>
-            <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}}>{findPositions(model.relation.positions)}</Text>
+            <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}} numberOfLines={0}>{model.first_name} {model.last_name}</Text>
+            <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}} numberOfLines={0}>{findPositions(model.relation.positions)}</Text>
           </View>
-          <View style={{}}>
-
-          </View>
+          {(model.relation.role === 0 || model.relation.role === 1)
+            ? <View style={{position:'absolute',right:8,bottom:8,width:16,justifyContent:'center',alignItems:'center'}}>
+                <Image style={{height: 16,width:16,tintColor:Colors.BLUE}} source={require('../../../assets/icons/crown.png')} resizeMode={'contain'} />
+              </View>
+            : null
+          }
         </TouchableOpacity>
       )}
 
@@ -88,7 +91,7 @@ const styles = StyleSheet.create({
       marginTop: 4, marginBottom: 4,
       backgroundColor: 'white',
       overflow: 'hidden',
-      borderRightWidth: 16, borderColor: Colors.BLUE
+      // borderRightWidth: 16, borderColor: Colors.BLUE
   },
   employeeItemOwner: {
       flex: 1,
@@ -100,7 +103,7 @@ const styles = StyleSheet.create({
       marginTop: 4, marginBottom: 4,
       backgroundColor: 'white',
       overflow: 'hidden',
-      borderRightWidth: 16, borderColor: Colors.BLUE
+      // borderRightWidth: 16, borderColor: Colors.BLUE
   },
   employeeInfo: {
     flex:3,
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     backgroundColor: 'transparent',
-    marginLeft: 16
+    marginLeft: 16, marginRight: 16
   }
 });
 

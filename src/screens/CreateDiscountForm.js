@@ -110,7 +110,7 @@ class CreateDiscountForm extends Component {
       <TextInput
         placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
         selectionColor={Colors.BLUE} style={styles.input}
-        autoCorrect={false} autoCapitalize={'none'}
+        autoCorrect={false} autoCapitalize={'words'}
         onChangeText={(text) => onTextChange(text)}
         value={value}
       />

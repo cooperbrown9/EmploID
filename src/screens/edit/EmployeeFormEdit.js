@@ -1,19 +1,19 @@
   import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, StyleSheet, Modal, TextInput, Image } from 'react-native';
+import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity, StyleSheet, TextInput, Image, StatusBar } from 'react-native';
 
 import { connect } from 'react-redux';
 
-import EmployeeFormAddLocationEdit from './EmployeeFormAddLocationEdit';
+// import EmployeeFormAddLocationEdit from './EmployeeFormAddLocationEdit';
 import OptionView from '../../ui-elements/option-view';
-import OptionViewSplit from '../../ui-elements/option-view-split';
+// import OptionViewSplit from '../../ui-elements/option-view-split';
 
 import { Camera, Permissions } from 'expo';
 import { TextInputMask } from 'react-native-masked-text';
 
 import * as Colors from '../../constants/colors';
 import * as API from '../../api/api';
-import * as DataBuilder from '../../api/data-builder';
+// import * as DataBuilder from '../../api/data-builder';
 import * as DetailActions from '../../action-types/detail-action-types';
 import * as util from '../../util';
 
@@ -44,7 +44,7 @@ class EmployeeFormEdit extends Component {
         { value: 'Server', selected: false, index: 0 },
         { value: 'Bartender', selected: false, index: 1 },
         { value: 'Host', selected: false, index: 2 },
-        { value: 'Busser', selected: false, index: 3 },
+        { value: 'Support', selected: false, index: 3 },
         { value: 'Manager', selected: false, index: 4 },
         { value: 'Chef', selected: false, index: 5 },
         { value: 'Cook', selected: false, index: 6 },
@@ -242,6 +242,7 @@ class EmployeeFormEdit extends Component {
     }
     return(
       <View style={{flex: 1}}>
+        <StatusBar hidden />
         <View style={styles.backButton} >
           {(!this.state.cameraPermission)
             ? <RoundButton imagePath={require('../../../assets/icons/down.png')} onPress={this.props.dismiss} />

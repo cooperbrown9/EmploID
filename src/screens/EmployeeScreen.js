@@ -37,6 +37,7 @@ function renderItem({ item }, openProfile) {
 const EmployeeScreen = (props) => (
   <View style={styles.container} >
     <FlatList
+      keyExtractor={(item,index) => index.toString()}
       style={{padding: 12}}
       data={(!props.spotlightOn) ? props.employees : props.spotlightUsers}
       renderItem={(employee) => renderItem(employee, props.openProfile)}
@@ -102,7 +103,6 @@ const styles = StyleSheet.create({
 });
 
 var mapStateToProps = state => {
-  console.log("here")
   return {
     employees: state.user.myEmployees,
     myPlaces: state.user.myLocations,

@@ -24,6 +24,7 @@ const RestaurantScreen = (props) => (
 
     <FlatList
       style={{padding: 12, paddingTop: 16}}
+      keyExtractor={(item,index) => index.toString()}
       data={props.places}
       renderItem={(place) => renderItem(place, props.openProfile)}
       onRefresh={props.onRefresh}

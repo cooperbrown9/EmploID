@@ -22,7 +22,7 @@ export function handleCreateError(status, callback) {
 
 export function handleLoginError(status, callback) {
   switch(status) {
-    case 401:
+    case 401, 404:
       callback('Invalid username or password');
       break;
 

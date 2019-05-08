@@ -40,10 +40,8 @@ class LoadScreen extends Component {
 
     API.verifySession(data, async(err, response) => {
       if(err) {
-        console.log(err);
         await AsyncStorage.removeItem(Keys.USER_ID);
         await AsyncStorage.removeItem(Keys.SESSION_ID);
-        // this.props.navigation.dispatch({ type: 'START_LOGIN' });
         this.props.navigation.navigate(NavActions.LOGIN);
       } else {
         this.props.dispatch({
@@ -55,7 +53,6 @@ class LoadScreen extends Component {
           canCreatePlaces: response.user.can_create_places
         });
         this.props.dispatch({ type: PermissionActions.SET_IS_PLACE_CREATOR, isCreator: response.user.can_create_places });
-        // return this.props.dispatch({ type: 'START_HOME' });
         this.props.navigation.navigate(NavActions.HOME);
       }
     })

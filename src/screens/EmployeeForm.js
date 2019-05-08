@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, ScrollView, Text, DatePickerIOS, TouchableOpacity,
-  ActivityIndicator, StyleSheet, Modal, TextInput,
+  ActivityIndicator, StyleSheet, Modal, TextInput, StatusBar,
   Image, Alert, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -324,6 +324,7 @@ class EmployeeForm extends Component {
   render() {
     return(
       <View style={{flex: 1}}>
+        <StatusBar hidden />
         <View style={styles.backButton} >
           {(!this.state.cameraPermission)
             ? <RoundButton onPress={() => this.props.navigation.goBack()} imagePath={require('../../assets/icons/back.png')} />

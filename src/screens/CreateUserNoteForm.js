@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, ScrollView, Text, TextInput, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
+import { ifIphoneX } from 'react-native-iphone-x-helper';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
@@ -108,15 +109,15 @@ class CreateUserNoteForm extends Component {
   render() {
     return(
       <ScrollView style={styles.scrollContainer} >
-        <KeyboardAwareScrollView style={styles.container} >
-
-          <View style={styles.backButton} >
-            <RoundButton imagePath={require('../../assets/icons/down.png')} onPress={this.props.dismiss} />
-          </View>
+        <View style={styles.backButton} >
+          <RoundButton imagePath={require('../../assets/icons/down.png')} onPress={this.props.dismiss} />
+        </View>
+        <KeyboardAwareScrollView style={styles.container} contentContainerStyle={{justifyContent: 'center'}}>
+          <View style={{height:64}} />
 
           <Text style={styles.textHeader}>Title</Text>
           <View style={styles.inputView}>
-            {this.textInputFactory('Name', (text) => this.setState({ title: text }), this.state.title)}
+            {this.textInputFactory('Title', (text) => this.setState({ title: text }), this.state.title)}
           </View>
 
 
@@ -151,11 +152,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BACKGROUND_GREY
   },
   backButton: {
-    marginLeft: 16, marginBottom: 64
+    position: 'absolute', left: 16, top: 24,
+    ...ifIphoneX({
+      top: 40
+    }),
   },
   container: {
     flex: 1,
-    marginLeft: 16, marginRight: 16, marginTop: 84
+    marginLeft: 16, marginRight: 16, paddingTop: 100
   },
   optionContainer: {
     justifyContent: 'center',

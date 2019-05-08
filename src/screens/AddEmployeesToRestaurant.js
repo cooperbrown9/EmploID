@@ -32,7 +32,7 @@ class AddEmployeesToRestaurant extends Component {
         { value: 'Server', selected: false, index: 0 },
         { value: 'Bartender', selected: false, index: 1 },
         { value: 'Host', selected: false, index: 2 },
-        { value: 'Busser', selected: false, index: 3 },
+        { value: 'Support', selected: false, index: 3 },
         { value: 'Manager', selected: false, index: 4 },
         { value: 'Chef', selected: false, index: 5 },
         { value: 'Cook', selected: false, index: 6 },

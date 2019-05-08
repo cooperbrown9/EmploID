@@ -98,10 +98,9 @@ class RainbowButton extends Component {
             }
 
         default:
-          console.log('yuh');
           break;
       }
-    }, 10);
+    }, 5);
   }
 
   render() {
@@ -125,7 +124,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: 48,
-    borderRadius: 16,
+    borderRadius: 8,
     justifyContent: 'center'
   },
   text: {

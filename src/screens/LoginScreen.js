@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, TextInput, Image, StyleSheet, Alert, AsyncStorage, Modal } from 'react-native';
-import axios from 'axios';
+import { View, ScrollView, Text, TextInput, Image, 
+  StyleSheet, Alert, AsyncStorage, Modal, Dimensions, KeyboardAvoidingView
+} from 'react-native';
 
 import { connect } from 'react-redux';
 
-import { BLUE, DARK_GREY, BACKGROUND_GREY, MID_GREY } from '../constants/colors';
 import * as Colors from '../constants/colors';
 import * as API from '../api/api';
 import { handleLoginError } from '../util/error-manager';
 
-import OptionView from '../ui-elements/option-view';
 import SubmitButton from '../ui-elements/submit-button';
 import ForgotPassword from './ForgotPassword';
 
@@ -17,6 +16,8 @@ import * as Keys from '../constants/keys';
 import * as NavActions from '../action-types/nav-action-types';
 import * as AuthActions from '../action-types/auth-action-types';
 import * as PermissionActions from '../action-types/permission-action-types';
+
+const FRAME = Dimensions.get('window');
 
 class LoginScreen extends Component {
 
@@ -52,9 +53,10 @@ class LoginScreen extends Component {
     }
     API.login(data, async(err, response) => {
       if(err) {
-        this.handleLoginError(err.response.status, (message) => {
-          Alert.alert(message);
-        });
+        console.log(err)
+        // this.handleLoginError(err.response.status, (message) => {
+          Alert.alert('Incorrect email or password!');
+        // });
       } else {
         await AsyncStorage.setItem(Keys.USER_ID, response.user._id);
         await AsyncStorage.setItem(Keys.SESSION_ID, response.session_id);
@@ -104,7 +106,7 @@ class LoginScreen extends Component {
       <TextInput
         placeholder={placeholder} placeholderTextColor={Colors.DARK_GREY}
         selectionColor={Colors.BLUE} style={styles.input}
-        autoCorrect={false} autoCapitalize={false}
+        autoCorrect={false} autoCapitalize={'none'}
         onChangeText={(text) => onTextChange(text)}
         value={value} secureTextEntry={secure}
         editable={canEdit} keyboardType={keyboard} returnKeyType={'done'}
@@ -115,20 +117,20 @@ class LoginScreen extends Component {
   render() {
     return(
       <ScrollView style={styles.scrollContainer} >
-        <View style={styles.container} >
+        <View style={styles.container} padding >
 
           <View style={styles.logoContainer} >
             <Image style={styles.logo} source={require('../../assets/images/logo-1.png')} resizeMode={'center'} />
           </View>
 
-          <View style={styles.inputContainer} >
+          <KeyboardAvoidingView style={styles.inputContainer} >
             <View style={styles.inputView} >
-              {this.textInputFactory('Email', (text) => {this.setState({email: text})}, this.state.email)}
+              {this.textInputFactory('Email', (text) => {this.setState({email: text})}, this.state.email, true, 'email-address')}
             </View>
             <View style={styles.inputView} >
               {this.textInputFactory('Password', (text) => this.setState({password:text}), this.state.password, true, 'default', true)}
             </View>
-          </View>
+          </KeyboardAvoidingView>
 
           <Text onPress={() => this.presentForgotPassword()} style={styles.forgotPW}>Forgot Password?</Text>
 
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center'
   },
   logo: {
-    flex: 1
+    height: 200, width: FRAME.width - 64
   },
   optionView: {
     marginTop: 32, marginLeft: 32, marginRight: 32

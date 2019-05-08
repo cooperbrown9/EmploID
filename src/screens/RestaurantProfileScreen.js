@@ -65,14 +65,14 @@ class RestaurantProfileScreen extends Component {
             console.log(e2);
           } else {
             console.log(users);
-            Promise.all([this.cacheImages(users)])
-            .then((data) => {
-              console.log(data)
+            // Promise.all([this.cacheImages(users)])
+            // .then((data) => {
+              // console.log(data)
               DataBuilder.assignRelationsToUsers(relations, users, (usersWithRelations) => {
                 this.props.dispatch({ type: DetailActions.SET_EMPLOYEES, employees: usersWithRelations });
                 this.getDiscounts();
               })
-            }).catch(e => console.log(e))
+            // }).catch(e => console.log(e))
           }
         })
       }
@@ -385,15 +385,15 @@ const styles = StyleSheet.create({
   },
   infoText: {
     backgroundColor: 'transparent',
-    fontFamily: 'roboto-bold', fontSize: 20,
+    fontFamily: 'roboto-bold', fontSize: 18,
     color: 'white',
     marginBottom: 8
   },
   infoTextName: {
     backgroundColor: 'transparent',
-    fontFamily: 'roboto-bold', fontSize: 38,
+    fontFamily: 'roboto-bold', fontSize: 32,
     color: 'white',
-    marginBottom: 16
+    marginTop: 8, marginBottom: 8
   },
   infoContainer0: {
     position: 'absolute',
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     position: 'absolute',
-    left: 16, right: 16, bottom: 32,
+    left: 16, right: 16, bottom: 16,
     zIndex: 1001
   },
   profilePicContainer: {

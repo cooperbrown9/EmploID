@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert,
-  Dimensions, AsyncStorage, LayoutAnimation, Platform, StatusBar, Animated
+  Dimensions, AsyncStorage, StatusBar, Animated
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -24,8 +24,8 @@ import RestaurantScreen from './RestaurantScreen.js';
 
 import LoadingOverlay from '../ui-elements/loading-overlay';
 import FilterModal from './FilterModal';
-import EmployeeForm from './EmployeeForm';
-import PlaceForm from './RestaurantForm';
+// import EmployeeForm from './EmployeeForm';
+// import PlaceForm from './RestaurantForm';
 import ProfileScreen from './ProfileScreen';
 import MyDiscountScreen from './MyDiscountScreen';
 
@@ -65,10 +65,6 @@ class HomeScreen extends Component {
     gesturesEnabled: false
   }
 
-  componentWillMount() {
-    // this.loadData();
-
-  }
   componentDidMount() {
     // NOTE moved to willMount
     this.loadData()
@@ -152,11 +148,6 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
-            // await Promise.all(...this.cacheImages(users)).then((result) => {
-              // Promise.all([this.cacheImages(users)])
-              // .then((status) => {
-              // this.loadImages(users)
-              // console.log(status)
               DataBuilder.assignPositionsToUsers(users, relations, (users) => {
                 this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
                 this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
@@ -165,31 +156,11 @@ class HomeScreen extends Component {
                   this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
                 });
               })
-              // })
-              // .catch((e) => {
-              // debugger
-              // })
-              // this.cacheImages(users)
-              // this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
-              // this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
-              //
-              // this.setState({ isRefreshing: false, employeeIDs: userIDs }, () => {
-              //   this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
-              // });
-            // }).catch((e) => console.log('couldnt cache images'))
           }
         })
       }
     })
   }
-
-  // loadImages(users) {
-  //   let images = []
-  //   users.forEach((user) => {
-  //     images.push({ name: user._id, uri: user.image_url })
-  //   })
-  //   preloadImages(images)
-  // }
 
   // NOTE image_url like users[0].image_url
   // NOTE called on line 157
@@ -341,8 +312,6 @@ class HomeScreen extends Component {
             if(err) {
               console.log(err);
             } else {
-              console.log(relation);
-
               // UPDATE OWNER SO YOU CAN GET FRESH EMPLOYEE ARRAY
               this.refreshUser(data, () => {
                 this.getPlaces();
@@ -427,7 +396,6 @@ class HomeScreen extends Component {
   }
 
   clearKeys() {
-    // return;
     AsyncStorage.removeItem(Keys.SESSION_ID, () => {
       AsyncStorage.removeItem(Keys.USER_ID);
     });
@@ -446,8 +414,6 @@ class HomeScreen extends Component {
       }
     }
     this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_ON, users: matches });
-
-    // this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: matches });
   }
 
   _searchLocations = (text) => {

@@ -22,7 +22,7 @@ class FilterModal extends Component {
         { value: 'Server', selected: false, index: 0 },
         { value: 'Bartender', selected: false, index: 1 },
         { value: 'Host', selected: false, index: 2 },
-        { value: 'Busser', selected: false, index: 3 },
+        { value: 'Support', selected: false, index: 3 },
         { value: 'Manager', selected: false, index: 4 },
         { value: 'Chef', selected: false, index: 5 },
         { value: 'Cook', selected: false, index: 6 },
@@ -154,11 +154,11 @@ class FilterModal extends Component {
 
           <Text style={styles.titleText}>Restaurants</Text>
           <View style={styles.optionContainer} >
-            {(this.state.locations.map((location) => (
-              <TouchableOpacity style={(location.selected) ? styles.locationOn : styles.locationOff} onPress={() => this.selectLocation(location)}>
+            {(this.state.locations.map((location, i) => (
+              <TouchableOpacity style={(location.selected) ? styles.locationOn : styles.locationOff} onPress={() => this.selectLocation(location)} key={i} >
                 <Text style={(location.selected) ? styles.locationTextOn : styles.locationTextOff}>{location.value}</Text>
               </TouchableOpacity>
-            )))}
+            )))} 
           </View>
           <View style={{height: 64}} />
 
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    padding: 22,
+    padding: 16,
     textAlign: 'center',
     color: 'black', fontFamily: 'roboto-bold'
   }

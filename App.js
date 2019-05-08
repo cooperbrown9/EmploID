@@ -15,7 +15,6 @@ import * as Keys from './src/constants/keys';
 
 import { FONT_LOADED } from './src/action-types/setup-action-types';
 import * as NavActions from './src/action-types/nav-action-types';
-
 // TODO Phone number
 // COMBAK PlaceForm: Break up address fields
 // "upload restaurant logo" instead
@@ -61,6 +60,7 @@ export default class App extends React.Component {
       require('./assets/icons/search.png'),
       require('./assets/icons/social.png'),
       require('./assets/icons/down.png'),
+      require('./assets/icons/crown.png')
     ]
 
     return images.map(img => {

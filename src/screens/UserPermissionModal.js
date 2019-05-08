@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { connect } from 'react-redux';
 
 import { assignSinglePlacePositionToUser } from '../util/permission-manager';
@@ -90,7 +90,8 @@ class UserPermissionModal extends Component {
 
   render() {
     return(
-      <View style={styles.container} >
+      <SafeAreaView style={styles.container} >
+        <StatusBar hidden />
         <View style={styles.backButton} >
           <RoundButton onPress={this.dismiss} imagePath={require('../../assets/icons/cancel.png')} />
         </View>
@@ -143,7 +144,7 @@ class UserPermissionModal extends Component {
         </ScrollView>
 
 
-      </View>
+      </SafeAreaView>
     )
   }
 }
@@ -166,10 +167,10 @@ const styles = StyleSheet.create({
     marginBottom: 32, marginLeft: 32, marginRight: 32, height: 64
   },
   backButton: {
-    position: 'absolute', left:16,top: 40, zIndex: 100000
+    position: 'absolute', left:16,top: 16, zIndex: 100000
   },
   confirmButton: {
-    position: 'absolute', right:16,top: 40, zIndex: 100000
+    position: 'absolute', right:16,top: 16, zIndex: 100000
   },
   headerBold: {
     fontSize: 24, fontFamily: 'roboto-bold', marginTop: 8, marginBottom: 8,
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
     fontSize: 16, fontFamily: 'roboto-regular', color: Colors.DARK_GREY
   },
   locationContainer: {
-    flex: 1, flexDirection: 'column', flexWrap: 'wrap',
+    flex: 1, flexDirection: 'column', 
     marginTop: 64, marginBottom: 16, marginLeft: 16, marginRight: 16,
     justifyContent: 'center', alignItems: 'center',
     backgroundColor: Colors.MID_GREY, borderRadius: 8

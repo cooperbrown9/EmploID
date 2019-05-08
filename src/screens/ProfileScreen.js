@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Animated, Text, StyleSheet, ScrollView, FlatList,
+import { View, Animated, Text, StyleSheet, ScrollView,
   Image, TouchableOpacity, Modal, RefreshControl, Dimensions, Alert,
   LayoutAnimation, NativeModules
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Camera, Permissions } from 'expo';
+import { ifIphoneX } from 'react-native-iphone-x-helper'
+
 import EmployeeTabBar from '../ui-elements/employee-tab-bar.js';
 import RoundButton from '../ui-elements/round-button.js';
 
@@ -19,9 +21,9 @@ import EmployeeFormEdit from './edit/EmployeeFormEdit';
 import DiscountModal from './DiscountModal';
 import UserPermissionModal from './UserPermissionModal';
 import CreateUserNoteForm from './CreateUserNoteForm';
-import ImageScreen from './ImageScreen';
+// import ImageScreen from './ImageScreen';
 import EmployeeFormAddLocationEdit from './edit/EmployeeFormAddLocationEdit';
-import ProgressiveImage from '../ui-elements/progressive-image';
+// import ProgressiveImage from '../ui-elements/progressive-image';
 
 import { uploadImage } from '../api/image-handler';
 
@@ -206,8 +208,6 @@ class ProfileScreen extends Component {
           if(e2) {
             console.log(e2);
           } else {
-            console.log(user);
-
             this.props.dispatch({ type: DetailActions.SET_USER, user: user });
           }
         })
@@ -328,7 +328,7 @@ class ProfileScreen extends Component {
     if(!this.props.employee.image_url) {
       return (
         <View style={styles.cameraButton} >
-          <RoundButton imagePath={require('../../assets/icons/camera.png')} onPress={() => this.getCameraPermission()} />
+          <RoundButton imagePath={require('../../assets/icons/camera.png')} onPress={() => this.getCameraPermission()} color={Colors.YELLOW} />
         </View>
       )
     }
@@ -392,6 +392,14 @@ class ProfileScreen extends Component {
           console.log(e);
           this.setState({ cameraPermission: false });
         })
+    }
+  }
+
+  switchCameraType = () => {
+    if(this.state.cameraType == Camera.Constants.Type.back) {
+      this.setState({ cameraType: Camera.Constants.Type.front })
+    } else {
+      this.setState({ cameraType: Camera.Constants.Type.back })
     }
   }
 
@@ -505,6 +513,10 @@ class ProfileScreen extends Component {
           ? <View style={{position: 'absolute', left: 0, right: 0, top:0,bottom:0, zIndex:11000}}>
               <Camera ref={ref => { this.camera = ref; }} type={this.state.cameraType} style={{flex: 1, justifyContent:'flex-end', alignItems:'stretch'}} >
                 <View style={{height: 64, marginBottom:32, flexDirection: 'row', backgroundColor:'transparent', justifyContent:'space-around'}}>
+                <TouchableOpacity style={{position:'absolute',right:16,top:64}} onPress={this.switchCameraType}>
+                <Image source={require('../../assets/icons/switch.png')} style={{height: 40, width: 40,tintColor:'white'}} resizeMode={'contain'} />
+              </TouchableOpacity>
+              <Image style={{height: 300, width: 300, zIndex: 10004,tintColor:'white'}} source={require('../../assets/images/circle.png')} resizeMode={'contain'}/>
                   <TouchableOpacity onPress={() => this.setState({cameraPermission:false})} style={{height:64,width:128, borderRadius:16, backgroundColor:Colors.BLUE, justifyContent:'center',alignItems:'center'}} >
                     <Image style={{height:32, width:32,tintColor:'white'}} source={require('../../assets/icons/cancel.png')} />
                   </TouchableOpacity>
@@ -536,26 +548,26 @@ const styles = StyleSheet.create({
   },
   infoTextName: {
     backgroundColor: 'transparent',
-    fontFamily: 'roboto-bold', fontSize: 38,
+    fontFamily: 'roboto-bold', fontSize: 32,
     color: 'white',
-    marginBottom: 16
+    marginBottom: 8
   },
   infoText: {
     backgroundColor: 'transparent',
-    fontFamily: 'roboto-bold', fontSize: 20,
+    fontFamily: 'roboto-bold', fontSize: 18,
     color: 'white',
-    marginBottom: 16
+    marginBottom: 12
   },
   infoContainer0: {
     position: 'absolute',
-    left: 16, right: 16, top: -190
+    left: 16, right: 16, top: -120
   },
-  infoContainer00: {
-    position: 'absolute', backgroundColor: 'orange',
-    left: 16, right: 16, top: -150,
-    // bottom: 100,
-    zIndex: 1001
-  },
+  // infoContainer00: {
+  //   position: 'absolute', backgroundColor: 'orange',
+  //   left: 16, right: 16, top: -190,
+  //   // bottom: 100,
+  //   zIndex: 1001
+  // },
   infoContainer: {
     position: 'absolute',
     left: 16, right: 16, bottom: 16,
@@ -590,15 +602,24 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto-bold', textAlign: 'center', justifyContent: 'center', alignItems: 'center'
   },
   backButton: {
-    position: 'absolute', left: 20, top: 40,
+    position: 'absolute', left: 16, top: 24,
+    ...ifIphoneX({
+      top: 40      
+    }),
     zIndex: 1001
   },
   optionsButton: {
-    position: 'absolute', right: 20, top: 40,
+    position: 'absolute', right: 16, top: 24,
+    ...ifIphoneX({
+      top: 40      
+    }),
     zIndex: 1001
   },
   cameraButton: {
-    position: 'absolute', right: 20, top: 124, zIndex: 1001
+    position: 'absolute', right: 16, top: 100, zIndex: 1001,
+    ...ifIphoneX({
+      top: 116      
+    }),
   },
   addNote: {
     position: 'absolute',
