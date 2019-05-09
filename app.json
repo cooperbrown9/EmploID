@@ -16,7 +16,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.xapp.emploid"
+      "bundleIdentifier": "com.xapp.emploid",
+      "infoPlist": {
+        "NSCameraUsageDescription": "We need access so you can take photos of your employees"
+      },
     }
   }
 }
