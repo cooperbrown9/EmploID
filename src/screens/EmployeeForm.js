@@ -365,14 +365,7 @@ class EmployeeForm extends Component {
             }
           </View>
 
-          <Text style={styles.textHeader} >Birthday</Text>
-          <View style={[styles.dateView, { marginBottom: 32 }]} >
-            <DatePickerIOS
-              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, birthday: date.toDateString() }}) }}
-              date={new Date(this.state.employee.birthday)}
-              mode={'date'} maximumDate={new Date()}
-            />
-          </View>
+
 
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
@@ -380,14 +373,7 @@ class EmployeeForm extends Component {
             {/*this.textInputFactory('555.555.5555', (text) => this.formatPhone(text), this.state.employee.phone, true, false, 'phone-pad', 3)*/}
           </View> {/*this.setState({ employee: {...this.state.employee, phone: text }*/}
 
-          <Text style={styles.textHeader} >Hire Date</Text>
-          <View style={styles.dateView} >
-            <DatePickerIOS
-              onDateChange={(date) => { this.setState({ employee: {...this.state.employee, hireDate: date.toDateString() }}) }}
-              date={new Date(this.state.employee.hireDate)}
-              mode={'date'} maximumDate={new Date()}
-            />
-          </View>
+
 
           <Text style={styles.textHeader}>Gender</Text>
           <View style={styles.optionContainer} >
@@ -411,6 +397,25 @@ class EmployeeForm extends Component {
             }
           </TouchableOpacity>
           <Text style={styles.imageText}>Upload Employee Image</Text>
+
+
+            <Text style={styles.textHeader} >Birthday</Text>
+            <View style={[styles.dateView, { marginBottom: 32 }]} >
+              <DatePickerIOS
+                onDateChange={(date) => { this.setState({ employee: {...this.state.employee, birthday: date.toDateString() }}) }}
+                date={new Date(this.state.employee.birthday)}
+                mode={'date'} maximumDate={new Date()}
+              />
+            </View>
+
+            <Text style={styles.textHeader} >Hire Date</Text>
+            <View style={styles.dateView} >
+              <DatePickerIOS
+                onDateChange={(date) => { this.setState({ employee: {...this.state.employee, hireDate: date.toDateString() }}) }}
+                date={new Date(this.state.employee.hireDate)}
+                mode={'date'} maximumDate={new Date()}
+              />
+            </View>
 
 
           <View style={styles.submitContainer} >

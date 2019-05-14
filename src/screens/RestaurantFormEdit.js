@@ -24,10 +24,10 @@ class RestaurantFormEdit extends Component {
 
     this.state = {
       place: {
-        name: "Rusty Moose",
-        address: "6969 E. Rockford Way",
-        email: "hello@restaurant.com",
-        phone: "555-555-5555",
+        name: "",
+        address: "",
+        email: "",
+        phone: "",
         positions: []
       },
       positionOptions: [

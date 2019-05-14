@@ -15,10 +15,9 @@ import * as Keys from './src/constants/keys';
 
 import { FONT_LOADED } from './src/action-types/setup-action-types';
 import * as NavActions from './src/action-types/nav-action-types';
-// TODO Phone number
-// COMBAK PlaceForm: Break up address fields
-// "upload restaurant logo" instead
-// search
+
+// TODO fire
+// keyboardavoidingview on phone field
 
 export default class App extends React.Component {
 

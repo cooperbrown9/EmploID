@@ -34,9 +34,9 @@ class RestaurantForm extends Component {
 
     this.state = {
       place: {
-        name: "Rusty Moose",
-        address: "6969 E. Rockford Way",
-        email: "hello@restaurant.com",
+        name: "",
+        address: "",
+        email: "",
         phone: "",
         employees: [],
         positions: [],
@@ -77,15 +77,15 @@ class RestaurantForm extends Component {
       }
     });
 
-    this.checkEmail(this.state.place.email, (complete) => {
-      if(complete) {
+    // this.checkEmail(this.state.place.email, (complete) => {
+      // if(complete) {
         this.props.dispatch({ type: LoadingActions.START_LOADING });
         this.submitForm();
         // this.props.dismiss();
-      } else {
-        this.setState({ incomplete: true });
-      }
-    })
+      // } else {
+        // this.setState({ incomplete: true });
+      // }
+    // })
   }
 
   submitForm() {

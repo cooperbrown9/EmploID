@@ -23,7 +23,7 @@ const EmployeesTab = (props) => (
 
       {props.employees.map(model =>
         <TouchableOpacity
-          style={(model.relation.role === 0) ? styles.employeeItem : (model.relation.role === 1) ? styles.employeeItemManager : styles.employeeItemOwner} key={model._id}
+          style={styles.employeeItem} key={model._id}
           onPress={() => props.onPress(model)}
         >
           <Image style={styles.employeeImage} source={(model.image_url !== "" && model.image_url != null ) ? { uri: model.image_url } : require('../../../assets/images/chef1.png')} />
@@ -36,7 +36,7 @@ const EmployeesTab = (props) => (
             <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}} numberOfLines={0}>{model.first_name} {model.last_name}</Text>
             <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}} numberOfLines={0}>{findPositions(model.relation.positions)}</Text>
           </View>
-          {(model.relation.role === 0 || model.relation.role === 1)
+          {(model.relation.role === 1 || model.relation.role === 2)
             ? <View style={{position:'absolute',right:8,bottom:8,width:16,justifyContent:'center',alignItems:'center'}}>
                 <Image style={{height: 16,width:16,tintColor:Colors.BLUE}} source={require('../../../assets/icons/crown.png')} resizeMode={'contain'} />
               </View>

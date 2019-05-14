@@ -12,12 +12,7 @@ const LocationsTab = (props) => (
     <View style={styles.container}>
         {props.locations.map(model =>
           <TouchableOpacity
-            style={
-              (model.relation.role === 0)
-                ? styles.restaurantItem
-                : (model.relation.role === 1)
-                  ? styles.restaurantItemManager
-                  : styles.restaurantItemOwner}
+            style={styles.restaurantItem}
               key={model._id}
               onPress={() => props.presentModal(model)}
             >
@@ -27,6 +22,13 @@ const LocationsTab = (props) => (
               <Text style={styles.nameText}>{model.name}</Text>
               <Text style={styles.addyText}>{model.address}</Text>
             </View>
+
+            {(model.relation.role === 1 || model.relation.role === 2)
+              ? <View style={{position:'absolute',right:8,bottom:8,width:16,justifyContent:'center',alignItems:'center'}}>
+                  <Image style={{height: 16,width:16,tintColor:Colors.BLUE}} source={require('../../../assets/icons/crown.png')} resizeMode={'contain'} />
+                </View>
+              : null
+            }
             {/*
             <TouchableOpacity style={styles.phoneContainer} onPress={() => callPhoneNumber(model.phone)} >
               <Image style={styles.phone} resizeMode={'containg'} source={require('../../../assets/icons/phone-circle.png')} />
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     overflow: 'hidden',
     borderRadius: 4,
-    borderRightWidth: 16, borderColor: Colors.BLUE
+    // borderRightWidth: 16, borderColor: Colors.BLUE
   },
   restaurantItemOwner: {
     flex: 1,
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     overflow: 'hidden',
     borderRadius: 4,
-    borderRightWidth: 16, borderColor: Colors.BLUE
+    // borderRightWidth: 16, borderColor: Colors.BLUE
   },
   nameText: {
     fontSize: 24, marginBottom: 6,

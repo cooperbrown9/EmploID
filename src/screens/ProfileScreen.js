@@ -604,21 +604,21 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute', left: 16, top: 24,
     ...ifIphoneX({
-      top: 40      
+      top: 40
     }),
     zIndex: 1001
   },
   optionsButton: {
     position: 'absolute', right: 16, top: 24,
     ...ifIphoneX({
-      top: 40      
+      top: 40
     }),
     zIndex: 1001
   },
   cameraButton: {
     position: 'absolute', right: 16, top: 100, zIndex: 1001,
     ...ifIphoneX({
-      top: 116      
+      top: 116
     }),
   },
   addNote: {

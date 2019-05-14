@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl, FlatList } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity, RefreshControl, FlatList, Dimensions } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { findSimilarPlaces } from '../api/data-builder';
 
@@ -9,6 +9,8 @@ import ProgressiveImage from '../ui-elements/progressive-image';
 
 import * as NavActions from '../action-types/nav-action-types';
 import * as Colors from '../constants/colors';
+
+const FRAME = Dimensions.get('window')
 
 function formatPositions(positions) {
   let s = '';
@@ -38,7 +40,7 @@ const EmployeeScreen = (props) => (
   <View style={styles.container} >
     <FlatList
       keyExtractor={(item,index) => index.toString()}
-      style={{padding: 12}}
+      style={{padding: 12, height: FRAME.height + 100}}
       data={(!props.spotlightOn) ? props.employees : props.spotlightUsers}
       renderItem={(employee) => renderItem(employee, props.openProfile)}
       onRefresh={props.onRefresh}
@@ -60,7 +62,7 @@ EmployeeScreen.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   nameText: {
     fontSize: 24, marginBottom: 6,

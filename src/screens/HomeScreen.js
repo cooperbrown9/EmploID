@@ -148,6 +148,7 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
+            // await this.cacheImages(users)
               DataBuilder.assignPositionsToUsers(users, relations, (users) => {
                 this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
                 this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
@@ -167,9 +168,10 @@ class HomeScreen extends Component {
   cacheImages(users) {
     return users.map((user) => {
       console.log(user.image_url)
-      // let img = Image.prefetch(user.image_url).then((data) => {
-      //   console.log(data)
-      // })
+      let img = Image.prefetch({uri:user.image_url}).then((data) => {
+        console.log(data)
+      })
+
 
       // debugger
       return Image.prefetch(user.image_url)
