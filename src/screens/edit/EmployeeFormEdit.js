@@ -386,10 +386,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  imageContainer: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   imageEmpty: {
     width: 100, height: 100,
     // borderRadius: 70,
@@ -397,7 +393,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 140, height: 140,
-    borderRadius: 70
+    borderRadius: 70,
+    borderWidth: 2, borderColor: Colors.BLUE
   },
   imageText: {
     textAlign: 'center',

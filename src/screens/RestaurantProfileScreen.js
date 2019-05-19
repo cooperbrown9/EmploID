@@ -251,7 +251,7 @@ class RestaurantProfileScreen extends Component {
 
   editPlacesButton() {
     // moving edit places to the web
-    return null;
+    // return null;
     if(this.props.indexOn === 0 && this.props.myRole >= 1) {
       return(
         <View style={styles.editPlacesButton} >
