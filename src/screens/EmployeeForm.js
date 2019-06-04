@@ -303,7 +303,6 @@ class EmployeeForm extends Component {
       await this.camera.takePictureAsync({ quality: 0.5 })
         .then((data) => { this.setState({ employee: { ...this.state.employee, imageURI: data.uri }, cameraPermission: false }) })
         .catch(e => {
-          console.log(e);
           this.setState({ cameraPermission: false });
         })
     }
@@ -346,23 +345,17 @@ class EmployeeForm extends Component {
 
           <Text style={styles.textHeader} >First Name</Text>
           <View style={styles.inputView} >
-            {
-              this.textInputFactory('First Name', (text) => this.setState({ employee: {...this.state.employee, firstName: text},formIncomplete:false}), this.state.employee.firstName, true, undefined, undefined, 0)
-            }
+            {this.textInputFactory('First Name', (text) => this.setState({ employee: {...this.state.employee, firstName: text},formIncomplete:false}), this.state.employee.firstName, true, undefined, undefined, 0)}
           </View>
 
           <Text style={styles.textHeader} >Last Name</Text>
           <View style={styles.inputView} >
-            {
-              this.textInputFactory('Last Name', (text) => this.setState({ employee: {...this.state.employee, lastName: text},formIncomplete:false}), this.state.employee.lastName, true, undefined, undefined, 1)
-            }
+            {this.textInputFactory('Last Name', (text) => this.setState({ employee: {...this.state.employee, lastName: text},formIncomplete:false}), this.state.employee.lastName, true, undefined, undefined, 1)}
           </View>
 
           <Text style={styles.textHeader} >Email</Text>
           <View style={styles.inputView} >
-            {
-              this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text},formIncomplete:false}), this.state.employee.email, true, false, 'email-address', 2)
-            }
+            {this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text},formIncomplete:false}), this.state.employee.email, true, false, 'email-address', 2)}
           </View>
 
 
@@ -370,8 +363,7 @@ class EmployeeForm extends Component {
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
             {this.phoneFactory('(555) 555-5555')}
-            {/*this.textInputFactory('555.555.5555', (text) => this.formatPhone(text), this.state.employee.phone, true, false, 'phone-pad', 3)*/}
-          </View> {/*this.setState({ employee: {...this.state.employee, phone: text }*/}
+          </View>
 
 
 

@@ -2,14 +2,15 @@ import { NavigationActions } from 'react-navigation';
 import { AppNavigator } from '../navigation/app-navigator';
 import * as NavActions from '../action-types/nav-action-types';
 
-const tempAction = AppNavigator.router.getActionForPathAndParams('Home');
-const tempState = AppNavigator.router.getStateForAction(tempAction);
-
-const loginAction = AppNavigator.router.getActionForPathAndParams('Login');
-const loginState = AppNavigator.router.getStateForAction(loginAction);
-
-const loadAction = AppNavigator.router.getActionForPathAndParams('Load');
-const loadState = AppNavigator.router.getStateForAction(loadAction);
+// const tempAction = AppNavigator.router.getActionForPathAndParams('Home');
+// const tempState = AppNavigator.router.getStateForAction(tempAction);
+//
+// const loginAction = AppNavigator.router.getActionForPathAndParams('Login');
+// const loginState = AppNavigator.router.getStateForAction(loginAction);
+//
+// const loadAction = AppNavigator.router.getActionForPathAndParams('Load');
+// const loadState = AppNavigator.router.getStateForAction(loadAction);
+var loadState = 'Load'
 
 // to set a different home screen, get Action and State.
 // to animate screens, use NavigationActions

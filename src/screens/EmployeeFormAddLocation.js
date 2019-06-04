@@ -119,10 +119,6 @@ class EmployeeFormAddLocation extends Component {
 
   // wrapper for props.dismiss() because this clears the state
   dismiss = () => {
-    // this.setState({}, () => {
-    //   debugger;
-    //   this.props.dismiss();
-    // })
     this.props.dismiss();
   }
 

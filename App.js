@@ -18,6 +18,7 @@ import * as NavActions from './src/action-types/nav-action-types';
 
 // TODO fire
 // keyboardavoidingview on phone field
+// COMPLETE FORM ERROR
 
 export default class App extends React.Component {
 
@@ -30,7 +31,6 @@ export default class App extends React.Component {
   }
 
   async componentDidMount() {
-    // await this.clearKeys();
     console.disableYellowBox = true;
     await Font.loadAsync({
       'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf'),

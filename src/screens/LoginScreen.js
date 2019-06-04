@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, TextInput, Image, 
+import { View, ScrollView, Text, TextInput, Image,
   StyleSheet, Alert, AsyncStorage, Modal, Dimensions, KeyboardAvoidingView
 } from 'react-native';
 
@@ -70,7 +70,7 @@ class LoginScreen extends Component {
         });
         this.props.dispatch({ type: PermissionActions.SET_IS_PLACE_CREATOR, isCreator: response.user.can_create_places });
         this.props.navigation.navigate(NavActions.HOME);
-        this.props.dispatch({ type: NavActions.HOME });
+        // this.props.dispatch({ type: NavActions.HOME });
       }
     })
   }

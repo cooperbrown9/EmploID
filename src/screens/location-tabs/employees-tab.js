@@ -8,17 +8,40 @@ import ProgressiveImage from '../../ui-elements/progressive-image';
 
 import * as Colors from '../../constants/colors';
 
-function findPositions(positions) {
+function findPositions(relation) {
+  if(relation.role == 2) {
+    return 'Owner'
+  }
+
+  if(relation.role == 1) {
+    return 'Manager'
+  }
+
   let s = '';
-  positions.forEach((p) => {
-    s += (p + ', ')
+  relation.positions.forEach((p) => {
+    s += (p + ' • ')
   })
   return s.substr(0, s.length-2)
 }
 
+function getPositions(relation) {
+  if(relation.role == 2) {
+    return ['Owner']
+  }
+
+  if(relation.role == 1) {
+    return ['Manager']
+  }
+
+  let positions = []
+  relation.positions.forEach((p) => {
+    positions.push(p)
+  })
+  return positions
+  // return s.substr(0, s.length-2)
+}
+
 const EmployeesTab = (props) => (
-
-
     <View style={styles.container}>
 
       {props.employees.map(model =>
@@ -34,7 +57,11 @@ const EmployeesTab = (props) => (
           />*/}
           <View style={styles.employeeInfo}>
             <Text style={{fontSize: 24, marginBottom: 6, fontFamily: 'roboto-bold'}} numberOfLines={0}>{model.first_name} {model.last_name}</Text>
-            <Text style={{fontSize: 18, color: 'gray', fontFamily: 'roboto-bold'}} numberOfLines={0}>{findPositions(model.relation.positions)}</Text>
+
+            <Text style={styles.positionText} numberOfLines={0}>{findPositions(model.relation)}</Text>
+
+
+
           </View>
           {(model.relation.role === 1 || model.relation.role === 2)
             ? <View style={{position:'absolute',right:8,bottom:8,width:16,justifyContent:'center',alignItems:'center'}}>
@@ -69,6 +96,15 @@ const styles = StyleSheet.create({
     width: 100,
     resizeMode: 'cover',
     backgroundColor: Colors.BACKGROUND_GREY
+  },
+  positionText: {
+    fontSize: 18,
+    color: 'gray', fontFamily: 'roboto-bold'
+  },
+  positionView: {
+    backgroundColor: Colors.MID_GREY, height: 32, borderRadius: 4,
+    color: 'white', fontFamily: 'roboto-bold', fontSize: 18,
+    margin: 4
   },
   employeeItem: {
       flex: 1,
@@ -116,6 +152,7 @@ const styles = StyleSheet.create({
 });
 
 var mapStateToProps = state => {
+  console.log(state.detail.employees[0])
   return {
     employees: state.detail.employees
   }

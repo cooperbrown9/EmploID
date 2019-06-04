@@ -15,7 +15,7 @@ const FRAME = Dimensions.get('window')
 function formatPositions(positions) {
   let s = '';
   positions.forEach((p) => {
-    s += (p + ', ')
+    s += (p + ' • ')
   });
   return s.substring(0, s.length-2);
 }

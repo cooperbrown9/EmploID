@@ -148,7 +148,9 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
-            // await this.cacheImages(users)
+              // let images = this.cacheImages(users)
+              // await Promise.all([...images]).then((status) => console.log(status, 'YUP')).catch((nah) => console.log(nah, 'nah'))
+
               DataBuilder.assignPositionsToUsers(users, relations, (users) => {
                 this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
                 this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
@@ -166,15 +168,14 @@ class HomeScreen extends Component {
   // NOTE image_url like users[0].image_url
   // NOTE called on line 157
   cacheImages(users) {
-    return users.map((user) => {
+    return users.map((user, i) => {
       console.log(user.image_url)
-      let img = Image.prefetch({uri:user.image_url}).then((data) => {
-        console.log(data)
-      })
-
-
-      // debugger
-      return Image.prefetch(user.image_url)
+      console.log('here', i)
+      if(user.image_url.length != 0) {
+        return Image.prefetch(user.image_url)
+      } else {
+        return true
+      }
     })
   }
 
@@ -228,7 +229,8 @@ class HomeScreen extends Component {
   }
 
   _presentAddEmployeeModal = () => {
-    this.props.navigation.navigate(NavActions.EMPLOYEE_PROFILE);
+    // NOTE added nav param when I switched to react-navigation 3.3.2
+    this.props.navigation.navigate(NavActions.EMPLOYEE_PROFILE , { dispatchFromPlace: false });
   }
   _openEmployeeProfile = (employee) => {
     this.props.dispatch({ type: DetailActions.SET_USER, user: employee });
@@ -385,6 +387,34 @@ class HomeScreen extends Component {
     return toggle;
   }
 
+  renderAddButton = () => {
+    // if on locations
+    if(this.props.indexOn === 0) {
+      if(this.props.me.can_create_places) {
+        return (
+          <TouchableOpacity style={styles.optionTouch} onPress={
+              () => this.props.navigation.navigate(NavActions.RESTAURANT_FORM, {
+                onBack: () => this.refreshData()
+              })}
+          >
+            <Image source={require('../../assets/icons/add.png')} style={{width:32, height: 32,tintColor:'white'}}/>
+          </TouchableOpacity>
+        )
+      }
+    }
+    if(this.props.indexOn === 1) {
+      return(
+        <TouchableOpacity style={styles.optionTouch} onPress={
+            () => this.props.navigation.navigate(NavActions.EMPLOYEE_FORM, {
+              onBack: () => this.refreshData()
+            })}
+        >
+          <Image source={require('../../assets/icons/add.png')} style={{width:32, height: 32,tintColor:'white'}}/>
+        </TouchableOpacity>
+      )
+    }
+  }
+
   onAdd = () => {
     if(this.props.indexOn === 0) {
       this.props.navigation.navigate(NavActions.RESTAURANT_FORM, {
@@ -453,14 +483,7 @@ class HomeScreen extends Component {
           <TabBar changeTab={(index) => this._changeTab(index)} leftOnPress={() => this.clearKeys() } rightOnPress={() => this.presentMyProfile()} />
         </View>
 
-        {/*(this.props.indexOn === 0)
-          ? (this.props.places.length < 1)
-            ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ textAlign:'center', fontSize: 20, fontFamily: 'roboto-bold', color: Colors.MID_GREY}}>Add a Restaurant before you add employees!</Text>
-              </View>
-            : <RestaurantScreen search={(text) => this._searchLocations(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(place) => this._openLocationProfile(place)} />
-          : <EmployeeScreen search={(text) => this._searchEmployees(text)} isRefreshing={this.state.isRefreshing} onRefresh={() => this.refreshData()} openProfile={(employee) => this._openEmployeeProfile(employee)} />
-        */
+        {
         (this.props.places.length < 1)
           ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ textAlign:'center', fontSize: 20, fontFamily: 'roboto-bold', color: Colors.MID_GREY}}>Add a Restaurant before you add employees!</Text>
@@ -476,12 +499,7 @@ class HomeScreen extends Component {
         {this.renderOptionToggle()}
 
         <Animated.View style={[styles.addButton, { bottom: 170, right: this.state.optionButtonAnimation, backgroundColor:'transparent'}]} >
-          {(this.props.me.can_create_places)
-            ? <TouchableOpacity style={styles.optionTouch} onPress={this.onAdd} >
-                <Image source={require('../../assets/icons/add.png')} style={{width:32, height: 32,tintColor:'white'}}/>
-              </TouchableOpacity>
-            : null
-          }
+          {this.renderAddButton()}
           <TouchableOpacity style={styles.optionTouch} onPress={this.presentMyProfile}>
             <Image source={require('../../assets/icons/profile.png')} style={{width:32, height: 32,tintColor:'white'}}/>
           </TouchableOpacity>

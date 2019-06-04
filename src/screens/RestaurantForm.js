@@ -40,7 +40,7 @@ class RestaurantForm extends Component {
         phone: "",
         employees: [],
         positions: [],
-        imageURI: null
+        // imageURI: ''
       },
       employees: [],
       positionOptions: [
@@ -76,16 +76,32 @@ class RestaurantForm extends Component {
         this.state.place.positions.push(p.value);
       }
     });
-
+    if(this.isFormComplete()) {
+      this.props.dispatch({ type: LoadingActions.START_LOADING });
+      this.submitForm();
+    } else {
+      Alert.alert('You need to fill out all the fields!')
+    }
     // this.checkEmail(this.state.place.email, (complete) => {
       // if(complete) {
-        this.props.dispatch({ type: LoadingActions.START_LOADING });
-        this.submitForm();
+        // this.props.dispatch({ type: LoadingActions.START_LOADING });
+        // this.submitForm();
         // this.props.dismiss();
       // } else {
         // this.setState({ incomplete: true });
       // }
     // })
+  }
+
+  isFormComplete() {
+    let place = this.state.place;
+    if(place.name.length == 0 || place.address.length == 0
+      || place.email.length == 0 || place.phone.length == 0
+      || this.state.employees.length == 0 || place.positions.length == 0
+    ) {
+      return false;
+    }
+    return true;
   }
 
   submitForm() {
@@ -94,7 +110,7 @@ class RestaurantForm extends Component {
       let data = {
         // ...data,
         ...this.state.place,
-        "imageURL": this.state.place.imageURI,
+        // "imageURL": this.state.place.imageURI,
         "sessionID": this.props.sessionID,
         "userID": this.props.me._id,
         "groupID": this.props.me.group_id
@@ -144,7 +160,6 @@ class RestaurantForm extends Component {
               // create relations for all the employees
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: true });
               this.props.navigation.goBack();
-              Alert.alert('Success!');
               this.props.navigation.getParam('onBack', 'onBack')();
               // debugger
               // onBack();
@@ -220,21 +235,21 @@ class RestaurantForm extends Component {
     }
   }
 
-  getCameraPermission = async() => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-
-    this.setState({ cameraPermission: status === 'granted' });
-  }
-
-  takePicture = async() => {
-    if(this.camera) {
-      await this.camera.takePictureAsync()
-        .then((data) => { this.setState({ place: { ...this.state.place, imageURI: data.uri }, cameraPermission: false }) })
-        .catch(e => {
-          this.setState({ cameraPermission: false });
-        })
-    }
-  }
+  // getCameraPermission = async() => {
+  //   const { status } = await Permissions.askAsync(Permissions.CAMERA);
+  //
+  //   this.setState({ cameraPermission: status === 'granted' });
+  // }
+  //
+  // takePicture = async() => {
+  //   if(this.camera) {
+  //     await this.camera.takePictureAsync()
+  //       .then((data) => { this.setState({ place: { ...this.state.place, imageURI: data.uri }, cameraPermission: false }) })
+  //       .catch(e => {
+  //         this.setState({ cameraPermission: false });
+  //       })
+  //   }
+  // }
 
   render() {
     return(

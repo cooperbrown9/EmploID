@@ -42,34 +42,37 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 const FRAME = Dimensions.get('window');
 
 class ProfileScreen extends Component {
+  constructor(props) {
+    super(props);
+
+    this.uploadImage = uploadImage.bind(this);
+
+    this.state = {
+      editPlacesPresented: false,
+      noteFormEdit: false,
+      editModalPresented: false,
+      discountModalPresented: false,
+      userPermissionModalPresented: false,
+      noteFormPresented: false,
+      imagePresented: false,
+      selectedDiscount: null,
+      dispatchFromPlace: props.navigation.getParam('dispatchFromPlace', false),
+      selectedNote: null,
+      isRefreshing: false,
+      userPermissionModel: {},
+      cameraPermission: false,
+      dispatchFromPlace: false,
+      newImageURI: null,
+      cameraType: Camera.Constants.Type.back,
+      animation: (FRAME.height/2) - 100 //(FRAME.height / 2 + 32)
+    }
+  }
+
+
+
   static navigationOptions = {
     header: null,
     gesturesEnabled: false
-  }
-
-  constructor() {
-    super();
-
-    this.uploadImage = uploadImage.bind(this);
-  }
-
-  state = {
-    editPlacesPresented: false,
-    noteFormEdit: false,
-    editModalPresented: false,
-    discountModalPresented: false,
-    userPermissionModalPresented: false,
-    noteFormPresented: false,
-    imagePresented: false,
-    selectedDiscount: null,
-    selectedNote: null,
-    isRefreshing: false,
-    userPermissionModel: {},
-    cameraPermission: false,
-    dispatchFromPlace: false,
-    newImageURI: null,
-    cameraType: Camera.Constants.Type.back,
-    animation: (FRAME.height/2) - 100 //(FRAME.height / 2 + 32)
   }
 
   static propTypes = {
@@ -133,6 +136,8 @@ class ProfileScreen extends Component {
             Parser.assignRelationsToPlaces(relations, places, (placesWithRelations) => {
               this.props.dispatch({ type: DetailActions.SET_LOCATIONS, locations: placesWithRelations });
               Parser.checkPermissionForEmployeeEdit(this.props.myLocations, this.props.locations, (role) => {
+                // COMBAK if weird editing issues, check out how
+                // canEdit is assigned again in the setState callback here
                 this.setState({ canEdit: (role >= 1) ? true : false }, () => {
                   // check this out, might redo role assignment
                   if(!this.state.canEdit) {
@@ -287,7 +292,6 @@ class ProfileScreen extends Component {
     let myPlaces = this.props.myLocations;
     let presentedPlace = myPlaces.find(d => d._id === model._id);
     // TODO if owner, display owner on employee cell
-    // TODO put frame on employee profile image in edit
     try {
       if(presentedPlace.relation.role === 1 || presentedPlace.relation.role === 2) {
         this.setState({ userPermissionModalPresented: true, userPermissionModel: model });
@@ -642,9 +646,10 @@ var mapStateToProps = state => {
   // so putting these checks in here so it doesnt break
   let dispatchFromPlace = false;
 
-  if(state.nav.routes[state.nav.routes.length-1].params != undefined) {
-    dispatchFromPlace = state.nav.routes[state.nav.routes.length-1].params.dispatchFromPlace;
-  }
+  // NOTE removed this when I upgraded navigation tot 3.3.2, so not on redux anymore
+  // if(state.nav.routes[state.nav.routes.length-1].params != undefined) {
+  //   dispatchFromPlace = state.nav.routes[state.nav.routes.length-1].params.dispatchFromPlace;
+  // }
 
   return {
     indexOn: state.employeeTab.indexOn,

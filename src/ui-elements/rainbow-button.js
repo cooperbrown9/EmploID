@@ -25,7 +25,7 @@ class RainbowButton extends Component {
     // GREEN: 0, 255, 0
     // BLUE: 0, 0, 255
     // PURPLE: 148, 0, 211
-    setInterval(() => {
+    this.colorChanger = setInterval(() => {
       switch(this.state.colorIndex) {
         case 0: // RED to ORANGE
           if(this.state.green === 127) {
@@ -101,6 +101,11 @@ class RainbowButton extends Component {
           break;
       }
     }, 5);
+  }
+
+  componentWillUnmount() {
+    console.log(this.colorChanger)
+    clearInterval(this.colorChanger)
   }
 
   render() {
