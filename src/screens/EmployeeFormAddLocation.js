@@ -9,6 +9,8 @@ import * as Colors from '../constants/colors';
 import OptionViewSplit from '../ui-elements/option-view-split';
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
+import PositionRoleSelector from '../ui-elements/position-role-selector';
+import { roles } from '../constants/roles-and-positions';
 
 class EmployeeFormAddLocation extends Component {
 
@@ -42,7 +44,7 @@ class EmployeeFormAddLocation extends Component {
     places: PropTypes.array,
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.state.places = this.props.places;
 
     // this is a fix because the state persists after closing the modal,
@@ -53,12 +55,16 @@ class EmployeeFormAddLocation extends Component {
         this.state.places[i].selected = false;
         this.state.places[i].index = i;
         this.state.places[i].animation = 1;
+        this.state.places[i].roles = []
       }
 
       this.state.positionOptions = [];
       this.state.places.forEach((place, index) => {
         place.positions.forEach((position, indexPos) => {
           place.positions[indexPos] = { value: place.positions[indexPos], selected: false, index: indexPos }
+        })
+        roles.forEach((role) => {
+          place.roles.push({ value: role.value, selected: (role.index == 0) ? true : false, index: role.index })
         })
       });
 
@@ -79,7 +85,20 @@ class EmployeeFormAddLocation extends Component {
     this.setState({ places: this.state.places });
   }
 
+  _onRoleSelected = (index, place) => {
+    // make all false, then make the index the one that is true
+    place.roles.map((role) => role.selected = false)
+    place.roles[index].selected = true
+
+    // find index of place to change on the state, then assign updated place to it
+    let indexOfPlace = this.state.places.indexOf((p) => p._id == place._id)
+    this.state.places[indexOfPlace] = place
+
+    this.setState({ places: this.state.places })
+  }
+
   selectPlace = (place) => {
+    console.log(place)
     var animationProps = {
       type: 'timing',
       // springDamping: 0.8,
@@ -110,7 +129,10 @@ class EmployeeFormAddLocation extends Component {
             positions.push(pos.value);
           }
         });
-        selectedPlaces.push({ 'place_id': this.state.places[i]._id, 'positions': positions });
+
+        let role = this.state.places[i].roles.find((role) => role.selected).index
+
+        selectedPlaces.push({ 'place_id': this.state.places[i]._id, 'positions': positions, 'role': role });
       }
     }
     this.props.addLocations(selectedPlaces);
@@ -121,7 +143,9 @@ class EmployeeFormAddLocation extends Component {
   dismiss = () => {
     this.props.dismiss();
   }
-
+  // <View style={styles.optionContainer} >
+  //     <OptionViewSplit options={place.positions} selectOption={(index) => this.positionSelected(index, place)} />
+  //   </View>
   render() {
     return(
       <ScrollView style={styles.scrollContainer} >
@@ -142,9 +166,12 @@ class EmployeeFormAddLocation extends Component {
                   </Text>
                 </TouchableOpacity>
                 {(place.selected)
-                  ? <View style={styles.optionContainer} >
-                      <OptionViewSplit options={place.positions} selectOption={(index) => this.positionSelected(index, place)} />
-                    </View>
+                  ? <PositionRoleSelector
+                      parent={place}
+                      onPositionSelected={(index, place) => this.positionSelected(index, place)}
+                      onRoleSelected={(index, place) => this._onRoleSelected(index, place)}
+                      />
+
                   : null
                 }
               </Animated.View>
@@ -190,7 +217,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'stretch',
     marginBottom: 8, marginLeft: 4, marginRight: 4,
-    flex: 1,
+    flex: 1
   },
   buttonContainer: {
     flex: 1

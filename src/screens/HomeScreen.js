@@ -55,6 +55,7 @@ class HomeScreen extends Component {
       isRefreshing: false,
       animation: 1,
       optionButtonAnimation: new Animated.Value(-100),
+      filterButtonAnimation: new Animated.Value(-200),
       tabAnimation: new Animated.Value(0),
       isOptionsAvailable: false
     }
@@ -179,30 +180,6 @@ class HomeScreen extends Component {
     })
   }
 
-  // takes locations on redux and puts their user count on them
-  // deprecated
-  getUserCount() {
-    let places = [];
-    let place = {};
-    let itCount = 0;
-    for(let i = 0; i < this.props.places.length; i++) {
-      place = this.props.places[i];
-      API.getUserCount(this.props.places[i]._id, (err, count) => {
-        if(err) {
-          place.userCount = 0;
-        } else {
-          place.userCount = count.user_count;
-        }
-        places.push(place);
-        itCount++;
-        if(itCount === this.props.places.length) {
-          this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: places });
-
-        }
-      })
-    }
-  }
-
   uniqueArray(val, index, self) {
     return self.indexOf(val) === index;
   }
@@ -256,18 +233,8 @@ class HomeScreen extends Component {
     this.setState({ placeFormPresented: false });
   }
 
-  addPressed = () => {
-    this.onOptions()
-    return;
-    // if(this.props.indexOn === 0) {
-    //   this.props.navigation.navigate(NavActions.RESTAURANT_FORM, {
-    //     onBack: () => this.refreshData()
-    //   });
-    // } else {
-    //   this.props.navigation.navigate(NavActions.EMPLOYEE_FORM, {
-    //     onBack: () => this.refreshData()
-    //   });
-    // }
+  onAddPressed = () => {
+    this.onOptionsPressed()
   }
 
   _submitPlaceForm(data) {
@@ -360,27 +327,9 @@ class HomeScreen extends Component {
     });
   }
 
-  checkCreatePermission() {
-    // loop thru all relations and check if any of them are >= 1
-    // if so, display the add icon only on employees
-    let addButton = (
-      <TouchableOpacity onPress={this.addPressed} style={[styles.addButton, {backgroundColor:Colors.BLACK}]} >
-          <Image style={{height:48,width:48, tintColor:'white'}} source={require('../../assets/icons/ellipsis.png')} />
-      </TouchableOpacity>
-    );
-
-    if(this.props.indexOn === 0 && this.props.me.can_create_places) {
-      return addButton;
-    }
-
-    if(this.props.indexOn === 1 && this.props.me.can_create_places) {
-      return addButton;
-    }
-  }
-
   renderOptionToggle = () => {
     let toggle = (
-      <TouchableOpacity onPress={this.addPressed} style={[styles.addButton, {backgroundColor:Colors.BLACK}]} >
+      <TouchableOpacity onPress={this.onAddPressed} style={[styles.addButton, {backgroundColor:Colors.BLACK}]} >
           <Image style={{height:48,width:48, tintColor:'white'}} source={require('../../assets/icons/ellipsis.png')} />
       </TouchableOpacity>
     );
@@ -458,10 +407,16 @@ class HomeScreen extends Component {
     this.props.dispatch({ type: AuthActions.SET_LOCATIONS, locations: matches });
   }
 
-  onOptions = () => {
+  onOptionsPressed = () => {
     Animated.timing(this.state.optionButtonAnimation,
     {
       toValue: (this.state.onOptions) ? - 72 : 16,
+      duration: 250
+    }).start()
+
+    Animated.timing(this.state.filterButtonAnimation,
+    {
+      toValue: (this.state.onOptions) ? - 200 : 16,
       duration: 250
     }).start()
     this.setState({ onOptions: !this.state.onOptions })
@@ -473,6 +428,10 @@ class HomeScreen extends Component {
       toValue: (this.props.indexOn == 1) ? 0 : -FRAME.width,
       duration: 250
     }).start()
+
+    if(this.state.onOptions) {
+      this.onOptionsPressed()
+    }
   }
 
   render() {
@@ -506,15 +465,14 @@ class HomeScreen extends Component {
           <TouchableOpacity style={styles.optionTouch} onPress={this._presentMyDiscounts}>
             <Image source={require('../../assets/icons/card.png')} style={{width:32, height: 32,tintColor:'white'}}/>
           </TouchableOpacity>
-
-
         </Animated.View>
 
-        {
-        <TouchableOpacity onPress={() => this._presentFilterModal()} style={styles.filterButton} >
-          <Text style={styles.filterText}>Filter</Text>
-        </TouchableOpacity>
-        }
+        <Animated.View style={[styles.filterButton, { left: this.state.filterButtonAnimation }]}>
+          <TouchableOpacity onPress={() => this._presentFilterModal()} >
+            <Text style={styles.filterText}>Filter</Text>
+          </TouchableOpacity>
+        </Animated.View>
+
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
           <FilterModal employeeIDs={this.state.employeeIDs} dismiss={() => this._dismissFilterModal()} />
@@ -551,13 +509,13 @@ const styles = StyleSheet.create({
   filterButton: {
     position: 'absolute',
     justifyContent: 'center', alignItems: 'center',
-    left: 16, bottom: 16, borderRadius: 32,
+    bottom: 16, borderRadius: 32,
     height: 64, width: FRAME.width / 2 - 32,
     backgroundColor: Colors.MID_GREY,
     shadowColor: 'black', shadowOffset: {width: 0, height: 8}, shadowRadius: 8, shadowOpacity: 0.2,
   },
   filterText: {
-    fontFamily: 'roboto-bold', fontSize: 18,
+    fontFamily: 'roboto-bold', fontSize: 18, letterSpacing: 2,
     color: Colors.DARK_GREY
   },
   addButton: {

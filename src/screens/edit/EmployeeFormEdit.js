@@ -318,10 +318,12 @@ class EmployeeFormEdit extends Component {
               <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
             </View>
 
+            {/*
             <Text style={styles.textHeader}>Can create restaurants?</Text>
             <View style={styles.optionContainer} >
               <OptionView options={this.state.roleOptions} selectOption={(index) => this.roleSelected(index)} />
             </View>
+            */}
 
             <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
               {(this.state.employee.imageURL == null || this.state.employee.imageURL == '')

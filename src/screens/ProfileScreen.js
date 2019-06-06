@@ -141,6 +141,7 @@ class ProfileScreen extends Component {
                 this.setState({ canEdit: (role >= 1) ? true : false }, () => {
                   // check this out, might redo role assignment
                   if(!this.state.canEdit) {
+                    // COMBAK remove this...redundant and way better ways to do this
                     if(this.props.employee._id === this.props.me._id && this.props.me.can_create_places) {
                       this.setState({ canEdit: true });
                     }

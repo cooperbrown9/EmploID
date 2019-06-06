@@ -222,7 +222,8 @@ class EmployeeForm extends Component {
           // so its ok if some of them fail just not all
           let relationsCreatedCount = 0;
           for(let i = 0; i < this.state.selectedPlaces.length; i++) {
-            let relation = { 'userID': emp.user_id, 'placeID': this.state.selectedPlaces[i].place_id, 'role': 0, 'positions': this.state.selectedPlaces[i].positions }
+            let relation = { 'userID': emp.user_id, 'placeID': this.state.selectedPlaces[i].place_id, 'role': this.state.selectedPlaces[i].role, 'positions': this.state.selectedPlaces[i].positions }
+            console.log(relation)
             API.createRelation(relation, (e2, relation) => {
               if(e2) {
                 console.log(e2);
@@ -342,7 +343,6 @@ class EmployeeForm extends Component {
             />
           </Modal>
 
-
           <Text style={styles.textHeader} >First Name</Text>
           <View style={styles.inputView} >
             {this.textInputFactory('First Name', (text) => this.setState({ employee: {...this.state.employee, firstName: text},formIncomplete:false}), this.state.employee.firstName, true, undefined, undefined, 0)}
@@ -358,14 +358,10 @@ class EmployeeForm extends Component {
             {this.textInputFactory('Email', (text) => this.setState({ employee: {...this.state.employee, email: text},formIncomplete:false}), this.state.employee.email, true, false, 'email-address', 2)}
           </View>
 
-
-
           <Text style={styles.textHeader} >Phone Number</Text>
           <View style={styles.inputView} >
             {this.phoneFactory('(555) 555-5555')}
           </View>
-
-
 
           <Text style={styles.textHeader}>Gender</Text>
           <View style={styles.optionContainer} >
@@ -377,10 +373,12 @@ class EmployeeForm extends Component {
             <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
           </View>
 
+          {/*
           <Text style={styles.textHeader}>Can create restaurants?</Text>
           <View style={styles.optionContainer} >
             <OptionView options={this.state.roleOptions} selectOption={(index) => this.roleSelected(index)} />
           </View>
+          */}
 
           <TouchableOpacity onPress={() => this.getCameraPermission()} style={styles.imageContainer} >
             {(this.state.employee.imageURI == null)

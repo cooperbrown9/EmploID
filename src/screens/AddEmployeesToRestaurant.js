@@ -6,9 +6,11 @@ import { connect } from 'react-redux';
 import * as API from '../api/api';
 import * as Colors from '../constants/colors';
 
-import OptionViewSplit from '../ui-elements/option-view-split';
+import PositionRoleSelector from '../ui-elements/position-role-selector';
+
 import SubmitButton from '../ui-elements/submit-button';
 import RoundButton from '../ui-elements/round-button';
+import { roles, positions } from '../constants/roles-and-positions';
 
 class AddEmployeesToRestaurant extends Component {
 
@@ -27,16 +29,6 @@ class AddEmployeesToRestaurant extends Component {
             { value: '', selected: false, index: 0 }
           ]
         }
-      ],
-      positionOptions: [
-        { value: 'Server', selected: false, index: 0 },
-        { value: 'Bartender', selected: false, index: 1 },
-        { value: 'Host', selected: false, index: 2 },
-        { value: 'Support', selected: false, index: 3 },
-        { value: 'Manager', selected: false, index: 4 },
-        { value: 'Chef', selected: false, index: 5 },
-        { value: 'Cook', selected: false, index: 6 },
-        { value: 'Dishwasher', selected: false, index: 7 }
       ],
       selectedPlaces: []
     }
@@ -57,16 +49,21 @@ class AddEmployeesToRestaurant extends Component {
       employee.index = index;
       employee.animation = 1;
       employee.positions = [];
+      employee.roles = []
 
       this.props.place.positions.forEach((position, index) => {
         employee.positions.push({ value: position, selected: false, index: index });
       });
+
+      roles.forEach((role, index) => {
+        employee.roles.push({ value: role.value, selected: (index == 0) ? true : false, index: index })
+      })
     });
 
     this.setState({ employee: this.state.employees });
   }
 
-  positionSelected = (index, employee) => {
+  _onPositionSelected = (index, employee) => {
     employee.positions[index].selected = !employee.positions[index].selected;
     for(let i = 0; i < this.state.employees.length; i++) {
       if(this.state.employees[i]._id === employee._id) {
@@ -75,6 +72,18 @@ class AddEmployeesToRestaurant extends Component {
       }
     }
     this.setState({ places: this.state.places });
+  }
+
+  _onRoleSelected = (index, employee) => {
+    // make all false, then make the index the one that is true
+    employee.roles.map((role) => role.selected = false)
+    employee.roles[index].selected = true
+
+    // find index of employee to change on the state, then assign updated employee to it
+    let indexOfEmployee = this.state.employees.indexOf((emp) => emp._id == employee._id)
+    this.state.employees[indexOfEmployee] = employee
+
+    this.setState({ employees: this.state.employees })
   }
 
   selectEmployee = (employee) => {
@@ -109,9 +118,13 @@ class AddEmployeesToRestaurant extends Component {
           }
         });
 
+        let role = 0
+        role = this.state.employees[i].roles.find((role) => role.selected).index
+
         selectedEmployees.push({
           'userID': this.state.employees[i]._id,
           'positions': positions,
+          'role': role,
           'placeID': this.props.place._id
         });
       }
@@ -145,11 +158,15 @@ class AddEmployeesToRestaurant extends Component {
                   </Text>
                 </TouchableOpacity>
                 {(employee.selected)
-                  ? <View style={styles.optionContainer} >
-                      <OptionViewSplit options={employee.positions} selectOption={(index) => this.positionSelected(index, employee)} />
-                    </View>
+                  ? <PositionRoleSelector
+                      parent={employee}
+                      onPositionSelected={(index, employee) => this._onPositionSelected(index, employee)}
+                      onRoleSelected={(index, employee) => this._onRoleSelected(index, employee)}
+                      />
                   : null
                 }
+
+
               </Animated.View>
             )) : null}
           </View>

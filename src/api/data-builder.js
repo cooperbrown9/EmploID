@@ -80,6 +80,7 @@ export function checkPermissionForEmployeeEdit(myPlaces, empPlaces, callback) {
     }
   }
 
+  // find all places I share with this employee
   let similarPlaces = [];
   for(let i = 0; i < empPlaces.length; i++) {
     for(let j = 0; j < myPlaces.length; j++) {
@@ -88,6 +89,8 @@ export function checkPermissionForEmployeeEdit(myPlaces, empPlaces, callback) {
       }
     }
   }
+
+  // COMBAK make this so u can edit those of the same rank
   let highestRole = 0;
   for(let i = 0; i < similarPlaces.length; i++) {
     if(similarPlaces[i].myPlace.relation.role > similarPlaces[i].employeePlace.relation.role) {

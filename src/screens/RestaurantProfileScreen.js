@@ -69,6 +69,7 @@ class RestaurantProfileScreen extends Component {
             // .then((data) => {
               // console.log(data)
               DataBuilder.assignRelationsToUsers(relations, users, (usersWithRelations) => {
+                // usersWithRelations.splice(usersWithRelations.indexOf((u) => u._id == this.props.me._id), 1)
                 this.props.dispatch({ type: DetailActions.SET_EMPLOYEES, employees: usersWithRelations });
                 this.getDiscounts();
               })
@@ -257,7 +258,7 @@ class RestaurantProfileScreen extends Component {
         <View style={styles.editPlacesButton} >
           <RoundButton
             onPress={() => this._presentAddEmployeeForm()}
-            imagePath={require('../../assets/icons/pencil.png')}
+            imagePath={require('../../assets/icons/add.png')}
             color={Colors.BLUE}
           />
         </View>
