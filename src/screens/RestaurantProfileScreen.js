@@ -25,7 +25,7 @@ import * as Colors from '../constants/colors';
 class RestaurantProfileScreen extends Component {
   static navigationOptions = {
     header: null,
-    gesturesEnabled: false
+    gesturesEnabled: true
   }
 
   state = {
@@ -186,15 +186,15 @@ class RestaurantProfileScreen extends Component {
     this.setState({ addEmployeesFormPresented: false });
   }
 
-  _presentFormModal = () => {
+  _presentFormModal() {
     this.setState({ formModal: true });
   }
-  _dismissFormModal = () => {
+  _dismissFormModal() {
     this.setState({ formModal: false });
   }
 
   // make it able to present the discount thing
-  _presentDiscountForm = () => {
+  _presentDiscountForm() {
     this.setState({ createDiscountModalPresented: true });
   }
 
@@ -202,7 +202,7 @@ class RestaurantProfileScreen extends Component {
     this.setState({ discountModalPresented: true, selectedDiscount: discount });
   }
 
-  _dismissDiscountModal = () => {
+  _dismissDiscountModal() {
     this.setState({ discountModalPresented: false });
   }
 
@@ -213,7 +213,7 @@ class RestaurantProfileScreen extends Component {
     this.setState({ createDiscountModalPresented: false });
   }
 
-  _goBack = () => {
+  _goBack() {
     this.props.navigation.goBack();
   }
 
@@ -242,7 +242,7 @@ class RestaurantProfileScreen extends Component {
     if(this.props.myRole === 2) {
       return (
         <View style={styles.optionsButton}>
-          <RoundButton onPress={this._presentFormModal} imagePath={require('../../assets/icons/pencil.png')} color={Colors.BLUE}/>
+          <RoundButton onPress={this._presentFormModal.bind(this)} imagePath={require('../../assets/icons/pencil.png')} color={Colors.BLUE}/>
         </View>
       )
     } else {
@@ -273,7 +273,7 @@ class RestaurantProfileScreen extends Component {
         return(
           <View style={styles.addDiscount} >
             <RoundButton
-              onPress={() => this._presentDiscountForm()}
+              onPress={this._presentDiscountForm.bind(this)}
               imagePath={require('../../assets/icons/add.png')}
               color={Colors.BLUE}
             />
@@ -324,7 +324,7 @@ class RestaurantProfileScreen extends Component {
 
 
           <View style={styles.backButton}>
-            <RoundButton onPress={this._goBack} imagePath={require('../../assets/icons/back.png')} color={Colors.BLUE} />
+            <RoundButton onPress={this._goBack.bind(this)} imagePath={require('../../assets/icons/back.png')} color={Colors.BLUE} />
           </View>
 
 
@@ -360,7 +360,7 @@ class RestaurantProfileScreen extends Component {
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} >
-          <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} myRole={this.props.location.relation.role} />
+          <DiscountModal dismiss={this._dismissDiscountModal.bind(this)} discount={this.state.selectedDiscount} myRole={this.props.location.relation.role} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.addEmployeesFormPresented} >

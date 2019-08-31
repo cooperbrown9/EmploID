@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity, RefreshControl, Dimensions, FlatList } from 'react-native';
-import {SearchBar} from 'react-native-elements';
 import { BLUE, DARK_GREY, BACKGROUND_GREY, MID_GREY } from '../constants/colors';
 import { callPhoneNumber } from '../util';
 
-// onPress={() => props.openProfile(place)}
 function renderItem({ item }, openProfile) {
   return(
     <TouchableOpacity style={styles.restaurantItem} onPress={() => openProfile(item)} key={item._id} >
@@ -30,33 +28,8 @@ const RestaurantScreen = (props) => (
       onRefresh={props.onRefresh}
       refreshing={props.isRefreshing}
     />
-    {/*<SearchBar lightTheme placeholder='Search' style={{marginBottom: 20}} onChangeText={(text) => props.search(text)} />
-    <ScrollView
-      contentContainerStyle={{marginRight: 8, marginLeft: 8}}
-      refreshControl={
-        <RefreshControl refreshing={props.isRefreshing} onRefresh={props.onRefresh} />
-      }
-    >
-
-      {props.places.map((place) => (
-          <TouchableOpacity style={styles.restaurantItem} onPress={() => props.openProfile(place)} >
-
-            <View style={styles.restaurantInfo}>
-              <Text style={styles.nameText}>{place.name}</Text>
-              <Text style={styles.addyText}>{place.address}</Text>
-            </View>
-          </TouchableOpacity>
-      ))}
-
-    </ScrollView>
-*/}
   </View>
 )
-// this goes right below the right container
-  // <View style={{flexDirection: 'row'}} >
-  // <Image style={styles.userImage} source={require('../../assets/icons/users.png')} />
-  // <Text style={styles.userCount}>: 100</Text>
-  // </View>
 
 RestaurantScreen.propTypes = {
   places: PropTypes.array,
@@ -79,12 +52,6 @@ const styles = StyleSheet.create({
     fontSize: 18, fontFamily: 'roboto-bold',
     color: 'gray', alignSelf: 'stretch'
   },
-  // userCount: {
-    // fontSize: 16, fontFamily: 'roboto-bold', color: DARK_GREY
-  // },
-  // userImage: {
-    // height:16, width: 16, tintColor: DARK_GREY
-  // },
   rightContainer: {
     flex: 1, flexDirection: 'column',
     justifyContent: 'center', alignItems: 'center'

@@ -4,9 +4,9 @@
     "description": "This project is really great.",
     "slug": "emploid",
     "privacy": "public",
-    "sdkVersion": "32.0.0",
+    "sdkVersion": "33.0.0",
     "platforms": ["ios", "android"],
-    "version": "2.2.0",
+    "version": "2.2.1",
     "orientation": "portrait",
     "icon": "./assets/images/logo-1-no-alpha.png",
     "splash": {
@@ -19,7 +19,7 @@
       "bundleIdentifier": "com.xapp.emploid",
       "infoPlist": {
         "NSCameraUsageDescription": "We need access so you can take photos of your employees"
-      },
+      }
     }
   }
 }

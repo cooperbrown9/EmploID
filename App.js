@@ -6,7 +6,9 @@ import thunk from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
 
-import { Asset, Font } from 'expo';
+// import { Asset, Font } from 'expo';
+import { Asset } from 'expo-asset';
+import * as Font from 'expo-font';
 import MainReducer from './src/reducers/main-reducer';
 // import AppNavigatorWithState from './src/navigation/app-navigator';
 import AppNavigator from './src/navigation/app-navigator';
@@ -44,7 +46,6 @@ export default class App extends React.Component {
   cacheImagesAsync() {
     let images = [
       require('./assets/images/chef1.png'),
-      require('./assets/images/back-arrow.png'),
       require('./assets/images/circle.png'),
       require('./assets/icons/add.png'),
       require('./assets/icons/back.png'),
@@ -52,7 +53,6 @@ export default class App extends React.Component {
       require('./assets/icons/cancel.png'),
       require('./assets/icons/card.png'),
       require('./assets/icons/check.png'),
-      require('./assets/icons/dots.png'),
       require('./assets/icons/ellipsis.png'),
       require('./assets/icons/pencil.png'),
       require('./assets/icons/profile-male.png'),

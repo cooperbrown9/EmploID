@@ -96,7 +96,7 @@ class EmployeeForm extends Component {
     this.hairSelected(this.state.employee.hairColor);
   }
 
-  submit = () => {
+  submit() {
     this.checkForm((complete) => {
       if(complete) {
         this.props.dispatch({ type: LoadingActions.START_LOADING });
@@ -138,13 +138,13 @@ class EmployeeForm extends Component {
     }
   }
 
-  genderSelected = (index) => {
+  genderSelected(index) {
     OptionView.selected(this.state.genderOptions, index, (arr) => {
       this.setState({ genderOptions: arr, employee: {...this.state.employee, gender: index } });
     });
   }
 
-  hairSelected = (index) => {
+  hairSelected(index) {
     OptionView.selected(this.state.hairOptions, index, (arr) => {
       this.setState({ hairOptions: arr, employee: {...this.state.employee, hairColor: index } });
     });
@@ -365,12 +365,12 @@ class EmployeeForm extends Component {
 
           <Text style={styles.textHeader}>Gender</Text>
           <View style={styles.optionContainer} >
-            <OptionView options={this.state.genderOptions} selectOption={(index) => this.genderSelected(index)} />
+            <OptionView options={this.state.genderOptions} selectOption={this.genderSelected.bind(this)} />
           </View>
 
           <Text style={styles.textHeader}>Hair Color</Text>
           <View style={styles.optionContainer} >
-            <OptionView options={this.state.hairOptions} selectOption={(index) => this.hairSelected(index)} />
+            <OptionView options={this.state.hairOptions} selectOption={this.hairSelected.bind(this)} />
           </View>
 
           {/*
@@ -414,7 +414,7 @@ class EmployeeForm extends Component {
           <View style={styles.submitContainer} >
             <SubmitButton
               title={this.state.formIncomplete ? this.state.errorMessage : 'ADD EMPLOYEE'}
-              onPress={() => this.submit()}
+              onPress={this.submit.bind(this)}
               hasBGColor={true}
               bgColor={this.state.formIncomplete ? 'red' : Colors.BLUE}
             />

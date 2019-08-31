@@ -68,11 +68,9 @@ class ProfileScreen extends Component {
     }
   }
 
-
-
   static navigationOptions = {
     header: null,
-    gesturesEnabled: false
+    gesturesEnabled: true
   }
 
   static propTypes = {
@@ -243,7 +241,7 @@ class ProfileScreen extends Component {
     this.setState({ selectedNote: note, noteFormPresented: true, noteFormEdit: true })
   }
 
-  _dismissDiscountModal = () => {
+  _dismissDiscountModal() {
     this.setState({ discountModalPresented: false });
   }
 
@@ -253,7 +251,7 @@ class ProfileScreen extends Component {
     }
   }
 
-  _goBack = () => {
+  _goBack() {
     if(this.props.isMyProfile) {
       this.props.dismiss();
     } else {
@@ -432,7 +430,7 @@ class ProfileScreen extends Component {
             <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(0,0,0,0.2)',zIndex:1000}}></View>
 
             <View style={styles.backButton}>
-              <RoundButton onPress={() => this._goBack()} />
+              <RoundButton onPress={this._goBack.bind(this)} />
             </View>
 
             {this.editProfileButton()}
@@ -494,7 +492,7 @@ class ProfileScreen extends Component {
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.discountModalPresented} style={styles.discountModal} onDismiss={() => this.refreshUser()}>
-          <DiscountModal dismiss={() => this._dismissDiscountModal()} discount={this.state.selectedDiscount} />
+          <DiscountModal dismiss={this._dismissDiscountModal.bind(this)} discount={this.state.selectedDiscount} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.userPermissionModalPresented} onDismiss={() => this.refreshUser()}>

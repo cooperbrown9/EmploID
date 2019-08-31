@@ -75,6 +75,7 @@ class DiscountModal extends Component {
 
         <View style={{height:140}} />
         <View style={styles.containerView} >
+          <View></View>
           <Text style={styles.name}>{this.props.discount.name}</Text>
           <View style={{height:64}} />
           <Text style={styles.offer}>{this.props.discount.offer}</Text>

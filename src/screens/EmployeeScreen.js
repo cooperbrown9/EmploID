@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, ScrollView, Text, StyleSheet, TouchableOpacity, RefreshControl, FlatList, Dimensions } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+// import { SearchBar } from 'react-native-elements';
 import { findSimilarPlaces } from '../api/data-builder';
 
 import ProgressiveImage from '../ui-elements/progressive-image';

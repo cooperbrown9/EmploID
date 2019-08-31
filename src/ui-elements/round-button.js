@@ -13,7 +13,7 @@ RoundButton.propTypes = {
   imagePath: PropTypes.number,
   onPress: PropTypes.func,
   color: PropTypes.string
-}
+} 
 
 RoundButton.defaultProps = {
   imagePath: require('../../assets/icons/back.png'),

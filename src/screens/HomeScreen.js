@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert,
 } from 'react-native';
 
 import { connect } from 'react-redux';
+import { CacheManager } from 'react-native-expo-image-cache';
 
 import TabBar from '../ui-elements/tab-bar';
 
@@ -149,10 +150,16 @@ class HomeScreen extends Component {
               this.props.dispatch({ type: LoadingActions.STOP_LOADING, needReload: false });
             });
           } else {
-              // let images = this.cacheImages(users)
-              // await Promise.all([...images]).then((status) => console.log(status, 'YUP')).catch((nah) => console.log(nah, 'nah'))
+              DataBuilder.assignPositionsToUsers(users, relations, async(users) => {
+                let imgs = []
+                for(let i = 0; i < users.length; i++) {
+                  try {
+                    imgs.push(await CacheManager.get(users[i].image_url).getPath())
+                  } catch(cantDownloadException) {
+                    
+                  }
+                }
 
-              DataBuilder.assignPositionsToUsers(users, relations, (users) => {
                 this.props.dispatch({ type: AuthActions.SET_EMPLOYEES, employees: users });
                 this.props.dispatch({ type: SpotlightActions.SPOTLIGHT_OFF });
 
@@ -193,15 +200,15 @@ class HomeScreen extends Component {
     this.onTabSwitch();
   }
 
-  _presentMyDiscounts = () => {
+  _presentMyDiscounts() {
     this.setState({ myDiscountsPresented: true });
   }
 
-  _presentFilterModal = () => {
+  _presentFilterModal() {
     this.setState({ filterPresented: true });
   }
 
-  _dismissFilterModal = () => {
+  _dismissFilterModal() {
     this.setState({ filterPresented: false });
   }
 
@@ -459,23 +466,23 @@ class HomeScreen extends Component {
 
         <Animated.View style={[styles.addButton, { bottom: 170, right: this.state.optionButtonAnimation, backgroundColor:'transparent'}]} >
           {this.renderAddButton()}
-          <TouchableOpacity style={styles.optionTouch} onPress={this.presentMyProfile}>
+          <TouchableOpacity style={styles.optionTouch} onPress={this.presentMyProfile.bind(this)}>
             <Image source={require('../../assets/icons/profile.png')} style={{width:32, height: 32,tintColor:'white'}}/>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.optionTouch} onPress={this._presentMyDiscounts}>
+          <TouchableOpacity style={styles.optionTouch} onPress={this._presentMyDiscounts.bind(this)}>
             <Image source={require('../../assets/icons/card.png')} style={{width:32, height: 32,tintColor:'white'}}/>
           </TouchableOpacity>
         </Animated.View>
 
         <Animated.View style={[styles.filterButton, { left: this.state.filterButtonAnimation }]}>
-          <TouchableOpacity onPress={() => this._presentFilterModal()} >
+          <TouchableOpacity onPress={this._presentFilterModal.bind(this)} >
             <Text style={styles.filterText}>Filter</Text>
           </TouchableOpacity>
         </Animated.View>
 
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.filterPresented} >
-          <FilterModal employeeIDs={this.state.employeeIDs} dismiss={() => this._dismissFilterModal()} />
+          <FilterModal employeeIDs={this.state.employeeIDs} dismiss={this._dismissFilterModal.bind(this)} />
         </Modal>
 
         <Modal animationType={'slide'} transparent={false} visible={this.state.myProfilePresented} >
