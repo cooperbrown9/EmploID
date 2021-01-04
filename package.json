@@ -4,7 +4,7 @@
   "dependencies": {
     "@expo/vector-icons": "^10.0.1",
     "aws-sdk": "^2.197.0",
-    "axios": "^0.17.1",
+    "axios": "^0.21.1",
     "expo": "^33.0.0",
     "expo-asset": "^6.0.0",
     "expo-blur": "^5.0.1",
