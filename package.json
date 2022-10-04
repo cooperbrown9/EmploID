@@ -5,7 +5,7 @@
     "@expo/vector-icons": "^10.0.1",
     "aws-sdk": "^2.197.0",
     "axios": "^0.17.1",
-    "expo": "^33.0.0",
+    "expo": "^46.0.14",
     "expo-asset": "^6.0.0",
     "expo-blur": "^5.0.1",
     "expo-font": "^5.0.1",
